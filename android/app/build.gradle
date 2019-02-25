@@ -65,7 +65,7 @@ import com.android.build.OutputFile
  *   inputExcludes: ["android/**", "ios/**"],
  *
  *   // override which node gets called and with what additional arguments
- *   nodeExecutableAndArgs: ["node"],
+ *   nodeExecutableAndAcwrgs: ["node"],
  *
  *   // supply additional arguments to the packager
  *   extraPackagerArgs: []
@@ -73,7 +73,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "BottomMenuBar.js"
+    entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
