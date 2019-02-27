@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, Button, TouchableHighlight } from 'react-native';
 import { Divider, Icon } from 'react-native-elements';
@@ -15,8 +7,7 @@ import { set_update_device_name_callback, device_name, loops, set_loops } from "
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper'
 import CalibrationInput from '../../CalibrationInput'
 
-type Props = {};
-export default class Settings extends Component<Props> {
+export default class Settings extends Component {
 
     state = {
         device_name: device_name,
@@ -34,7 +25,7 @@ export default class Settings extends Component<Props> {
             <View style={[styles.container]}>
                 <Appbar style={styles.top}>
                     <Appbar.Action icon="menu" size={32} onPress={() => this.props.navigation.openDrawer()} />
-                    <Appbar.Content title="Explore-it" size={32} />
+                    <Appbar.Content style={{position: 'absolute', left: 40}} title="Explore-it" size={32} />
                     <Appbar.Content style={{ position: 'absolute', right: 0 }}
                         title={this.state.device_name}
                         subtitle={this.state.sub_title} size={32} />
@@ -88,7 +79,7 @@ export default class Settings extends Component<Props> {
                         </View>
                     </View>
                     <Divider />
-                    <View style={{ margin: '5%' }}>
+                    <View style={{ marginLeft: '5%' }}>
                         <Text>
                             Loops:
                         </Text>
@@ -108,7 +99,7 @@ export default class Settings extends Component<Props> {
                         </View>
                     </View>
                     <Divider />
-                    <View style={{ margin: '5%' }}>
+                    <View style={{ marginLeft: '5%' }}>
                         <Text>
                             Kalibrieren:
                         </Text>

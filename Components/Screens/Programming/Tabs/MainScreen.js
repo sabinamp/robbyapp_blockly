@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { StyleSheet, View, Text, InteractionManager, FlatList, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, KeyboardAvoidingView, FlatList, TouchableOpacity, Platform } from "react-native";
 import { Col, Grid, Row } from "react-native-easy-grid";
 import SpeedInput from "../../../SpeedInput";
 import { FAB } from "react-native-paper";
@@ -50,7 +50,7 @@ export default class MainScreen extends Component {
         let select_controls;
         if (this.state.selected >= 0) {
             select_controls =
-                <View style={{ margin: 0 }}>
+                <View>
                     <FAB
                         style={styles.delete}
                         icon="delete"
@@ -87,54 +87,58 @@ export default class MainScreen extends Component {
                 </View>
         }
 
+        const keyboardVerticalOffset = Platform.OS === 'ios' ? 100 : 0
         return (
             <View style={[styles.view, { flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
                 <Row style={{
-                    alignText: 'center', height: '6%', width: '100%', margin: '3%',
+                    alignText: 'center', height: '8%', width: '100%', margin: '8%',
                     ...ifIphoneX({
-                        marginBottom: '-2%'
+                        marginBottom: '-8%'
                     }, {
-                            marginBottom: '0%'
+                            marginBottom: '-5%'
                         })
                 }}>
                     <Text style={{ flex: 1, textAlign: 'center' }}>L</Text>
                     <Text style={{ flex: 2, textAlign: 'center' }}>Geschwindigkeit von 0-100</Text>
                     <Text style={{ flex: 1, textAlign: 'center' }}>R</Text>
                 </Row>
-                <FlatList
-                    data={this.state.speeds}
-                    extraData={this.state}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity
-                            onPress={() => {
-                                if (this.state.selected == parseInt(index)) {
-                                    this.setState({ selected: -1 })
-                                } else {
-                                    this.setState({ selected: parseInt(index) })
-                                }
-                            }}>
-                            <Row key={index} style={parseInt(index) == this.state.selected ? styles.selected_row : styles.row}>
-                                <SpeedInput
-                                    onchange={(text) => this.onChangeLeft(index, text)}
-                                    val={item.left}
-                                    val1={100 - item.left}
-                                    col1={'#FAFAFA'}
-                                    val2={item.left}
-                                    col2={'#E2F7F2'}
-                                />
-                                <SpeedInput
-                                    onchange={(text) => this.onChangeRight(index, text)}
-                                    val={item.right}
-                                    val1={item.right}
-                                    col1={'#E4F1FF'}
-                                    val2={100 - item.right}
-                                    col2={'#FAFAFA'}
-                                />
-                            </Row>
-                        </TouchableOpacity>
-                    )}
-                />
+                <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={keyboardVerticalOffset}>
+                    <FlatList
+                        data={this.state.speeds}
+                        extraData={this.state}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (this.state.selected == parseInt(index)) {
+                                        this.setState({ selected: -1 })
+                                    } else {
+                                        this.setState({ selected: parseInt(index) })
+                                    }
+                                }}>
+                                <Row key={index} style={parseInt(index) == this.state.selected ? styles.selected_row : styles.row}>
+                                    <SpeedInput
+                                        onchange={(text) => this.onChangeLeft(index, text)}
+                                        val={item.left}
+                                        val1={100 - item.left}
+                                        col1={'#FAFAFA'}
+                                        val2={item.left}
+                                        col2={'#E2F7F2'}
+                                    />
+                                    <SpeedInput
+                                        onchange={(text) => this.onChangeRight(index, text)}
+                                        val={item.right}
+                                        val1={item.right}
+                                        col1={'#E4F1FF'}
+                                        val2={100 - item.right}
+                                        col2={'#FAFAFA'}
+                                    />
+                                </Row>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </KeyboardAvoidingView>
+                <View>
                 <FAB
                     style={styles.fab}
                     icon="add"
@@ -147,6 +151,7 @@ export default class MainScreen extends Component {
                         }
                     }}
                 />
+                </View>
                 {select_controls}
             </View>
         );
@@ -188,42 +193,26 @@ const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
         margin: 16,
-        right: 0,
-        ...ifIphoneX({
-            bottom: 15
-        }, {
-                bottom: 0,
-            })
+        right: -200,
+        bottom: 18
     },
     delete: {
         position: 'absolute',
         margin: 16,
         right: -105,
-        ...ifIphoneX({
-            bottom: 15
-        }, {
-                bottom: 0,
-            })
+        bottom: 18
     },
     move_up: {
         position: 'absolute',
         margin: 16,
         right: -30,
-        ...ifIphoneX({
-            bottom: 15
-        }, {
-                bottom: 0,
-            })
+        bottom: 18
     },
     move_down: {
         position: 'absolute',
         margin: 16,
         right: 45,
-        ...ifIphoneX({
-            bottom: 15
-        }, {
-                bottom: 0,
-            })
+        bottom: 18
     },
     selected_row: {
         backgroundColor: '#9c27b060',

@@ -24,7 +24,7 @@ export default class App extends Component {
 
     render() {
         return (
-            <View style={{flex: 1, flexDirection: 'column'}}>
+            <View style={{flex: 1, flexDirection: 'column', margin: 20}}>
                 <View style={styles.outer}>
                     <View style={styles.buttons}>
                         <TouchableHighlight onPress={() => this.onPlus()} underlayColor="white"
