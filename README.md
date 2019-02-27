@@ -58,6 +58,10 @@ The library used in this project to support BLE is: https://github.com/Polidea/r
 ```
 $ npm install --save react-native-ble-plx
 $ react-native link react-native-ble-plx
+$ npm install --save react-native-gesture-handler
+$ react-native link react-native-gesture-handler
+$ npm install -save react-native-vector-icons
+$ react-native link react-native-vector-icons
 
 $ npm install
 ```
