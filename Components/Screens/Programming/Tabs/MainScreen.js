@@ -70,11 +70,6 @@ export default class MainScreen extends Component {
                             this.setState({ 
                                 selected: curr - 1
                             })
-                            speeds.forEach((item, index) => {
-                                console.log("index: " + index 
-                                + " left: " + item.left
-                                + " right: " + item.right);
-                            })
                         }}
                     />
                     <FAB
@@ -87,11 +82,6 @@ export default class MainScreen extends Component {
                             this.setState({ 
                                 selected: curr + 1
                             });
-                            speeds.forEach((item, index) => {
-                                console.log("index: " + index 
-                                + " left: " + item.left
-                                + " right: " + item.right);
-                            })
                         }}
                     />
                 </View>

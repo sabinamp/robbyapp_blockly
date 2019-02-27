@@ -1,15 +1,7 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
 import {StyleSheet, View, Alert} from 'react-native';
 import {Appbar} from 'react-native-paper';
-import {createMaterialTopTabNavigator} from "react-navigation";
+import {createMaterialTopTabNavigator, createAppContainer} from "react-navigation";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { MainScreen, MixedViewScreen, BlockViewScreen } from "./Tabs/index";
 import BleService from '../../../integration/BleService';
@@ -149,7 +141,7 @@ export default class Programming extends Component {
                                     subtitle={this.state.sub_title}
                                     size={32} />
                 </Appbar>
-                <TabNavigator/>
+                <TabContainer/>
                 <Appbar style={styles.bottom}>
                     <Appbar.Action icon="stop" size={32}
                                    disabled={this.state.stop_btn_disabled}
@@ -261,6 +253,8 @@ const TabNavigator = createMaterialTopTabNavigator({
         showIcon: true
     }
 });
+
+const TabContainer = createAppContainer(TabNavigator);
 
 const styles = StyleSheet.create({
     container: {

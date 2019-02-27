@@ -26,11 +26,13 @@ export default class SpeedInput extends Component {
     }
 
     render() {
+        const flexValLeft = isNaN(this.props.val1) ? 0 : this.props.val1;
+        const flexValRight = isNaN(this.props.val2) ? 0 : this.props.val2;
         return (
             <View style={styles.outer}>
                 <View style={styles.progressbar}>
-                    <View style={{ backgroundColor: this.props.col1, flex: this.props.val1 }} />
-                    <View style={{ backgroundColor: this.props.col2, flex: this.props.val2 }} />
+                    <View style={{ backgroundColor: this.props.col1, flex: flexValLeft }} />
+                    <View style={{ backgroundColor: this.props.col2, flex: flexValRight }} />
                 </View>
                 <View style={styles.numinput}>
                     <NumericInput onchange={this.onChanged} val={this.props.val} />

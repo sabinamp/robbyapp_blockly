@@ -1,13 +1,5 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
-import { createDrawerNavigator, DrawerItems} from "react-navigation";
+import { createDrawerNavigator, createAppContainer, DrawerItems} from "react-navigation";
 import Programming from "./Components/Screens/Programming/Programming";
 import Settings from "./Components/Screens/Settings/Settings";
 import BleService from "./integration/BleService";
@@ -15,14 +7,13 @@ import {set_update_device_name_callback, device_name} from "./Stores/SettingsSto
 import { View, Text } from "react-native";
 import {getStatusBarHeight, ifIphoneX} from "react-native-iphone-x-helper";
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
     state = {device: undefined};
 
     componentWillMount() {
         BleService.requestLocationPermission();
     }
-    render() {return (<DrawerNavigator />);}
+    render() {return (<DrawerContainer />);}
 }
 
 class DrawerContent extends Component {
@@ -69,3 +60,5 @@ const DrawerNavigator = createDrawerNavigator({
 },{
     contentComponent: DrawerContent,
 });
+
+const DrawerContainer = createAppContainer(DrawerNavigator);

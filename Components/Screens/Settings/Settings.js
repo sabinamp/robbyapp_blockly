@@ -6,13 +6,13 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {StyleSheet, View, Text, TextInput, Button, TouchableHighlight} from 'react-native';
-import {Divider, Icon} from 'react-native-elements';
-import {Appbar} from 'react-native-paper';
-import {Row} from "react-native-easy-grid";
-import {set_update_device_name_callback, device_name, loops, set_loops} from "../../../Stores/SettingsStore";
-import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper'
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, TextInput, Button, TouchableHighlight } from 'react-native';
+import { Divider, Icon } from 'react-native-elements';
+import { Appbar } from 'react-native-paper';
+import { Row } from "react-native-easy-grid";
+import { set_update_device_name_callback, device_name, loops, set_loops } from "../../../Stores/SettingsStore";
+import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper'
 import CalibrationInput from '../../CalibrationInput'
 
 type Props = {};
@@ -26,7 +26,7 @@ export default class Settings extends Component<Props> {
 
     constructor() {
         super();
-        set_update_device_name_callback((name) => {this.setState({ device_name: name });});
+        set_update_device_name_callback((name) => { this.setState({ device_name: name }); });
     }
 
     render() {
@@ -35,27 +35,27 @@ export default class Settings extends Component<Props> {
                 <Appbar style={styles.top}>
                     <Appbar.Action icon="menu" size={32} onPress={() => this.props.navigation.openDrawer()} />
                     <Appbar.Content title="Explore-it" size={32} />
-                    <Appbar.Content style={{position: 'absolute', right: 0}}
-                                    title={this.state.device_name}
-                                    subtitle={this.state.sub_title} size={32} />
+                    <Appbar.Content style={{ position: 'absolute', right: 0 }}
+                        title={this.state.device_name}
+                        subtitle={this.state.sub_title} size={32} />
                 </Appbar>
                 <View>
-                    <View style={{margin:'5%'}}>
+                    <View style={{ margin: '5%' }}>
                         <Text>
                             Lernen:
                         </Text>
                         <View>
-                            <Row style={{margin:'10%', height: 30}}>
-                                <View style={{flex: 1, flexDirection: 'row', margin:'5%'}}>
-                                    <View style={{width:'50%'}}>
+                            <Row style={{ margin: '10%', height: 30 }}>
+                                <View style={{ flex: 1, flexDirection: 'row', margin: '5%' }}>
+                                    <View style={{ width: '50%' }}>
                                         <Text>
                                             Interval:
                                         </Text>
                                     </View>
-                                    <View style={{width:'50%'}}>
-                                        <View style={{height:'100%', width: '100%', borderWidth: 1, borderColor:'grey', backgroundColor:'white', justifyContent: 'center'}}>
+                                    <View style={{ width: '50%' }}>
+                                        <View style={{ height: '70%', width: '100%', borderWidth: 1, borderColor: 'grey', backgroundColor: 'white', justifyContent: 'center' }}>
                                             <TextInput
-                                                style={{height:'100%', width: '100%'}}
+                                                style={{ height: '100%', width: '100%' }}
                                                 keyboardType='numeric'
                                                 textAlign={'center'}
                                                 mode="outlined"
@@ -63,44 +63,44 @@ export default class Settings extends Component<Props> {
                                         </View>
                                     </View>
                                 </View>
-                                <View style={{flex: 1, flexDirection: 'row', margin: '5%'}}>
-                                    <View style={{width:'50%'}}>
+                                <View style={{ flex: 1, flexDirection: 'row', margin: '5%' }}>
+                                    <View style={{ width: '50%' }}>
                                         <Text>
                                             Dauer:
                                         </Text>
                                     </View>
-                                    <View style={{width:'50%'}}>
-                                    <View style={{height:'100%', width: '100%', borderWidth: 1, borderColor:'grey', backgroundColor:'white', justifyContent: 'center'}}>
-                                    <TextInput
-                                        style={{height:'100%', width: '100%'}}
-                                        keyboardType='numeric'
-                                        textAlign={'center'}
-                                        mode="outlined"
-                                    />
-                                    </View>
+                                    <View style={{ width: '50%' }}>
+                                        <View style={{ height: '70%', width: '100%', borderWidth: 1, borderColor: 'grey', backgroundColor: 'white', justifyContent: 'center' }}>
+                                            <TextInput
+                                                style={{ height: '100%', width: '100%' }}
+                                                keyboardType='numeric'
+                                                textAlign={'center'}
+                                                mode="outlined"
+                                            />
+                                        </View>
                                     </View>
                                 </View>
                             </Row>
                             <Button
                                 title='Speichern'
                                 color="#9c27b0"
-                                onPress={() => alert('something')}/>
+                                onPress={() => alert('something')} />
                         </View>
                     </View>
                     <Divider />
-                    <View style={{margin:'5%'}}>
+                    <View style={{ margin: '5%' }}>
                         <Text>
                             Loops:
                         </Text>
                         <View>
-                            <Row style={{margin:'10%', height: 30}}>
-                                <View style={{height:50, width: 60, borderWidth: 1, borderColor:'grey', backgroundColor:'white', justifyContent: 'center'}}>
+                            <Row style={{ margin: '10%', height: 30 }}>
+                                <View style={{ height: 50, width: 60, borderWidth: 1, borderColor: 'grey', backgroundColor: 'white', justifyContent: 'center' }}>
                                     <TextInput
-                                        style={{height:'100%', width: '100%'}}
+                                        style={{ height: '100%', width: '100%' }}
                                         keyboardType='numeric'
                                         textAlign={'center'}
                                         mode="outlined"
-                                        onChangeText={(text)=> {this.setState({ loops: parseInt(text)}); set_loops(parseInt(text))}}
+                                        onChangeText={(text) => { this.setState({ loops: parseInt(text) }); set_loops(parseInt(text)) }}
                                         value={this.state.loops.toString()}
                                     />
                                 </View>
@@ -108,20 +108,20 @@ export default class Settings extends Component<Props> {
                         </View>
                     </View>
                     <Divider />
-                    <View style={{margin:'5%'}}>
+                    <View style={{ margin: '5%' }}>
                         <Text>
                             Kalibrieren:
                         </Text>
                         <View>
                             <Row>
                                 <CalibrationInput val={5} limit={20} />
-                                <View style={{flex: 1, alignItems: 'center', margin: '5%', height: 180, justifyContent:'center'}}>
+                                <View style={{ flex: 1, alignItems: 'center', margin: '5%', height: 180, justifyContent: 'center' }}>
                                     <Icon
                                         reverse
                                         name='play-arrow'
-                                          color='#9c27b0'
-                                          size={32}
-                                          onPress={() => alert('run')}/>
+                                        color='#9c27b0'
+                                        size={32}
+                                        onPress={() => alert('run')} />
                                 </View>
                                 <CalibrationInput val={19} limit={20} />
                             </Row>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
             paddingTop: getStatusBarHeight() + 10,
         }, {
 
-        })
+            })
     },
     bottom: {
         position: 'absolute',
@@ -151,8 +151,8 @@ const styles = StyleSheet.create({
         ...ifIphoneX({
             bottom: 15
         }, {
-            bottom: 0,
-        })
+                bottom: 0,
+            })
     },
     col: {
         flex: 1,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     btn_label_btm: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent:'flex-end',
+        justifyContent: 'flex-end',
         margin: '10%'
     },
     number: {
