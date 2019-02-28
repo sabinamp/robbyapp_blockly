@@ -3,7 +3,7 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { createMaterialTopTabNavigator, createAppContainer } from "react-navigation";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MainScreen, MixedViewScreen, BlockViewScreen } from "./Tabs/index";
+import { MainTab, MixedViewTab, BlockViewTab } from "./Tabs/index";
 import BleService from '../../../integration/BleService';
 import { speeds, add, remove_all, set_update_speeds_callback } from '../../../Stores/SpeedsStore';
 import { set_update_device_name_callback, device_name, update_device_name, loops } from "../../../Stores/SettingsStore";
@@ -249,7 +249,7 @@ export default class Programming extends Component {
 
 const TabNavigator = createMaterialTopTabNavigator({
     First: {
-        screen: MainScreen,
+        screen: MainTab,
         navigationOptions: {
             tabBarIcon: ({ tintColor }) => (
                 <MaterialCommunityIcon name="menu" size={24} color={tintColor} />
@@ -257,7 +257,7 @@ const TabNavigator = createMaterialTopTabNavigator({
         },
     },
     Second: {
-        screen: MixedViewScreen,
+        screen: MixedViewTab,
         navigationOptions: {
             tabBarIcon: ({ tintColor }) => (
                 <MaterialCommunityIcon name="page-layout-body" size={24} color={tintColor} />
@@ -265,7 +265,7 @@ const TabNavigator = createMaterialTopTabNavigator({
         },
     },
     Third: {
-        screen: BlockViewScreen,
+        screen: BlockViewTab,
         navigationOptions: {
             tabBarIcon: ({ tintColor }) => (
                 <MaterialCommunityIcon name="page-layout-header" size={24} color={tintColor} />

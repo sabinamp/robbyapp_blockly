@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { StyleSheet, View, Text, KeyboardAvoidingView, FlatList, TouchableOpacity, Platform } from "react-native";
 import { Col, Grid, Row } from "react-native-easy-grid";
-import SpeedInput from "../../../SpeedInput";
+import SpeedInput from "./SpeedInput";
 import { FAB } from "react-native-paper";
 import React from "react";
 import {
@@ -15,11 +15,11 @@ import {
     set_update_speeds_callback,
     //storeSpeeds,
     //retrieveSpeeds
-} from '../../../../Stores/SpeedsStore'
+} from '../../../../../Stores/SpeedsStore'
 import { ifIphoneX } from "react-native-iphone-x-helper";
-import { set_update_device_name_callback } from "../../../../Stores/SettingsStore";
+import { set_update_device_name_callback } from "../../../../../Stores/SettingsStore";
 
-export default class MainScreen extends Component {
+export default class MainTab extends Component {
     state = {
         speeds: speeds,
         selected: -1 // id of currently selected row
@@ -162,14 +162,6 @@ export default class MainScreen extends Component {
             rowToDelete: id
         });
     }
-
-    // _onAfterRemovingElement() {
-    //     this.setState({
-    //         rowToDelete: null,
-    //         dataSource: this.state.dataSource.cloneWithRows(this._data)
-    //     });
-    // }
-
 
 }
 

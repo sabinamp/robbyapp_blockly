@@ -1,5 +1,5 @@
-import MainScreen from './MainScreen'
-import MixedViewScreen from './MixedViewScreen'
-import BlockViewScreen from './BlockViewScreen'
+import MainTab from './MainTab/MainTab'
+import MixedViewTab from './MixedViewTab'
+import BlockViewTab from './BlockViewTab'
 
-export { MainScreen, MixedViewScreen, BlockViewScreen }
+export { MainTab, MixedViewTab, BlockViewTab }

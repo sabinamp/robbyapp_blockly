@@ -5,7 +5,7 @@ import { Appbar } from 'react-native-paper';
 import { Row } from "react-native-easy-grid";
 import { set_update_device_name_callback, device_name, loops, set_loops } from "../../../Stores/SettingsStore";
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper'
-import CalibrationInput from '../../CalibrationInput'
+import CalibrationInput from './CalibrationInput'
 
 export default class Settings extends Component {
 

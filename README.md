@@ -47,6 +47,8 @@ $ emulator -list-avds
 Nexus_6_API_25
 $ emulator @Nexus_6_API_25
 $ react-native run-android
+...
+$ react-native log-android
 ```
 
 ## Run App on iOS
@@ -55,6 +57,8 @@ No need to start a simulator first! Run command
 
 ```
 $ react-native run-ios
+...
+$ react-native log-ios
 ```
 
 to start simulator (from Xcode) and deploy app or deploy app onto attached iPhone.

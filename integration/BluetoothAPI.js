@@ -1,4 +1,4 @@
-import BleService from './integration/BleService';
+import BleService from './BleService';
 
 class BluetoothAPI {
 
