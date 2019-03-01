@@ -56,16 +56,16 @@ export default class Programming extends Component {
                     visible={this.state.visible}
                     onCancel={() => this.setState({ visible: false })}
                     onOk={result => {
-                        this.setState({ remaining_btns_disabled: false });
-                        this.setState({ stop_btn_disabled: false });
+                        this.setState({ 
+                            remaining_btns_disabled: false,
+                            stop_btn_disabled: false,
+                            visible: false
+                        });
+                        update_device_name({ device: 'Verbinden...' })
                         let device = result.selectedItem.label;
                         BleService.setActDevice(device);
-                        console.log("JL BLE device: " + device)
                         BleService.connectToActDevice((response) => {
                             // responseHandler
-                            console.log("JL BLE response: " + response)
-
-                            // Alert.alert("Message", response);
                             if (response.trim().toLowerCase() === '_sr_')
                                 this.setState({ is_learning: false });
 
@@ -90,41 +90,41 @@ export default class Programming extends Component {
                                 if (response.trim().toLowerCase() === 'full') {
                                     // done learning
                                     Alert.alert("Aufzeichnen", 'Erfolgreich aufgezeichnet und auf dem Roboter gespeichert!');
-                                    this.setState({ 
+                                    this.setState({
                                         remaining_btns_disabled: false,
                                         stop_btn_disabled: true
-                                     });
+                                    });
                                 }
                                 if (response.trim().toLowerCase() === ',,,,') {
                                     // finished beam
                                     this.setState({ is_learning: false });
                                     Alert.alert("Download", 'Anweisungen erfolgreich von Roboter heruntergeladen!');
-                                    this.setState({ 
+                                    this.setState({
                                         remaining_btns_disabled: false,
                                         stop_btn_disabled: true
-                                     });
+                                    });
                                 }
                             } else {
                                 if (response.trim().toLowerCase() === 'full') {
                                     // done uploading
                                     Alert.alert("Upload", 'Alle Anweisungen erfolgreich auf Roboter geladen!');
-                                    this.setState({ 
+                                    this.setState({
                                         remaining_btns_disabled: false,
                                         stop_btn_disabled: true
-                                     });
-                            } else if (response.trim().toLowerCase() === '_end') {
+                                    });
+                                } else if (response.trim().toLowerCase() === '_end') {
                                     // done driving
                                     if (this.state.loop_counter === loops) {
                                         Alert.alert("Fahren", 'Anweisungen abgearbeitet, Fahrt erfolgreich abgeschlossen!');
-                                        this.setState({ 
+                                        this.setState({
                                             remaining_btns_disabled: false,
                                             stop_btn_disabled: true,
                                             loop_counter: 0
-                                         });
+                                        });
                                     } else {
                                         BleService.sendCommandToActDevice('G');
-                                        this.setState({ 
-                                            loop_counter: this.state.loop_counter + 1 
+                                        this.setState({
+                                            loop_counter: this.state.loop_counter + 1
                                         });
                                     }
                                 }
@@ -132,7 +132,7 @@ export default class Programming extends Component {
                         }, () => {
                             // messageHandler
                             update_device_name({ device: device.substr(device.length - 5) });
-                            this.setState({ 
+                            this.setState({
                                 visible: false,
                                 device: device,
                                 remaining_btns_disabled: false,
@@ -162,7 +162,7 @@ export default class Programming extends Component {
                     <Appbar.Action icon="stop" size={32}
                         disabled={this.state.stop_btn_disabled}
                         onPress={() => {
-                            this.setState({ 
+                            this.setState({
                                 remaining_btns_disabled: false,
                                 stop_btn_disabled: true
                             });
@@ -171,7 +171,7 @@ export default class Programming extends Component {
                     <Appbar.Action icon="play-arrow" size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
-                            this.setState({ 
+                            this.setState({
                                 remaining_btns_disabled: true,
                                 stop_btn_disabled: false
                             });
@@ -181,7 +181,7 @@ export default class Programming extends Component {
                     <Appbar.Action icon="fiber-manual-record" size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
-                            this.setState({ 
+                            this.setState({
                                 remaining_btns_disabled: true,
                                 stop_btn_disabled: false
                             });
@@ -194,7 +194,7 @@ export default class Programming extends Component {
                         size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
-                            this.setState({ 
+                            this.setState({
                                 remaining_btns_disabled: true,
                                 stop_btn_disabled: false
                             });
@@ -204,7 +204,7 @@ export default class Programming extends Component {
                         size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
-                            this.setState({ 
+                            this.setState({
                                 remaining_btns_disabled: true,
                                 stop_btn_disabled: false
                             });
@@ -227,20 +227,30 @@ export default class Programming extends Component {
                             }
                             BleService.sendCommandToActDevice(',,,,');
                         }} />
-                    <Appbar.Action icon="bluetooth-connected" style={{ position: 'absolute', right: 0 }} size={32} onPress={() => {
-                        // check if bluetooth even activated:
-                        // use checkBluetoothState and local state to represent connectivity
-                        this.setState({ devices: [] });
-                        BleService.scanningForDevices((error) => {
-                            console.log(error);
-                        }, (device) => {
-                            let devices = this.state.devices;
-                            devices.push(device);
-                            this.setState({ devices: devices });
-                        });
-                        setTimeout(() => {
-                            this.setState({ visible: true });
-                        }, 500);
+                    <Appbar.Action icon={(this.state.device) ? "bluetooth-connected" : "bluetooth"} style={{ position: 'absolute', right: 0 }} size={32} onPress={() => {
+                        if (BleService.getActDevice()) {
+                            BleService.shutdown();
+                            update_device_name({ device: 'Keine Verbindung' })
+                            this.setState({
+                                device: undefined,
+                                remaining_btns_disabled: true,
+                                stop_btn_disabled: true
+                            })
+                        } else {
+                            this.setState({
+                                devices: []
+                            });
+                            BleService.scanningForDevices((error) => {
+                                console.log(error);
+                            }, (device) => {
+                                let devices = this.state.devices;
+                                devices.push(device);
+                                this.setState({ devices: devices });
+                            });
+                            setTimeout(() => {
+                                this.setState({ visible: true });
+                            }, 500);
+                        }
                     }} />
                 </Appbar>
             </View>

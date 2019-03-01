@@ -78,18 +78,15 @@ class BleService {
     }
 
     connectToActDevice(responseHandler, messageHandler, errorHandler, disconnectionHandler) {
+        console.log('BleService connecting...');
         this.actDevice.connect()
             .then((device) => {
-                console.log('JL BleService connect - ' + device.name);
+                console.log('BleService connect - ' + device.name);
                 // Promise which emits the device object if all available services and characteristics have been discovered.
                 return device.discoverAllServicesAndCharacteristics()
             })
-            // .then((device) => {
-            //     console.log('JL BleService disconnect - ' + device.name);
-            //     device.onDisconnected((err, device) => disconnectionHandler(err, device));
-            // })
             .then((device) => {
-                console.log('JL BleService monitor - ' + device.name);
+                console.log('BleService monitor - ' + device.name);
                 // Monitor value changes of a ble characteristic.
                 device.monitorCharacteristicForService(
                     serviceUUID,
@@ -137,6 +134,7 @@ class BleService {
         this.actDevice.cancelConnection();
         this.manager.cancelTransaction(transactionId);
         this.actDevice = null;
+        console.log('BleService disconnected');
     }
 }
 
