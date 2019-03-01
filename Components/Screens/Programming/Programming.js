@@ -186,6 +186,7 @@ export default class Programming extends Component {
                                 stop_btn_disabled: false
                             });
                             BleService.sendCommandToActDevice('F');
+                            BleService.sendCommandToActDevice('D' + loops);
                             BleService.sendCommandToActDevice('L');
                             this.setState({ is_learning: true });
                         }} />

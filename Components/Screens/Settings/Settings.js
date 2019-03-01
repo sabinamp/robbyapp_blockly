@@ -12,7 +12,7 @@ export default class Settings extends Component {
     state = {
         device_name: device_name,
         sub_title: 'Gerät',
-        loops: loops
+        loops: loops.toString()
     };
 
     constructor() {
@@ -91,8 +91,14 @@ export default class Settings extends Component {
                                         keyboardType='numeric'
                                         textAlign={'center'}
                                         mode="outlined"
-                                        onChangeText={(text) => { this.setState({ loops: parseInt(text) }); set_loops(parseInt(text)) }}
-                                        value={this.state.loops.toString()}
+                                        onChangeText={(text) => {
+                                            const nr = (text.length === 0) ? 0: parseInt(text);
+                                            this.setState({ 
+                                                loops: text 
+                                            });
+                                            set_loops(nr) 
+                                        }}
+                                        value={this.state.loops}
                                     />
                                 </View>
                             </Row>
