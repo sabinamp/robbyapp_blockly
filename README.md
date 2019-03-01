@@ -29,6 +29,14 @@ $ npm version minor  // increment minor number
 $ npm version major  // increment major number
 ```
 
+# Tagging Releases
+
+Use the *Annotated Tag* support by Git to tag releases on the master branch with a descriptive message like:
+
+```
+$ git tag -a v1.0.0 -m "Releasing version v1.0.0"
+$ git push origin v1.0.0
+```
 
 # Development Environment
 
