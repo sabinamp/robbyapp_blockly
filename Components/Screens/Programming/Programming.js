@@ -4,7 +4,7 @@ import { Appbar } from 'react-native-paper';
 import { createMaterialTopTabNavigator, createAppContainer } from "react-navigation";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { MainTab, MixedViewTab, BlockViewTab } from "./Tabs/index";
-import BleService from '../../../integration/BleService';
+import BleService from '../../../communication/BleService';
 import { speeds, add, remove_all, set_update_speeds_callback } from '../../../Stores/SpeedsStore';
 import { set_update_device_name_callback, device_name, update_device_name, loops } from "../../../Stores/SettingsStore";
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper'
@@ -65,40 +65,37 @@ export default class Programming extends Component {
                         let device = result.selectedItem.label;
                         BleService.setActDevice(device);
                         BleService.connectToActDevice((response) => {
+                            console.log("JL Response: " + response)
                             // responseHandler
+                            if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
+                                // speed values from beam
+                                let read_speeds = response.trim().split(',');
+                                let speed_l = (read_speeds[0] / 2.55);
+                                let speed_r = (read_speeds[1] / 2.55); // (read_speeds[1]/1.85)-70
+                                if (speed_l < 0)
+                                    speed_l = 0;
+                                if (speed_r < 0)
+                                    speed_r = 0;
+                                add({ left: parseInt(speed_l), right: parseInt(speed_r) })
+                            }
+
+                            if (response.trim().toLowerCase() === ',,,,') {
+                                // finished beam
+                                this.setState({ is_learning: false });
+                                Alert.alert("Download", 'Anweisungen erfolgreich von Roboter heruntergeladen!');
+                                this.setState({
+                                    remaining_btns_disabled: false,
+                                    stop_btn_disabled: true
+                                });
+                            }
+
                             if (response.trim().toLowerCase() === '_sr_')
                                 this.setState({ is_learning: false });
 
                             if (this.state.is_learning) {
-                                if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
-                                    // speed values from beam
-                                    let read_speeds = response.trim().split(',');
-                                    let speed_l = (read_speeds[0] / 2.55);
-                                    let speed_r = (read_speeds[1] / 2.55); // (read_speeds[1]/1.85)-70
-                                    if (speed_l < 0)
-                                        speed_l = 0;
-                                    if (speed_r < 0)
-                                        speed_r = 0;
-                                    add({ left: parseInt(speed_l), right: parseInt(speed_r) })
-                                }
-                                /*
-                                if(response.trim().toLowerCase()==='full'){
-                                    remove_all();
-                                    BleService.sendCommandToActDevice('B');
-                                }
-                                */
                                 if (response.trim().toLowerCase() === 'full') {
                                     // done learning
                                     Alert.alert("Aufzeichnen", 'Erfolgreich aufgezeichnet und auf dem Roboter gespeichert!');
-                                    this.setState({
-                                        remaining_btns_disabled: false,
-                                        stop_btn_disabled: true
-                                    });
-                                }
-                                if (response.trim().toLowerCase() === ',,,,') {
-                                    // finished beam
-                                    this.setState({ is_learning: false });
-                                    Alert.alert("Download", 'Anweisungen erfolgreich von Roboter heruntergeladen!');
                                     this.setState({
                                         remaining_btns_disabled: false,
                                         stop_btn_disabled: true
@@ -141,10 +138,6 @@ export default class Programming extends Component {
                         }, () => {
                             // errorHandler
                             Alert.alert("errorHandler", 'error trying to connect');
-                        }, (error, device) => {
-                            // disconnectionHandler
-                            Alert.alert("Verbindungsunterbruch", 'Bluetoothverbindung zu Roboter verloren:' + device.name);
-                            update_device_name({ device: 'Keine Verbindung' })
                         });
                     }}
                     colorAccent="#9c27b0"
