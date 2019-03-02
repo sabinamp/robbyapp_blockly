@@ -77,7 +77,7 @@ class BleService {
         this.manager.stopDeviceScan();
     }
 
-    connectToActDevice(responseHandler, messageHandler, errorHandler, disconnectionHandler) {
+    connectToActDevice(responseHandler, messageHandler, errorHandler) {
         console.log('BleService connecting...');
         this.actDevice.connect()
             .then((device) => {
