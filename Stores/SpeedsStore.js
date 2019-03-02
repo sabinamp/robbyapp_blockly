@@ -1,4 +1,3 @@
-import {device_name} from "./SettingsStore";
 import { AsyncStorage } from "react-native"
 
 let speeds = [{left: 0, right: 0}]; // containing pairs of speed instructions of left and right wheel in 1-100%

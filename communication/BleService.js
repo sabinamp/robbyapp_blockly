@@ -42,7 +42,7 @@ class BleService {
         }, true);
     }
 
-    scanningForDevices(errorHandler, deviceHandler) {
+    scanningForRobots(errorHandler, deviceHandler) {
         // Just for testing
         /*
         simDevices = ['Device A', 'Device B'];
@@ -77,7 +77,7 @@ class BleService {
         this.manager.stopDeviceScan();
     }
 
-    connectToActDevice(responseHandler, messageHandler, errorHandler) {
+    connectToActDevice(responseHandler, connectionHandler, errorHandler) {
         console.log('BleService connecting...');
         this.actDevice.connect()
             .then((device) => {
@@ -86,6 +86,7 @@ class BleService {
                 return device.discoverAllServicesAndCharacteristics()
             })
             .then((device) => {
+                // Returns connected device object if successful.
                 console.log('BleService monitor - ' + device.name);
                 // Monitor value changes of a ble characteristic.
                 device.monitorCharacteristicForService(
@@ -94,20 +95,19 @@ class BleService {
                     // Add listener to handle responses from connected device
                     (error, characteristic) => {
                         if (error) {
-                            console.log('Error - ' + error);
-                            return
+                            throw error
                         }
                         response = Buffer.from(characteristic.value, 'base64').toString('ascii');
                         responseHandler(response);
-                        //this.addLogMessage(response);
                     },
                     transactionId);
-                messageHandler();
+                console.log('BleService connection done - ' + device.name);
+                connectionHandler(device);
             })
-            .catch(() => {
+            .catch((error) => {
                 // Handle errors
-                errorHandler();
-                //this.addLogMessage('Error - ' + i18n.t('message.bluetooth-error'));
+                console.log('BleService error - ' + error);
+                errorHandler(error);
             });
     }
 

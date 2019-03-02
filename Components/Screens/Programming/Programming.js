@@ -4,12 +4,11 @@ import { Appbar } from 'react-native-paper';
 import { createMaterialTopTabNavigator, createAppContainer } from "react-navigation";
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { MainTab, MixedViewTab, BlockViewTab } from "./Tabs/index";
-import BleService from '../../../communication/BleService';
+import RobotProxy from '../../../robot/RobotProxy';
 import { speeds, add, remove_all, set_update_speeds_callback } from '../../../Stores/SpeedsStore';
 import { set_update_device_name_callback, device_name, update_device_name, loops } from "../../../Stores/SettingsStore";
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper'
 import { SinglePickerMaterialDialog } from "react-native-material-dialog";
-
 
 export default class Programming extends Component {
     state = {
@@ -34,17 +33,86 @@ export default class Programming extends Component {
 
     constructor(props) {
         super(props);
-
         set_update_device_name_callback((name) => { this.setState({ device_name: name }); });
         set_update_speeds_callback((speeds) => { this.setState({ speeds: speeds }); });
     }
 
-    speed_padding(speed) {
-        if (speed !== 0)
-            speed = parseInt((speed * 2.55)); // 0-70 no reaction, therefore 255 -> 185 (speed * 1.85)+70
-        speed = String(speed);
-        while (speed.length < 3) { speed = "0" + speed; }
-        return speed
+    // handles responses from the robot
+    handleResponse(response) {
+        console.log("Response: " + response)
+        if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
+            // speed values from beam
+            let read_speeds = response.trim().split(',');
+            let speed_l = (read_speeds[0] / 2.55);
+            let speed_r = (read_speeds[1] / 2.55); // (read_speeds[1]/1.85)-70
+            if (speed_l < 0)
+                speed_l = 0;
+            if (speed_r < 0)
+                speed_r = 0;
+            add({ left: parseInt(speed_l), right: parseInt(speed_r) })
+        }
+        if (response.trim().toLowerCase() === ',,,,') {
+            // finished beam
+            this.setState({ is_learning: false });
+            Alert.alert("Download", 'Anweisungen erfolgreich von Roboter heruntergeladen!');
+            this.setState({
+                remaining_btns_disabled: false,
+                stop_btn_disabled: true
+            });
+        }
+        if (response.trim().toLowerCase() === '_sr_') {
+            this.setState({
+                is_learning: false,
+                remaining_btns_disabled: false,
+                stop_btn_disabled: true,
+                loop_counter: 0
+            });
+        }
+        if (this.state.is_learning) {
+            if (response.trim().toLowerCase() === 'full') {
+                // done learning
+                Alert.alert("Aufzeichnen", 'Erfolgreich aufgezeichnet und auf dem Roboter gespeichert!');
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true
+                });
+            }
+        } else {
+            if (response.trim().toLowerCase() === 'full') {
+                // done uploading
+                Alert.alert("Upload", 'Alle Anweisungen erfolgreich auf Roboter geladen!');
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true
+                });
+            } else if (response.trim().toLowerCase() === '_end') {
+                // done driving
+                if (this.state.loop_counter === loops) {
+                    Alert.alert("Fahren", 'Anweisungen abgearbeitet, Fahrt erfolgreich abgeschlossen!');
+                    this.setState({
+                        remaining_btns_disabled: false,
+                        stop_btn_disabled: true,
+                        loop_counter: 0
+                    });
+                } else {
+                    RobotProxy.go()
+                    this.setState({
+                        loop_counter: this.state.loop_counter + 1
+                    });
+                }
+            }
+        }
+    }
+
+    // handles messages from the communcation system
+    handleCommunicationMessages(name) {
+        update_device_name({ device: name.substr(name.length - 5) });
+        this.setState({
+            visible: false,
+            device: name,
+            remaining_btns_disabled: false,
+            stop_btn_disabled: true
+        });
     }
 
     render() {
@@ -56,89 +124,32 @@ export default class Programming extends Component {
                     visible={this.state.visible}
                     onCancel={() => this.setState({ visible: false })}
                     onOk={result => {
-                        this.setState({ 
-                            remaining_btns_disabled: false,
-                            stop_btn_disabled: false,
+                        this.setState({
                             visible: false
                         });
                         update_device_name({ device: 'Verbinden...' })
-                        let device = result.selectedItem.label;
-                        BleService.setActDevice(device);
-                        BleService.connectToActDevice((response) => {
-                            console.log("JL Response: " + response)
-                            // responseHandler
-                            if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
-                                // speed values from beam
-                                let read_speeds = response.trim().split(',');
-                                let speed_l = (read_speeds[0] / 2.55);
-                                let speed_r = (read_speeds[1] / 2.55); // (read_speeds[1]/1.85)-70
-                                if (speed_l < 0)
-                                    speed_l = 0;
-                                if (speed_r < 0)
-                                    speed_r = 0;
-                                add({ left: parseInt(speed_l), right: parseInt(speed_r) })
-                            }
-
-                            if (response.trim().toLowerCase() === ',,,,') {
-                                // finished beam
-                                this.setState({ is_learning: false });
-                                Alert.alert("Download", 'Anweisungen erfolgreich von Roboter heruntergeladen!');
+                        let deviceName = result.selectedItem.label;
+                        RobotProxy.setRobot(deviceName);
+                        RobotProxy.connect(
+                            // callback for all messages from the robot
+                            (response) => {
+                                this.handleResponse(response);
+                            },
+                            // callback if communication is established successfully
+                            (robot) => {
+                                this.handleCommunicationMessages(robot.name);
+                            },
+                            // handle all errors
+                            (error) => {
+                                console.log("Error: " + error);
+                                update_device_name({ device: 'Keine Verbindung' })
                                 this.setState({
-                                    remaining_btns_disabled: false,
+                                    remaining_btns_disabled: true,
                                     stop_btn_disabled: true
                                 });
-                            }
-
-                            if (response.trim().toLowerCase() === '_sr_')
-                                this.setState({ is_learning: false });
-
-                            if (this.state.is_learning) {
-                                if (response.trim().toLowerCase() === 'full') {
-                                    // done learning
-                                    Alert.alert("Aufzeichnen", 'Erfolgreich aufgezeichnet und auf dem Roboter gespeichert!');
-                                    this.setState({
-                                        remaining_btns_disabled: false,
-                                        stop_btn_disabled: true
-                                    });
-                                }
-                            } else {
-                                if (response.trim().toLowerCase() === 'full') {
-                                    // done uploading
-                                    Alert.alert("Upload", 'Alle Anweisungen erfolgreich auf Roboter geladen!');
-                                    this.setState({
-                                        remaining_btns_disabled: false,
-                                        stop_btn_disabled: true
-                                    });
-                                } else if (response.trim().toLowerCase() === '_end') {
-                                    // done driving
-                                    if (this.state.loop_counter === loops) {
-                                        Alert.alert("Fahren", 'Anweisungen abgearbeitet, Fahrt erfolgreich abgeschlossen!');
-                                        this.setState({
-                                            remaining_btns_disabled: false,
-                                            stop_btn_disabled: true,
-                                            loop_counter: 0
-                                        });
-                                    } else {
-                                        BleService.sendCommandToActDevice('G');
-                                        this.setState({
-                                            loop_counter: this.state.loop_counter + 1
-                                        });
-                                    }
-                                }
-                            }
-                        }, () => {
-                            // messageHandler
-                            update_device_name({ device: device.substr(device.length - 5) });
-                            this.setState({
-                                visible: false,
-                                device: device,
-                                remaining_btns_disabled: false,
-                                stop_btn_disabled: true
+                                RobotProxy.disconnect();
+                                Alert.alert("Error", 'Error beim Verbindungsaufbau');
                             });
-                        }, () => {
-                            // errorHandler
-                            Alert.alert("errorHandler", 'error trying to connect');
-                        });
                     }}
                     colorAccent="#9c27b0"
                 />
@@ -155,33 +166,29 @@ export default class Programming extends Component {
                     <Appbar.Action icon="stop" size={32}
                         disabled={this.state.stop_btn_disabled}
                         onPress={() => {
-                            this.setState({
-                                remaining_btns_disabled: false,
-                                stop_btn_disabled: true
-                            });
-                            BleService.sendCommandToActDevice('S')
+                            RobotProxy.stop();
                         }} />
-                    <Appbar.Action icon="play-arrow" size={32}
+                    <Appbar.Action icon="play-arrow"
+                        size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
                                 remaining_btns_disabled: true,
-                                stop_btn_disabled: false
+                                stop_btn_disabled: false,
+                                loop_counter: this.state.loop_counter + 1
                             });
-                            BleService.sendCommandToActDevice('G');
-                            this.setState({ loop_counter: this.state.loop_counter + 1 });
+                            RobotProxy.go();
                         }} />
-                    <Appbar.Action icon="fiber-manual-record" size={32}
+                    <Appbar.Action icon="fiber-manual-record"
+                        size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
                                 remaining_btns_disabled: true,
-                                stop_btn_disabled: false
+                                stop_btn_disabled: false,
+                                is_learning: true
                             });
-                            BleService.sendCommandToActDevice('F');
-                            BleService.sendCommandToActDevice('D' + loops);
-                            BleService.sendCommandToActDevice('L');
-                            this.setState({ is_learning: true });
+                            RobotProxy.record(loops);
                         }} />
                     <Appbar.Action icon="fast-forward"
                         size={32}
@@ -191,7 +198,7 @@ export default class Programming extends Component {
                                 remaining_btns_disabled: true,
                                 stop_btn_disabled: false
                             });
-                            BleService.sendCommandToActDevice('R')
+                            RobotProxy.run();
                         }} />
                     <Appbar.Action icon="file-download"
                         size={32}
@@ -199,52 +206,47 @@ export default class Programming extends Component {
                         onPress={() => {
                             this.setState({
                                 remaining_btns_disabled: true,
-                                stop_btn_disabled: false
+                                stop_btn_disabled: true
                             });
                             remove_all();
-                            BleService.sendCommandToActDevice('B');
+                            RobotProxy.download();
                         }} />
                     <Appbar.Action icon="file-upload"
                         size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({ remaining_btns_disabled: true });
-                            BleService.sendCommandToActDevice('F');
-                            BleService.sendCommandToActDevice('D' + this.state.speeds.length);
-                            BleService.sendCommandToActDevice('I1');
-                            BleService.sendCommandToActDevice('E');
-                            for (let i = 0; i < this.state.speeds.length; i++) {
-                                let item = this.state.speeds[i];
-                                let speed = this.speed_padding(item.left) + ',' + this.speed_padding(item.right) + 'xx';
-                                BleService.sendCommandToActDevice(speed);
-                            }
-                            BleService.sendCommandToActDevice(',,,,');
+                            RobotProxy.upload(this.state.speeds);
                         }} />
-                    <Appbar.Action icon={(this.state.device) ? "bluetooth-connected" : "bluetooth"} style={{ position: 'absolute', right: 0 }} size={32} onPress={() => {
-                        if (BleService.getActDevice()) {
-                            BleService.shutdown();
-                            update_device_name({ device: 'Keine Verbindung' })
-                            this.setState({
-                                device: undefined,
-                                remaining_btns_disabled: true,
-                                stop_btn_disabled: true
-                            })
-                        } else {
-                            this.setState({
-                                devices: []
-                            });
-                            BleService.scanningForDevices((error) => {
-                                console.log(error);
-                            }, (device) => {
-                                let devices = this.state.devices;
-                                devices.push(device);
-                                this.setState({ devices: devices });
-                            });
-                            setTimeout(() => {
-                                this.setState({ visible: true });
-                            }, 500);
-                        }
-                    }} />
+                    <Appbar.Action icon={(this.state.device) ? "bluetooth-connected" : "bluetooth"} style={{ position: 'absolute', right: 0 }}
+                        size={32}
+                        onPress={() => {
+                            if (RobotProxy.isConnected) {
+                                RobotProxy.disconnect();
+                                update_device_name({ device: 'Keine Verbindung' })
+                                this.setState({
+                                    device: undefined,
+                                    remaining_btns_disabled: true,
+                                    stop_btn_disabled: true
+                                })
+                            } else {
+                                // init scanning for robots over ble
+                                this.setState({
+                                    devices: []
+                                });
+                                RobotProxy.scanningForRobots((error) => {
+                                    console.log(error);
+                                }, (device) => {
+                                    // collect all devices found and publish them in the Dialog
+                                    let devices = this.state.devices;
+                                    devices.push(device);
+                                    this.setState({ devices: devices });
+                                });
+                                setTimeout(() => {
+                                    this.setState({ visible: true });
+                                }, 500);
+                            }
+                        }} />
                 </Appbar>
             </View>
         );
