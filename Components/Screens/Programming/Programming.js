@@ -43,8 +43,8 @@ export default class Programming extends Component {
         if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
             // speed values from beam
             let read_speeds = response.trim().split(',');
-            let speed_l = (read_speeds[0] / 2.55);
-            let speed_r = (read_speeds[1] / 2.55); // (read_speeds[1]/1.85)-70
+            let speed_l = read_speeds[0] / 2.55 + 0.5;
+            let speed_r = read_speeds[1] / 2.55 + 0.5;
             if (speed_l < 0)
                 speed_l = 0;
             if (speed_r < 0)

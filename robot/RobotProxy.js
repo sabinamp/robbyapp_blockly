@@ -66,7 +66,7 @@ class RobotProxy {
 
     speed_padding(speed) {
         if (speed !== 0)
-            speed = parseInt((speed * 2.55)); // 0-70 no reaction, therefore 255 -> 185 (speed * 1.85)+70
+            speed = parseInt(speed * 2.55 + 0.5);
         speed = String(speed);
         while (speed.length < 3) { speed = "0" + speed; }
         return speed
