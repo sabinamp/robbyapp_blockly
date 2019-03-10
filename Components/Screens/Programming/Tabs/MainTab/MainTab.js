@@ -1,6 +1,5 @@
 import { Component } from "react";
 import { StyleSheet, View, Text, KeyboardAvoidingView, FlatList, TouchableOpacity, Platform } from "react-native";
-import { Col, Grid, Row } from "react-native-easy-grid";
 import SpeedInput from "./SpeedInput";
 import { FAB } from "react-native-paper";
 import React from "react";
@@ -16,8 +15,6 @@ import {
     //storeSpeeds,
     //retrieveSpeeds
 } from '../../../../../Stores/SpeedsStore'
-import { ifIphoneX } from "react-native-iphone-x-helper";
-import { set_update_device_name_callback } from "../../../../../Stores/SettingsStore";
 
 export default class MainTab extends Component {
     state = {
@@ -110,7 +107,7 @@ export default class MainTab extends Component {
                                         this.setState({ selected: parseInt(index) })
                                     }
                                 }}>
-                                <Row key={index} style={parseInt(index) == this.state.selected ? styles.selected_row : styles.row}>
+                                <View key={index} style={parseInt(index) == this.state.selected ? styles.selected_row : styles.row}>
                                     <SpeedInput
                                         onchange={(text) => this.onChangeLeft(index, text)}
                                         val={item.left}
@@ -127,7 +124,7 @@ export default class MainTab extends Component {
                                         val2={100 - item.right}
                                         col2={'#FAFAFA'}
                                     />
-                                </Row>
+                                </View>
                             </TouchableOpacity>
                         )}
                     />
@@ -167,9 +164,18 @@ const styles = StyleSheet.create({
         margin: 5
     },
     row: {
-        backgroundColor: '#FAFAFA',
         height: 60,
         margin: 0,
+        width: '100%', 
+        flexDirection: 'row'
+    },
+    selected_row: {
+        height: 60,
+        margin: 0,
+        width: '100%', 
+        flexDirection: 'row',
+        borderColor: '#d6d6d6',
+        borderWidth: 1.0
     },
     view: {
         marginBottom: 55,
@@ -198,12 +204,6 @@ const styles = StyleSheet.create({
         margin: 16,
         right: 45,
         bottom: 18
-    },
-    selected_row: {
-        backgroundColor: '#9c27b060',
-        height: 60,
-        margin: 0,
-        opacity: 0.8,
     }
 });
 
