@@ -87,22 +87,16 @@ export default class MainTab extends Component {
                 </View>
         }
 
-        const keyboardVerticalOffset = Platform.OS === 'ios' ? 100 : 0
+        const keyboardVerticalOffset = Platform.OS === 'ios' ? 150 : -80
+        const behavior = Platform.OS === 'ios' ? 'padding' : 'position'
         return (
             <View style={[styles.view, { flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
-                <Row style={{
-                    alignText: 'center', height: '8%', width: '100%', margin: '8%',
-                    ...ifIphoneX({
-                        marginBottom: '-8%'
-                    }, {
-                            marginBottom: '-5%'
-                        })
-                }}>
+                <View style={{paddingTop: 30, width: '100%', flexDirection: 'row'}}>
                     <Text style={{ flex: 1, textAlign: 'center' }}>L</Text>
                     <Text style={{ flex: 2, textAlign: 'center' }}>Geschwindigkeit von 0-100</Text>
                     <Text style={{ flex: 1, textAlign: 'center' }}>R</Text>
-                </Row>
-                <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={keyboardVerticalOffset}>
+                </View>
+                <KeyboardAvoidingView behavior={behavior} keyboardVerticalOffset={keyboardVerticalOffset}>
                     <FlatList
                         data={this.state.speeds}
                         extraData={this.state}
@@ -164,7 +158,6 @@ export default class MainTab extends Component {
     }
 
 }
-
 
 const styles = StyleSheet.create({
     col: {
