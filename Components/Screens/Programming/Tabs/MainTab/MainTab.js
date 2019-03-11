@@ -88,7 +88,7 @@ export default class MainTab extends Component {
         const behavior = Platform.OS === 'ios' ? 'padding' : 'position'
         return (
             <View style={[styles.view, { flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
-                <View style={{paddingTop: 30, width: '100%', flexDirection: 'row'}}>
+                <View style={{marginTop: 30, height: 20, width: '100%', flexDirection: 'row'}}>
                     <Text style={{ flex: 1, textAlign: 'center' }}>L</Text>
                     <Text style={{ flex: 2, textAlign: 'center' }}>Geschwindigkeit von 0-100</Text>
                     <Text style={{ flex: 1, textAlign: 'center' }}>R</Text>

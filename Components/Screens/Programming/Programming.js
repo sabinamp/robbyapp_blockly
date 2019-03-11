@@ -153,7 +153,7 @@ export default class Programming extends Component {
                     }}
                     colorAccent="#9c27b0"
                 />
-                <Appbar style={styles.top}>
+                <Appbar>
                     <Appbar.Action icon="menu" size={32} onPress={() => this.props.navigation.openDrawer()} />
                     <Appbar.Content style={{ position: 'absolute', left: 40 }} title="Explore-it" size={32} />
                     <Appbar.Content style={{ position: 'absolute', right: 0 }}
@@ -298,7 +298,6 @@ const TabContainer = createAppContainer(TabNavigator);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#9c27b0',
         ...ifIphoneX({
             paddingTop: getStatusBarHeight() + 10,
         }, {
