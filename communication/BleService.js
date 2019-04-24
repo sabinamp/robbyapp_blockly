@@ -5,13 +5,15 @@ import { Buffer } from 'buffer';
 // These values are unique to explore-it devices.
 const serviceUUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
 const characteristicsUUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
-const transactionId = '1';
+const transactionId = 'exploreit';
 
 class BleService {
     constructor() {
         this.devices = null;
         this.actDevice = null;
         this.manager = new BleManager();
+        this.subscription = null;
+        this.c = 0;
     }
 
     async requestLocationPermission() {
@@ -88,20 +90,26 @@ class BleService {
             .then((device) => {
                 // Returns connected device object if successful.
                 console.log('BleService monitor - ' + device.name);
+                // Workaround for multiple listeners
+                this.c++;
+                let localc = this.c;
                 // Monitor value changes of a ble characteristic.
-                device.monitorCharacteristicForService(
+                this.subscription = device.monitorCharacteristicForService(
                     serviceUUID,
                     characteristicsUUID,
                     // Add listener to handle responses from connected device
                     (error, characteristic) => {
-                        if (error) {
-                            throw error
+                        if (this.c == localc){
+                            if (error) {
+                                throw error
+                            }
+                            response = Buffer.from(characteristic.value, 'base64').toString('ascii');
+                            responseHandler(response);
                         }
-                        response = Buffer.from(characteristic.value, 'base64').toString('ascii');
-                        responseHandler(response);
                     },
                     transactionId);
                 console.log('BleService connection done - ' + device.name);
+                console.log("transaction id: " + transactionId)
                 connectionHandler(device);
             })
             .catch((error) => {
@@ -131,10 +139,10 @@ class BleService {
     }
 
     shutdown() {
-        this.actDevice.cancelConnection();
         this.manager.cancelTransaction(transactionId);
+        this.subscription.remove();
+        this.actDevice.cancelConnection().then(device => console.log('BleService disconnected') ).catch(error => console.log('Failed with ' + error) );
         this.actDevice = null;
-        console.log('BleService disconnected');
     }
 }
 
