@@ -19,7 +19,7 @@ import {
 export default class MainTab extends Component {
     state = {
         speeds: speeds,
-        selected: -1 // id of currently selected row
+        selected: -1, // id of currently selected row
     };
 
     componentWillMount() {
@@ -49,6 +49,7 @@ export default class MainTab extends Component {
             select_controls =
                 <View>
                     <FAB
+                        disabled={speeds.length <= 1}
                         style={styles.delete}
                         icon="delete"
                         onPress={() => {
