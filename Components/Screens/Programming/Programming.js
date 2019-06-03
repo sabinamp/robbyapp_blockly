@@ -17,7 +17,6 @@ export default class Programming extends Component {
         visible: false,
         device: undefined,
         devices: [],
-        is_learning: false,
         speeds: speeds,
         stop_btn_disabled: true,
         remaining_btns_disabled: true,
@@ -37,6 +36,17 @@ export default class Programming extends Component {
         set_update_speeds_callback((speeds) => { this.setState({ speeds: speeds }); });
     }
 
+    // handles messages from the communcation system
+    handleCommunicationMessages(name) {
+        update_device_name({ device: name.substr(name.length - 5) });
+        this.setState({
+            visible: false,
+            device: name,
+            remaining_btns_disabled: false,
+            stop_btn_disabled: true
+        });
+    }
+    /*
     // handles responses from the robot
     handleResponse(response) {
         console.log("Response: " + response)
@@ -102,17 +112,64 @@ export default class Programming extends Component {
                 }
             }
         }
-    }
+    }*/
 
-    // handles messages from the communcation system
-    handleCommunicationMessages(name) {
-        update_device_name({ device: name.substr(name.length - 5) });
-        this.setState({
-            visible: false,
-            device: name,
-            remaining_btns_disabled: false,
-            stop_btn_disabled: true
-        });
+    handleResponse(res) {
+        switch (res.type) {
+            case 'speedLine':
+                console.log(res)
+                add({ left: Math.trunc(res.left), right: Math.trunc(res.right)})
+                break
+            case 'finishedBeam':
+                console.log(res)
+                this.setState({                    
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true, 
+                    is_learning: false
+                });
+                Alert.alert("Download", 'Anweisungen erfolgreich von Roboter heruntergeladen!');
+                break
+            case 'finishedDriving':
+                console.log(res)
+                Alert.alert("Fahren", 'Anweisungen abgearbeitet, Fahrt erfolgreich abgeschlossen!');
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true,
+                    loop_counter: 0
+                });
+                break
+            case 'stop':
+                console.log(res)
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true,
+                    is_learning: false,
+                    loop_counter: 0
+                });
+                break
+            case 'learningCheck':
+                console.log(res)
+                if (this.state.is_learning) {
+                    Alert.alert("Aufzeichnen", 'Erfolgreich aufgezeichnet und auf dem Roboter gespeichert!');
+                    this.setState({
+                        remaining_btns_disabled: false,
+                        stop_btn_disabled: true,
+                        is_learning: false
+                    });
+                    break
+                } else {                    
+                    Alert.alert("Upload", 'Alle Anweisungen erfolgreich auf Roboter geladen!');
+                    this.setState({
+                        remaining_btns_disabled: false,
+                        stop_btn_disabled: true
+                    });
+                    break
+                }
+            default:
+                console.log(res)
+                break
+              
+        }
     }
 
     render() {
@@ -133,9 +190,9 @@ export default class Programming extends Component {
                         RobotProxy.connect(
                             // callback for all messages from the robot
                             (response) => {
-                                this.handleResponse(response);
+                                this.handleResponse(response)
                             },
-                            // callback if communication is established successfully
+                            // callback if communication is established successfully                            
                             (robot) => {
                                 this.handleCommunicationMessages(robot.name);
                             },

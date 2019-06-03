@@ -1,8 +1,14 @@
 import BleService from '../communication/BleService'
+import { throwStatement } from '@babel/types';
 
 class RobotProxy {
     constructor() {
         isConnected = false;
+    }
+
+    state = {
+        is_learning: false,
+        loop_counter: 0
     }
 
     setRobot(robotDevice) {
@@ -19,7 +25,10 @@ class RobotProxy {
 
     connect(responseHandler, connectionHandler, errorHandler) {
         BleService.connectToActDevice(
-            responseHandler,
+            (response) => {
+                const res = this.prepareResponse(response);
+                responseHandler(res);
+            },
             (robot) => {
                 this.isConnected = true;
                 connectionHandler(robot);
@@ -58,6 +67,7 @@ class RobotProxy {
 
     record(loops) {
         if (this.isConnected) {
+            this.is_learning = true;
             BleService.sendCommandToActDevice('F');
             BleService.sendCommandToActDevice('D' + loops);
             BleService.sendCommandToActDevice('L');
@@ -94,6 +104,52 @@ class RobotProxy {
             BleService.sendCommandToActDevice('B');
         }
     }
+
+    // handles responses from the robot
+    prepareResponse(response) {
+        console.log("Response: " + response)
+        if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
+            let read_speeds = response.trim().split(',');
+            let speed_l = read_speeds[0] / 2.55 + 0.5;
+            let speed_r = read_speeds[1] / 2.55 + 0.5;
+            if (speed_l < 0)
+                speed_l = 0;
+            if (speed_r < 0)
+                speed_r = 0;
+            var res = {type: 'speedLine', left: speed_l, right: speed_r}
+            console.log(res)
+            return res 
+        } else {
+            response = response.trim().toLowerCase() 
+            switch (response) {     
+                case (',,,,'): 
+                    // finished beam
+                    var res = {type: 'finishedBeam'}
+                    console.log(res)
+                    return res           
+                case ('_sr_'): 
+                    // stop
+                    var res = {type: 'stop'}
+                    this.is_learning = false
+                    console.log(res)
+                    return res           
+                case ('full'): 
+                    // done learning
+                    var res = {type: 'learningCheck'}
+                    console.log(res)
+                    return res          
+                case ('_end'): 
+                    // done driving
+                    var res = {type: 'finishedDriving'}
+                    console.log(res)
+                    return res              
+                default:
+                    var res = {type: response}
+                    console.log(res)
+                    return res   
+            }   
+        }    
+    }   
 }
 
 // Singleton pattern in ES6
