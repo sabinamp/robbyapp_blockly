@@ -6,11 +6,6 @@ class RobotProxy {
         isConnected = false;
     }
 
-    state = {
-        is_learning: false,
-        loop_counter: 0
-    }
-
     setRobot(robotDevice) {
         if (! this.isConnected) {
             BleService.setActDevice(robotDevice);

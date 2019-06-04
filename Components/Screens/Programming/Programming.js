@@ -101,8 +101,7 @@ export default class Programming extends Component {
                 }
             default:
                 console.log(res)
-                break
-              
+                break            
         }
     }
 
