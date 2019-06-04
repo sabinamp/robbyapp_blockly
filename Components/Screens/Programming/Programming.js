@@ -9,11 +9,12 @@ import { speeds, add, remove_all, set_update_speeds_callback } from '../../../St
 import { set_update_device_name_callback, device_name, update_device_name, loops } from "../../../Stores/SettingsStore";
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper'
 import { SinglePickerMaterialDialog } from "react-native-material-dialog";
+import i18n from '../../../locales/i18n'
 
 export default class Programming extends Component {
     state = {
         device_name: device_name,
-        sub_title: 'Gerät',
+        sub_title: i18n.t('Programming.device'),
         visible: false,
         device: undefined,
         devices: [],
@@ -46,73 +47,6 @@ export default class Programming extends Component {
             stop_btn_disabled: true
         });
     }
-    /*
-    // handles responses from the robot
-    handleResponse(response) {
-        console.log("Response: " + response)
-        if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
-            // speed values from beam
-            let read_speeds = response.trim().split(',');
-            let speed_l = read_speeds[0] / 2.55 + 0.5;
-            let speed_r = read_speeds[1] / 2.55 + 0.5;
-            if (speed_l < 0)
-                speed_l = 0;
-            if (speed_r < 0)
-                speed_r = 0;
-            add({ left: parseInt(speed_l), right: parseInt(speed_r) })
-        }
-        if (response.trim().toLowerCase() === ',,,,') {
-            // finished beam
-            this.setState({ is_learning: false });
-            Alert.alert("Download", 'Anweisungen erfolgreich von Roboter heruntergeladen!');
-            this.setState({
-                remaining_btns_disabled: false,
-                stop_btn_disabled: true
-            });
-        }
-        if (response.trim().toLowerCase() === '_sr_') {
-            this.setState({
-                is_learning: false,
-                remaining_btns_disabled: false,
-                stop_btn_disabled: true,
-                loop_counter: 0
-            });
-        }
-        if (this.state.is_learning) {
-            if (response.trim().toLowerCase() === 'full') {
-                // done learning
-                Alert.alert("Aufzeichnen", 'Erfolgreich aufgezeichnet und auf dem Roboter gespeichert!');
-                this.setState({
-                    remaining_btns_disabled: false,
-                    stop_btn_disabled: true
-                });
-            }
-        } else {
-            if (response.trim().toLowerCase() === 'full') {
-                // done uploading
-                Alert.alert("Upload", 'Alle Anweisungen erfolgreich auf Roboter geladen!');
-                this.setState({
-                    remaining_btns_disabled: false,
-                    stop_btn_disabled: true
-                });
-            } else if (response.trim().toLowerCase() === '_end') {
-                // done driving
-                if (this.state.loop_counter === loops) {
-                    Alert.alert("Fahren", 'Anweisungen abgearbeitet, Fahrt erfolgreich abgeschlossen!');
-                    this.setState({
-                        remaining_btns_disabled: false,
-                        stop_btn_disabled: true,
-                        loop_counter: 0
-                    });
-                } else {
-                    RobotProxy.go()
-                    this.setState({
-                        loop_counter: this.state.loop_counter + 1
-                    });
-                }
-            }
-        }
-    }*/
 
     handleResponse(res) {
         switch (res.type) {
@@ -127,11 +61,11 @@ export default class Programming extends Component {
                     stop_btn_disabled: true, 
                     is_learning: false
                 });
-                Alert.alert("Download", 'Anweisungen erfolgreich von Roboter heruntergeladen!');
+                Alert.alert(i18n.t('Programming.download'), i18n.t('Programming.downloadMessage'));
                 break
             case 'finishedDriving':
                 console.log(res)
-                Alert.alert("Fahren", 'Anweisungen abgearbeitet, Fahrt erfolgreich abgeschlossen!');
+                Alert.alert(i18n.t('Programming.drive'), i18n.t('Programming.driveMessage'));
                 this.setState({
                     remaining_btns_disabled: false,
                     stop_btn_disabled: true,
@@ -150,7 +84,7 @@ export default class Programming extends Component {
             case 'learningCheck':
                 console.log(res)
                 if (this.state.is_learning) {
-                    Alert.alert("Aufzeichnen", 'Erfolgreich aufgezeichnet und auf dem Roboter gespeichert!');
+                    Alert.alert(i18n.t('Programming.upload'), i18n.t('recordMessage'));
                     this.setState({
                         remaining_btns_disabled: false,
                         stop_btn_disabled: true,
@@ -158,7 +92,7 @@ export default class Programming extends Component {
                     });
                     break
                 } else {                    
-                    Alert.alert("Upload", 'Alle Anweisungen erfolgreich auf Roboter geladen!');
+                    Alert.alert(i18n.t('Programming.upload'), i18n.t('Programming.uploadMessage'));
                     this.setState({
                         remaining_btns_disabled: false,
                         stop_btn_disabled: true
@@ -176,7 +110,7 @@ export default class Programming extends Component {
         return (
             <View style={[styles.container]}>
                 <SinglePickerMaterialDialog
-                    title={'Wähle Gerät'}
+                    title={i18n.t('Programming.chooseDevice')}
                     items={this.state.devices.map((row, index) => ({ value: index, label: row }))}
                     visible={this.state.visible}
                     onCancel={() => this.setState({ visible: false })}
@@ -184,7 +118,7 @@ export default class Programming extends Component {
                         this.setState({
                             visible: false
                         });
-                        update_device_name({ device: 'Verbinden...' })
+                        update_device_name({ device: i18n.t('Programming.connecting')})
                         let deviceName = result.selectedItem.label;
                         RobotProxy.setRobot(deviceName);
                         RobotProxy.connect(
@@ -199,13 +133,13 @@ export default class Programming extends Component {
                             // handle all errors
                             (error) => {
                                 console.log("Error: " + error);
-                                update_device_name({ device: 'Keine Verbindung' })
+                                update_device_name({ device: i18n.t('Programming.noConnection')})
                                 this.setState({
                                     remaining_btns_disabled: true,
                                     stop_btn_disabled: true
                                 });
                                 RobotProxy.disconnect();
-                                Alert.alert("Error", 'Error beim Verbindungsaufbau');
+                                Alert.alert("Error", i18n.t('Programming.connectionError'));
                             });
                     }}
                     colorAccent="#9c27b0"
@@ -280,7 +214,7 @@ export default class Programming extends Component {
                         onPress={() => {
                             if (RobotProxy.isConnected) {
                                 RobotProxy.disconnect();
-                                update_device_name({ device: 'Keine Verbindung' })
+                                update_device_name({ device: i18n.t('Programming.noConnection')})
                                 this.setState({
                                     device: undefined,
                                     remaining_btns_disabled: true,
