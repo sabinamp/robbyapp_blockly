@@ -18,91 +18,15 @@ export default class Programming extends Component {
         visible: false,
         device: undefined,
         devices: [],
-        is_learning: false,
         speeds: speeds,
         stop_btn_disabled: true,
-        remaining_btns_disabled: true,
-        btn_disabled_states: {
-            play: false,
-            record: false,
-            run: false,
-            download: false,
-            upload: false
-        },
-        loop_counter: 0
+        remaining_btns_disabled: true
     };
 
     constructor(props) {
         super(props);
         set_update_device_name_callback((name) => { this.setState({ device_name: name }); });
         set_update_speeds_callback((speeds) => { this.setState({ speeds: speeds }); });
-    }
-
-    // handles responses from the robot
-    handleResponse(response) {
-        console.log("Response: " + response)
-        if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
-            // speed values from beam
-            let read_speeds = response.trim().split(',');
-            let speed_l = read_speeds[0] / 2.55 + 0.5;
-            let speed_r = read_speeds[1] / 2.55 + 0.5;
-            if (speed_l < 0)
-                speed_l = 0;
-            if (speed_r < 0)
-                speed_r = 0;
-            add({ left: parseInt(speed_l), right: parseInt(speed_r) })
-        }
-        if (response.trim().toLowerCase() === ',,,,') {
-            // finished beam
-            this.setState({ is_learning: false });
-            Alert.alert(i18n.t("Programming.download"), i18n.t('Programming.downloadMessage'));
-            this.setState({
-                remaining_btns_disabled: false,
-                stop_btn_disabled: true
-            });
-        }
-        if (response.trim().toLowerCase() === '_sr_') {
-            this.setState({
-                is_learning: false,
-                remaining_btns_disabled: false,
-                stop_btn_disabled: true,
-                loop_counter: 0
-            });
-        }
-        if (this.state.is_learning) {
-            if (response.trim().toLowerCase() === 'full') {
-                // done learning
-                Alert.alert(i18n.t("Programming.record"), i18n.t('Programming.recordMessage'));
-                this.setState({
-                    remaining_btns_disabled: false,
-                    stop_btn_disabled: true
-                });
-            }
-        } else {
-            if (response.trim().toLowerCase() === 'full') {
-                // done uploading
-                Alert.alert(i18n.t("Programming.upload"), i18n.t('Programming.uploadMessage'));
-                this.setState({
-                    remaining_btns_disabled: false,
-                    stop_btn_disabled: true
-                });
-            } else if (response.trim().toLowerCase() === '_end') {
-                // done driving
-                if (this.state.loop_counter === loops) {
-                    Alert.alert(i18n.t("Programming.drive"), i18n.t('Programming.driveMessage'));
-                    this.setState({
-                        remaining_btns_disabled: false,
-                        stop_btn_disabled: true,
-                        loop_counter: 0
-                    });
-                } else {
-                    RobotProxy.go()
-                    this.setState({
-                        loop_counter: this.state.loop_counter + 1
-                    });
-                }
-            }
-        }
     }
 
     // handles messages from the communcation system
@@ -114,6 +38,50 @@ export default class Programming extends Component {
             remaining_btns_disabled: false,
             stop_btn_disabled: true
         });
+    }
+
+    handleResponse(res) {
+        switch (res.type) {
+            case 'speedLine':
+                add({ left: res.left, right: res.right })
+                break
+            case 'finishedDownload':
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true
+                });
+                Alert.alert(i18n.t('Programming.download'), i18n.t('Programming.downloadMessage'));
+                break
+            case 'finishedDriving':
+                Alert.alert(i18n.t('Programming.drive'), i18n.t('Programming.driveMessage'));
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true,
+                });
+                break
+            case 'stop':
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true,
+                });
+                break
+            case 'finishedLearning':
+                Alert.alert(i18n.t('Programming.upload'), i18n.t('Programming.recordMessage'));
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true
+                });
+                break
+			case 'finishedUpload':
+                Alert.alert(i18n.t('Programming.upload'), i18n.t('Programming.uploadMessage'));
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true
+                });
+                break
+            default:
+                break
+        }
     }
 
     render() {
@@ -134,7 +102,7 @@ export default class Programming extends Component {
                         RobotProxy.connect(
                             // callback for all messages from the robot
                             (response) => {
-                                this.handleResponse(response);
+                                this.handleResponse(response)
                             },
                             // callback if communication is established successfully
                             (robot) => {
@@ -174,20 +142,18 @@ export default class Programming extends Component {
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
-                                remaining_btns_disabled: true,
                                 stop_btn_disabled: false,
-                                loop_counter: this.state.loop_counter + 1
+                                remaining_btns_disabled: true
                             });
-                            RobotProxy.go();
+                            RobotProxy.go(loops);
                         }} />
                     <Appbar.Action icon="fiber-manual-record"
                         size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
-                                remaining_btns_disabled: true,
                                 stop_btn_disabled: false,
-                                is_learning: true
+                                remaining_btns_disabled: true
                             });
                             RobotProxy.record(loops);
                         }} />
@@ -196,8 +162,8 @@ export default class Programming extends Component {
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
-                                remaining_btns_disabled: true,
-                                stop_btn_disabled: false
+                                stop_btn_disabled: false,
+                                remaining_btns_disabled: true
                             });
                             RobotProxy.run();
                         }} />
@@ -206,8 +172,8 @@ export default class Programming extends Component {
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
-                                remaining_btns_disabled: true,
-                                stop_btn_disabled: true
+                                stop_btn_disabled: true,
+                                remaining_btns_disabled: true
                             });
                             remove_all();
                             RobotProxy.download();
@@ -216,7 +182,10 @@ export default class Programming extends Component {
                         size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
-                            this.setState({ remaining_btns_disabled: true });
+                            this.setState({
+								stop_btn_disabled: true,
+                                remaining_btns_disabled: true
+							});
                             RobotProxy.upload(this.state.speeds);
                         }} />
                     <Appbar.Action icon={(this.state.device) ? "bluetooth-connected" : "bluetooth"} style={{ position: 'absolute', right: 0 }}

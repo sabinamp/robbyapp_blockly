@@ -1,8 +1,11 @@
 import BleService from '../communication/BleService'
+import { throwStatement } from '@babel/types';
 
 class RobotProxy {
     constructor() {
         isConnected = false;
+        isLearning = false;
+        loops = 0;
     }
 
     setRobot(robotDevice) {
@@ -19,7 +22,9 @@ class RobotProxy {
 
     connect(responseHandler, connectionHandler, errorHandler) {
         BleService.connectToActDevice(
-            responseHandler,
+            (response) => {
+                this.handleResponse(responseHandler, response);
+            },
             (robot) => {
                 this.isConnected = true;
                 connectionHandler(robot);
@@ -43,8 +48,9 @@ class RobotProxy {
     }
 
     // Starts robot
-    go() {
+    go(loops) {
         if (this.isConnected) {
+            this.loops = loops;
             BleService.sendCommandToActDevice('G');
         }
     }
@@ -52,12 +58,15 @@ class RobotProxy {
     // Stops robot
     stop() {
         if (this.isConnected) {
+            this.isLearning = false;
+            this.loops = 0;
             BleService.sendCommandToActDevice('S');
         }
     }
 
     record(loops) {
         if (this.isConnected) {
+            this.isLearning = true;
             BleService.sendCommandToActDevice('F');
             BleService.sendCommandToActDevice('D' + loops);
             BleService.sendCommandToActDevice('L');
@@ -91,9 +100,59 @@ class RobotProxy {
     // Downloads speed entries from the robot to the app
     download() {
         if (this.isConnected) {
+            this.isLearning = false;
             BleService.sendCommandToActDevice('B');
         }
     }
+
+    // handles responses from the robot
+    handleResponse(responseHandler, response) {
+        console.log("Response: " + response)
+        if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
+            let read_speeds = response.trim().split(',');
+            let speed_l = read_speeds[0] / 2.55 + 0.5;
+            let speed_r = read_speeds[1] / 2.55 + 0.5;
+            if (speed_l < 0)
+                speed_l = 0;
+            if (speed_r < 0)
+                speed_r = 0;
+            var res = {type: 'speedLine', left: Math.trunc(speed_l), right: Math.trunc(speed_r)}
+            responseHandler(res)
+        } else {
+            response = response.trim().toLowerCase() 
+            switch (response) {     
+                case (',,,,'):
+                    // finished download (beam)
+                    responseHandler({type: 'finishedDownload'});
+                    break;
+                case ('_sr_'):
+                    // stop
+                    this.isLearning = false;
+                    responseHandler({type: 'stop'});
+                    break;
+                case ('full'):
+                    // finished learning or uploading
+                    var res = {type: this.isLearning ? 'finishedLearning' : 'finishedUpload' };
+                    responseHandler(res);
+                    break;
+                case ('_end'): 
+                    // done driving
+                    var res = {type: 'finishedDriving'};
+                    console.log("loops: " + this.loops)
+                    this.loops--;
+                    if(this.loops > 0) {
+                        BleService.sendCommandToActDevice('G');
+                    } else {
+                        responseHandler(res);
+                    }
+                    break;
+                default:
+                    var res = {type: response};
+                    console.log("ignored: " + response);
+                    break;
+            }   
+        }    
+    }   
 }
 
 // Singleton pattern in ES6
