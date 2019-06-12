@@ -138,7 +138,6 @@ class RobotProxy {
                 case ('_end'): 
                     // done driving
                     var res = {type: 'finishedDriving'};
-                    console.log("loops: " + this.loops)
                     this.loops--;
                     if(this.loops > 0) {
                         BleService.sendCommandToActDevice('G');
@@ -147,8 +146,6 @@ class RobotProxy {
                     }
                     break;
                 default:
-                    var res = {type: response};
-                    console.log("ignored: " + response);
                     break;
             }   
         }    
