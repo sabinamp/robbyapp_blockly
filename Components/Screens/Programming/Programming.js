@@ -20,15 +20,7 @@ export default class Programming extends Component {
         devices: [],
         speeds: speeds,
         stop_btn_disabled: true,
-        remaining_btns_disabled: true,
-        btn_disabled_states: {
-            play: false,
-            record: false,
-            run: false,
-            download: false,
-            upload: false
-        },
-        loop_counter: 0
+        remaining_btns_disabled: true
     };
 
     constructor(props) {
@@ -51,57 +43,44 @@ export default class Programming extends Component {
     handleResponse(res) {
         switch (res.type) {
             case 'speedLine':
-                console.log(res)
-                add({ left: Math.trunc(res.left), right: Math.trunc(res.right)})
+                add({ left: res.left, right: res.right })
                 break
-            case 'finishedBeam':
-                console.log(res)
-                this.setState({                    
+            case 'finishedDownload':
+                this.setState({
                     remaining_btns_disabled: false,
-                    stop_btn_disabled: true, 
-                    is_learning: false
+                    stop_btn_disabled: true
                 });
                 Alert.alert(i18n.t('Programming.download'), i18n.t('Programming.downloadMessage'));
                 break
             case 'finishedDriving':
-                console.log(res)
                 Alert.alert(i18n.t('Programming.drive'), i18n.t('Programming.driveMessage'));
                 this.setState({
                     remaining_btns_disabled: false,
                     stop_btn_disabled: true,
-                    loop_counter: 0
                 });
                 break
             case 'stop':
-                console.log(res)
                 this.setState({
                     remaining_btns_disabled: false,
                     stop_btn_disabled: true,
-                    is_learning: false,
-                    loop_counter: 0
                 });
                 break
-            case 'learningCheck':
-                console.log(res)
-                if (this.state.is_learning) {
-                    Alert.alert(i18n.t('Programming.upload'), i18n.t('recordMessage'));
-                    this.setState({
-                        remaining_btns_disabled: false,
-                        stop_btn_disabled: true,
-                        is_learning: false
-                    });
-                    break
-                } else {                    
-                    Alert.alert(i18n.t('Programming.upload'), i18n.t('Programming.uploadMessage'));
-                    this.setState({
-                        remaining_btns_disabled: false,
-                        stop_btn_disabled: true
-                    });
-                    break
-                }
+            case 'finishedLearning':
+                Alert.alert(i18n.t('Programming.upload'), i18n.t('Programming.recordMessage'));
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true
+                });
+                break
+			case 'finishedUpload':
+                Alert.alert(i18n.t('Programming.upload'), i18n.t('Programming.uploadMessage'));
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true
+                });
+                break
             default:
-                console.log(res)
-                break            
+                break
         }
     }
 
@@ -125,7 +104,7 @@ export default class Programming extends Component {
                             (response) => {
                                 this.handleResponse(response)
                             },
-                            // callback if communication is established successfully                            
+                            // callback if communication is established successfully
                             (robot) => {
                                 this.handleCommunicationMessages(robot.name);
                             },
@@ -163,20 +142,18 @@ export default class Programming extends Component {
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
-                                remaining_btns_disabled: true,
                                 stop_btn_disabled: false,
-                                loop_counter: this.state.loop_counter + 1
+                                remaining_btns_disabled: true
                             });
-                            RobotProxy.go();
+                            RobotProxy.go(loops);
                         }} />
                     <Appbar.Action icon="fiber-manual-record"
                         size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
-                                remaining_btns_disabled: true,
                                 stop_btn_disabled: false,
-                                is_learning: true
+                                remaining_btns_disabled: true
                             });
                             RobotProxy.record(loops);
                         }} />
@@ -185,8 +162,8 @@ export default class Programming extends Component {
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
-                                remaining_btns_disabled: true,
-                                stop_btn_disabled: false
+                                stop_btn_disabled: false,
+                                remaining_btns_disabled: true
                             });
                             RobotProxy.run();
                         }} />
@@ -195,8 +172,8 @@ export default class Programming extends Component {
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
                             this.setState({
-                                remaining_btns_disabled: true,
-                                stop_btn_disabled: true
+                                stop_btn_disabled: true,
+                                remaining_btns_disabled: true
                             });
                             remove_all();
                             RobotProxy.download();
@@ -205,7 +182,10 @@ export default class Programming extends Component {
                         size={32}
                         disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
-                            this.setState({ remaining_btns_disabled: true });
+                            this.setState({
+								stop_btn_disabled: true,
+                                remaining_btns_disabled: true
+							});
                             RobotProxy.upload(this.state.speeds);
                         }} />
                     <Appbar.Action icon={(this.state.device) ? "bluetooth-connected" : "bluetooth"} style={{ position: 'absolute', right: 0 }}
