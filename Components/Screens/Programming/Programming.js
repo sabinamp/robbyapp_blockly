@@ -157,7 +157,7 @@ export default class Programming extends Component {
                                 stop_btn_disabled: false,
                                 remaining_btns_disabled: true
                             });
-                            RobotProxy.go(loops);
+                            RobotProxy.run();
                         }} />
                     <Appbar.Action icon="fiber-manual-record"
                         size={32}
@@ -177,7 +177,7 @@ export default class Programming extends Component {
                                 stop_btn_disabled: false,
                                 remaining_btns_disabled: true
                             });
-                            RobotProxy.run();
+                            RobotProxy.go(loops);
                         }} />
                     <Appbar.Action icon="file-download"
                         size={32}
