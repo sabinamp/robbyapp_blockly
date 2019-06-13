@@ -101,8 +101,8 @@ android {
         applicationId "com.robbyapp"
         minSdkVersion 18
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
-        versionName "0.5.9"
+        versionCode 13
+        versionName "0.5.10"
     }
     splits {
         abi {
