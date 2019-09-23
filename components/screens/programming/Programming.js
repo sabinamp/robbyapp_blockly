@@ -8,7 +8,7 @@ import RobotProxy from '../../../communication/RobotProxy';
 import { speeds, add, removeAll, addSpeedChangeListener } from '../../../stores/SpeedsStore';
 import { addDeviceNameChangeListener, getDeviceName, setDeviceName, setConnected, getLoopCounter, getDuration, getInterval, setInterval } from "../../../stores/SettingsStore";
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper'
-import { SinglePickerMaterialDialog } from "react-native-material-dialog";
+import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog'
 import i18n from '../../../locales/i18n'
 
 export default class Programming extends Component {
@@ -93,7 +93,7 @@ export default class Programming extends Component {
             <View style={[styles.container]}>
                 <SinglePickerMaterialDialog
                     title = {i18n.t('Programming.chooseDevice')}
-                    items = {this.state.devices.map((row, index) => ({ value: index, label: row }))}
+                    items = {this.state.devices.map((row, index) => ({key: index.toString(), label: row, selected: false }))}
                     visible = {this.state.visible}
                     onCancel = {
                         () => {
@@ -110,9 +110,9 @@ export default class Programming extends Component {
                             });
                             RobotProxy.stopScanning();
 
-                            if(result.selectedItem) {
+                            if(result.selectedLabel) {
                                 setDeviceName({ device: i18n.t('Programming.connecting')})
-                                let deviceName = result.selectedItem.label;
+                                let deviceName = result.selectedLabel;
                                 RobotProxy.setRobot(deviceName);
                                 RobotProxy.connect(
                                     // callback for all messages from the robot
@@ -232,7 +232,7 @@ export default class Programming extends Component {
                                     // collect all devices found and publish them in the Dialog
                                     let devices = this.state.devices;
                                     devices.push(device);
-                                    this.setState({ devices: devices });
+                                    this.setState({ devices: devices.sort() });
                                 });
                                 setTimeout(() => {
                                     this.setState({ visible: true });
