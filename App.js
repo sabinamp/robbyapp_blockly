@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { createDrawerNavigator, createAppContainer, DrawerItems} from "react-navigation";
 import Programming from "./components/screens/programming/Programming";
 import Settings from "./components/screens/settings/Settings";
