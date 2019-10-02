@@ -2,10 +2,13 @@ import BleService from './BleService'
 // import { throwStatement } from '@babel/types';
 
 class RobotProxy {
+    isLearning: boolean;
+    loops: number;
     constructor() {
         isConnected = false;
-        isLearning = false;
-        loops = 0;
+        this.isLearning = false;
+        
+        this.loops = 0;
         version = 0;
     }
 
