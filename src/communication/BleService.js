@@ -32,6 +32,7 @@ class BleService {
             }
         } catch (err) {
             console.warn(err);
+            return false;
         }
     }
 
