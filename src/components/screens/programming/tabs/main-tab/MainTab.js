@@ -1,5 +1,14 @@
 import {Component} from 'react';
-import {StyleSheet, View, Text, KeyboardAvoidingView, FlatList, TouchableOpacity, Platform} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Text,
+    KeyboardAvoidingView,
+    FlatList,
+    TouchableOpacity,
+    Platform,
+    ScrollView,
+} from 'react-native';
 import SpeedInput from './SpeedInput';
 import {FAB} from 'react-native-paper';
 import React from 'react';
@@ -15,7 +24,6 @@ import {
     //storeSpeeds,
     //retrieveSpeeds
 } from '../../../../../stores/SpeedsStore';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import i18n from '../../../../../../resources/locales/i18n';
 
 export default class MainTab extends Component {
@@ -24,7 +32,7 @@ export default class MainTab extends Component {
         selected: -1, // id of currently selected row
     };
 
-    componentWillMount() {
+    componentDidMount() {
         //retrieveSpeeds;
     }
 
@@ -102,7 +110,7 @@ export default class MainTab extends Component {
                     <Text style={{flex: 2, textAlign: 'center'}}>{i18n.t('MainTab.speed')}</Text>
                     <Text style={{flex: 1, textAlign: 'center'}}>R</Text>
                 </View>
-                <KeyboardAwareScrollView
+                <ScrollView
                     style={{backgroundColor: 'white'}}
                     resetScrollToCoords={{x: 0, y: 0}}
                     scrollEnabled={true}
@@ -142,7 +150,7 @@ export default class MainTab extends Component {
                             </TouchableOpacity>
                         )}
                     />
-                </KeyboardAwareScrollView>
+                </ScrollView>
                 <View>
                     <FAB
                         style={styles.fab}
