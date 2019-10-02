@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
+    "version": "react-native-version",
     "test": "jest",
     "lint": "eslint .",
     "postinstall": "npx jetify"
