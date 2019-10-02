@@ -24,7 +24,6 @@ import {
     //storeSpeeds,
     //retrieveSpeeds
 } from '../../../../../stores/SpeedsStore';
-// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import i18n from '../../../../../../resources/locales/i18n';
 
 export default class MainTab extends Component {
