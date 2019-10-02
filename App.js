@@ -10,7 +10,7 @@ import {
 } from './src/stores/SettingsStore';
 import {View, Text, StyleSheet} from 'react-native';
 import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
-// import {version} from './package.json';
+import {version} from './package.json';
 import i18n from './resources/locales/i18n';
 
 export default class App extends Component {
@@ -68,7 +68,7 @@ class DrawerContent extends Component {
                             color: 'white',
                             fontWeight: 'bold',
                         }}>
-                        /*v{version}*/
+                        v{version}
                     </Text>
                 </View>
             </View>
