@@ -1,6 +1,6 @@
 import Realm from 'realm';
 import {ProgramModel} from '../model/DatabaseModels';
-import {Program, SCHEMA_VERSION, Tuple} from './RobbyDatabaseModel';
+import {Program, SCHEMA_VERSION, Tuple} from './RobbyDatabaseSchema';
 
 
 let repository = new Realm({
