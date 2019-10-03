@@ -12,6 +12,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
 // import {version} from './package.json';
 import i18n from './resources/locales/i18n';
+import RobbyDatabaseAction from './src/database/RobbyDatabaseActions';
 
 export default class App extends Component {
     state = {device: undefined};
@@ -68,7 +69,7 @@ class DrawerContent extends Component {
                             color: 'white',
                             fontWeight: 'bold',
                         }}>
-                        v{version}
+                        v{RobbyDatabaseAction.findOne('sdafsdaf').name}
                     </Text>
                 </View>
             </View>
