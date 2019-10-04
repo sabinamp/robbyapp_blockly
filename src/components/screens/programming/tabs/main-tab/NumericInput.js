@@ -11,7 +11,7 @@ import React from "react";
 export default class NumericInput extends Component {
     // check and convert number to text
     toText(number) {
-        txtValue = '';
+        let txtValue = '';
         if (!isNaN(number)) {
             txtValue = number.toString();
         }

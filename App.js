@@ -69,7 +69,7 @@ class DrawerContent extends Component {
                             color: 'white',
                             fontWeight: 'bold',
                         }}>
-                        v{RobbyDatabaseAction.findOne('sdafsdaf').name}
+                        v{RobbyDatabaseAction.findOne('tschau').name}
                     </Text>
                 </View>
             </View>
