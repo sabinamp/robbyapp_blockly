@@ -25,7 +25,7 @@ function isNotCircular(root, parent, child) {
 
 function isUsed(programToRemove, program) {
     if (program.blocks.includes(programToRemove.id)) {
-        return false;
+        return true;
     }
 }
 
@@ -79,7 +79,7 @@ let RobbyDatabaseAction = {
         }
     },
     delete: function (program) {
-        if (repository.findAll().reduce((acc, p) => {
+        if (!repository.findAll().reduce((acc, p) => {
             acc && isUsed(program, p); // Frage: Reduce bricht selber ab wenn && ein false verknüpft?
         })) {
             try {
