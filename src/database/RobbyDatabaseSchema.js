@@ -30,15 +30,14 @@ class Program extends Realm.Object {
 }
 
 Program = {
-    name: 'Program', // Frage: Kann man den primayKey ändern?
+    name: 'Program',
     primaryKey: 'id',
-    // Ein Programm möchte man ja umbenennen können.
     properties: {
         id: 'int',
         name: {type: 'string', indexed: true},
-        date: 'date',			// Record-Date
+        date: 'date',           // Creation-Date
         primitive: 'bool',      // true => NumberSequence, false => BlockSequence
-        steps: 'Instruction[]',  	// one of them is empty.
+        steps: 'Instruction[]', // either steps or blocks is empty.
         blocks: 'Block[]',
     },
 };
