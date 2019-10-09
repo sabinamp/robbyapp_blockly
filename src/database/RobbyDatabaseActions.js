@@ -13,7 +13,7 @@ let repository = new Realm({
 
 
 /*
-root_id : id of route element
+root_id : id of root element
 child : element which may contains root as a child
 return : true if no child contains root element as child
  */
