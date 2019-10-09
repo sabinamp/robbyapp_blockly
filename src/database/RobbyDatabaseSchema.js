@@ -1,7 +1,7 @@
 import Realm from 'realm';
 
 // Update Schmea_Version when you do any changes to the schema
-const SCHEMA_VERSION = 7;
+const SCHEMA_VERSION = 8;
 
 
 class Instruction extends Realm.Object {

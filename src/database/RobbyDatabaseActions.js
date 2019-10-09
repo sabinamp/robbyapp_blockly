@@ -11,15 +11,17 @@ let repository = new Realm({
     migration: migration,
 });
 
-function isNotCircular(root, parent, child): boolean {
-    if (child.blocks === []) {
-        return true;
-    } else if (child.blocks.includes(root.id)) {
+
+/*
+root_id : id of route element
+child : element which may contains root as a child
+return : true if no child contains root element as child
+ */
+function isNotCircular(root_id, child): boolean {
+    if (child.blocks.includes(root_id)) {
         return false;
     } else {
-        return child.blocks.reduce((acc, b) => {
-            acc && isNotCircular(root, child, b);
-        });
+        return child.blocks.reduce((acc, b) => acc && isNotCircular(root_id, b, true));
     }
 }
 
@@ -41,7 +43,7 @@ let RobbyDatabaseAction = {
     },
     findAllNotCircular: function (program): Program[] {
         return repository.objects('Program').filter(p => {
-            isNotCircular(program, program, p);
+            isNotCircular(program.id, p);
         });
     },
     findAll: function (): Program[] {
