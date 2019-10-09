@@ -20,7 +20,7 @@ function isUsed(program, program_id): boolean {
 
 // Checks whether the given `program` has an indirect reference to the program with the id `program_id`.
 function isUsedRecursive(program, program_id): boolean {
-    return isUsed(program, program_id) || program.blocks.reduce((acc, b) => acc || isUsedRecursive(program_id, b), false);
+    return isUsed(program, program_id) || program.blocks.reduce((acc, p) => acc || isUsedRecursive(p, program_id), false);
 }
 
 let RobbyDatabaseAction = {
@@ -36,7 +36,7 @@ let RobbyDatabaseAction = {
     },
     // returns all programs which can be added to the given program `program` without building a cycle
     findAllNotCircular: function (program): Program[] {
-        return repository.objects('Program').filter(p => ! isUsedRecursive(program.id, p));
+        return repository.objects('Program').filter(p => ! isUsedRecursive(p, program.id));
     },
     findAll: function (): Program[] {
         return repository.objects('Program');
