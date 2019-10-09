@@ -42,9 +42,7 @@ let RobbyDatabaseAction = {
         }
     },
     findAllNotCircular: function (program): Program[] {
-        return repository.objects('Program').filter(p => {
-            isNotCircular(program.id, p);
-        });
+        return repository.objects('Program').filter(p => isNotCircular(program.id, p));
     },
     findAll: function (): Program[] {
         return repository.objects('Program');
@@ -83,9 +81,7 @@ let RobbyDatabaseAction = {
         }
     },
     delete: function (program): boolean {
-        if (!repository.findAll().reduce((acc, p) => {
-            acc && isUsed(program, p);
-        })) {
+        if (!repository.findAll().reduce((acc, p) => acc && isUsed(program, p))) {
             try {
                 repository.write(() => {
                     repository.delete(program);
