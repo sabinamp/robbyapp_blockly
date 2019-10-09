@@ -12,23 +12,16 @@ let repository = new Realm({
 });
 
 
-/*
-root_id : id of root element
-child : element which may contains root as a child
-return : true if no child contains root element as child
- */
-function isNotCircular(root_id, child): boolean {
-    if (child.blocks.includes(root_id)) {
-        return false;
-    } else {
-        return child.blocks.reduce((acc, b) => acc && isNotCircular(root_id, b, true));
-    }
+// Checks whether the given `program` has a direct reference to the program with the id `program_id`.
+// This function is used to test whether the program `program_id` can be deleted.
+function isUsed(program, program_id): boolean {
+    return program.blocks.includes(program_id);
 }
 
-function isUsed(programToRemove, program): boolean {
-    return program.blocks.includes(programToRemove.id);
+// Checks whether the given `program` has an indirect reference to the program with the id `program_id`.
+function isUsedRecursive(program, program_id): boolean {
+    return isUsed(program, program_id) || program.blocks.reduce((acc, b) => acc || isUsedRecursive(program_id, b), false);
 }
-
 
 let RobbyDatabaseAction = {
     add: function (program): boolean {
@@ -41,8 +34,9 @@ let RobbyDatabaseAction = {
             return false;
         }
     },
+    // returns all programs which can be added to the given program `program` without building a cycle
     findAllNotCircular: function (program): Program[] {
-        return repository.objects('Program').filter(p => isNotCircular(program.id, p));
+        return repository.objects('Program').filter(p => ! isUsedRecursive(program.id, p));
     },
     findAll: function (): Program[] {
         return repository.objects('Program');
@@ -81,7 +75,7 @@ let RobbyDatabaseAction = {
         }
     },
     delete: function (program): boolean {
-        if (!repository.findAll().reduce((acc, p) => acc && isUsed(program, p))) {
+        if (!repository.findAll().reduce((acc, p) => acc && isUsed(p, program.id), true)) {
             try {
                 repository.write(() => {
                     repository.delete(program);
