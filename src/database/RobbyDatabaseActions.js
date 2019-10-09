@@ -1,17 +1,17 @@
 import Realm from 'realm';
 import {ProgramModel, Speeds} from '../model/DatabaseModels';
-import {Program, Block, InstructionSCHEMA_VERSION, migration} from './RobbyDatabaseSchema';
+import {Program, Instruction, Block, SCHEMA_VERSION, migration} from './RobbyDatabaseSchema';
 import {updateRightSpeed} from '../stores/SpeedsStore';
 
 
 let repository = new Realm({
     path: 'robbyRealm.realm',
-    schema: [Program, Tuple],
+    schema: [Program, Instruction, Block],
     schemaVersion: SCHEMA_VERSION,
     migration: migration,
 });
 
-function isNotCircular(root, parent, child) {
+function isNotCircular(root, parent, child): boolean {
     if (child.blocks === []) {
         return true;
     } else if (child.blocks.includes(root.id)) {
@@ -23,35 +23,37 @@ function isNotCircular(root, parent, child) {
     }
 }
 
-function isUsed(programToRemove, program) {
-    if (program.blocks.includes(programToRemove.id)) {
-        return true;
-    }
+function isUsed(programToRemove, program): boolean {
+    return program.blocks.includes(programToRemove.id);
 }
 
 
 let RobbyDatabaseAction = {
-    add: function (program) {
-        repository.write(() => {
-            repository.create('Program', program);
-        });
+    add: function (program): boolean {
+        try {
+            repository.write(() => {
+                repository.create('Program', program);
+            });
+            return true;
+        } catch (e) {
+            return false;
+        }
     },
-    findAllNotCircular: function (program) {
+    findAllNotCircular: function (program): Program[] {
         return repository.objects('Program').filter(p => {
             isNotCircular(program, program, p);
         });
     },
-    findAll: function () {
+    findAll: function (): Program[] {
         return repository.objects('Program');
     },
-    findOne: function (name) {
-        return repository.objectForPrimaryKey('Program', name);
+    findOne: function (name): Program {
+        return repository.objects('Program').filtered('name = $0', name);
     },
-    save: function (program) {
+    save: function (program): boolean {
         try {
             repository.write(() => {
                 repository.create('Program', program);
-                // a.elements.push(new Tuple(1, 2));
             });
             return true;
         } catch (e) {
@@ -68,7 +70,7 @@ let RobbyDatabaseAction = {
             return RobbyDatabaseAction.save(program);
         }
     },
-    update: function (program) {
+    update: function (program): boolean {
         try {
             repository.write(() => {
                 repository.create('Program', program, true);
@@ -78,9 +80,9 @@ let RobbyDatabaseAction = {
             return false;
         }
     },
-    delete: function (program) {
+    delete: function (program): boolean {
         if (!repository.findAll().reduce((acc, p) => {
-            acc && isUsed(program, p); // Frage: Reduce bricht selber ab wenn && ein false verknüpft?
+            acc && isUsed(program, p);
         })) {
             try {
                 repository.write(() => {
@@ -91,6 +93,7 @@ let RobbyDatabaseAction = {
                 return false;
             }
         }
+        return false;
     },
 };
 
