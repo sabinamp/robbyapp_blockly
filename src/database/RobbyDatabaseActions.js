@@ -2,7 +2,7 @@ import Realm from 'realm';
 import {ProgramModel, Speeds} from '../model/DatabaseModels';
 import {Program, Instruction, Block, SCHEMA_VERSION, migration} from './RobbyDatabaseSchema';
 import {updateRightSpeed} from '../stores/SpeedsStore';
-
+import uuidv4 from 'uuid/v4';
 
 let repository = new Realm({
     path: 'robbyRealm.realm',
@@ -23,46 +23,57 @@ function isUsedRecursive(program, program_id): boolean {
     return isUsed(program, program_id) || program.blocks.reduce((acc, p) => acc || isUsedRecursive(p, program_id), false);
 }
 
+function nameIsUnused(name) {
+    return repository.findOne(name) === [];
+}
+
 let RobbyDatabaseAction = {
     add: function (program): boolean {
-        try {
-            repository.write(() => {
-                repository.create('Program', program);
-            });
-            return true;
-        } catch (e) {
-            return false;
+        if (nameIsUnused(program.name)) {
+            try {
+                repository.write(() => {
+                    repository.create('Program', program);
+                });
+                return 'Saved to Database';
+            } catch (e) {
+                return 'Error while saving: ' + e;
+            }
         }
+        return 'Name is already taken';
     },
     // returns all programs which can be added to the given program `program` without building a cycle
-    findAllNotCircular: function (program): Program[] {
-        return repository.objects('Program').filter(p => ! isUsedRecursive(p, program.id));
+    findAllNotCircular: function (program): ProgramModel[] {
+        return repository.objects('Program').filter(p => !isUsedRecursive(p, program.id)).map(elem => ProgramModel.fromDatabase(elem));
     },
-    findAll: function (): Program[] {
-        return repository.objects('Program');
+    findAll: function (): ProgramModel[] {
+        return repository.objects('Program').map(elem => ProgramModel.fromDatabase(elem));
     },
     findOne: function (name): Program {
         return repository.objects('Program').filtered('name = $0', name);
     },
     save: function (program): boolean {
-        try {
-            repository.write(() => {
-                repository.create('Program', program);
-            });
-            return true;
-        } catch (e) {
-            return false;
+        if (nameIsUnused(program.name)) {
+            try {
+                repository.write(() => {
+                    repository.create('Program', program);
+                });
+                return true;
+            } catch (e) {
+                return false;
+            }
         }
+        return 'Name is already taken';
     },
     duplicate: function (program, newName = '') {
-        if (newName === '') {
-            let i = 1;
-            while (RobbyDatabaseAction.findOne(program.name + i) !== undefined) {
-                i++;
-            }
+        let i = 1;
+        program.name = newName;
+        program.id = uuidv4();
+        while (!nameIsUnused(program.name)) {
+            i++;
             program.name = program.name + '(' + i + ')';
-            return RobbyDatabaseAction.save(program);
         }
+        return RobbyDatabaseAction.save(program);
+
     },
     update: function (program): boolean {
         try {
@@ -85,7 +96,7 @@ let RobbyDatabaseAction = {
                 return false;
             }
         }
-        return false;
+        return 'Program is used by other program';
     },
 };
 

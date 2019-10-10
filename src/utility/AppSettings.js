@@ -1,11 +1,38 @@
 import {AsyncStorage} from 'react-native';
+import {ProgramModel} from '../model/DatabaseModels';
 
 
 const loadAppSettings = async () => {
+    let settings = {language: 'en', duration: 1};
     try {
-        await AsyncStorage.getItem()
+        AsyncStorage.multiGet(['language', 'duration']).then(res => {
+            settings.language = res[0][1];
+            settings.duration = res[1][1];
+            return settings;
+        });
     } catch (error) {
-        // Error retrieving data
-        console.log(error.message);
+        return e;
     }
 };
+
+const setSettings = async (key, value) => {
+    try {
+        AsyncStorage.setItem(key, value).then(res => true);
+    } catch (e) {
+        return e;
+    }
+};
+
+const loadActiveProgram = async () => {
+    try {
+        AsyncStorage.getItem('ActiveProgram').then(res => {
+            return ProgramModel.fromDatabase(JSON.parse(res));
+        });
+    } catch (e) {
+        return e;
+    }
+};
+
+function saveActiveProgram(program) {
+    setSettings('ActiveProgram', JSON.stringify(program));
+}
