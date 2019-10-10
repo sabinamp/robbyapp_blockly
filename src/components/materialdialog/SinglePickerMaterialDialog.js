@@ -8,7 +8,7 @@ import MaterialDialog from './MaterialDialog';
 import colors from './colors';
 
 export default class SinglePickerMaterialDialog extends PureComponent {
-  
+
   state = {
     selectedLabel: undefined,
     visible: false
@@ -30,7 +30,6 @@ export default class SinglePickerMaterialDialog extends PureComponent {
                 selectedLabel: undefined
             };
         }
-
         // Return null to indicate no change to state.
         return null;
     }

@@ -15,20 +15,22 @@ let repository = new Realm({
 // Checks whether the given `program` has a direct reference to the program with the id `program_id`.
 // This function is used to test whether the program `program_id` can be deleted.
 function isUsed(program, program_id): boolean {
-    return program.blocks.includes(program_id);
+    console.log('comparing: ' + program_id + ' and ' + program.blocks.map(block => block.ref) + 'resutl : ' + program.blocks.map(block => block.ref).includes(program_id));
+    return program.blocks.map(block => block.ref).includes(program_id);
 }
 
 // Checks whether the given `program` has an indirect reference to the program with the id `program_id`.
 function isUsedRecursive(program, program_id): boolean {
+
     return isUsed(program, program_id) || program.blocks.reduce((acc, p) => acc || isUsedRecursive(p, program_id), false);
 }
 
 function nameIsUnused(name) {
-    return repository.findOne(name) === [];
+    return Object.keys(RobbyDatabaseAction.findOne(name)).length === 0;
 }
 
 let RobbyDatabaseAction = {
-    add: function (program): boolean {
+    add: function (program): String {
         if (nameIsUnused(program.name)) {
             try {
                 repository.write(() => {
@@ -48,21 +50,8 @@ let RobbyDatabaseAction = {
     findAll: function (): ProgramModel[] {
         return repository.objects('Program').map(elem => ProgramModel.fromDatabase(elem));
     },
-    findOne: function (name): Program {
-        return repository.objects('Program').filtered('name = $0', name);
-    },
-    save: function (program): boolean {
-        if (nameIsUnused(program.name)) {
-            try {
-                repository.write(() => {
-                    repository.create('Program', program);
-                });
-                return true;
-            } catch (e) {
-                return false;
-            }
-        }
-        return 'Name is already taken';
+    findOne: function (name): ProgramModel {
+        return repository.objects('Program').filtered('name = $0 LIMIT(1)', name);
     },
     duplicate: function (program, newName = '') {
         let i = 1;
@@ -75,7 +64,7 @@ let RobbyDatabaseAction = {
         return RobbyDatabaseAction.save(program);
 
     },
-    update: function (program): boolean {
+    save: function (program): boolean {
         try {
             repository.write(() => {
                 repository.create('Program', program, true);
@@ -85,22 +74,32 @@ let RobbyDatabaseAction = {
             return false;
         }
     },
-    delete: function (program): boolean {
-        if (!repository.findAll().reduce((acc, p) => acc && isUsed(p, program.id), true)) {
+    delete: function (program_id): String {
+        console.log(!RobbyDatabaseAction.findAll().reduce((acc, p) => acc && isUsed(p, program_id), false));
+        if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false)) {
             try {
                 repository.write(() => {
-                    repository.delete(program);
+                    repository.delete(repository.objectForPrimaryKey('Program', program_id));
                 });
-                return true;
+                return 'Deleted Object: ' + program_id;
             } catch (e) {
-                return false;
+                return e;
             }
         }
         return 'Program is used by other program';
     },
-};
+    force_delete: function (program_id): String {
+        try {
+            repository.write(() => {
+                repository.delete(repository.objectForPrimaryKey('Program', program_id));
+            });
+            return 'Deleted Object: ' + program_id;
+        } catch (e) {
+            return e;
+        }
+    },
 
-// RobbyDatabaseAction.save(new Program('hallo2'));
+};
 
 
 module.exports = RobbyDatabaseAction;

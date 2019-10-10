@@ -2,7 +2,7 @@
 import Realm from 'realm';
 
 // Update Schmea_Version when you do any changes to the schema
-const SCHEMA_VERSION = 9;
+const SCHEMA_VERSION = 11;
 
 
 class Instruction extends Realm.Object {
@@ -22,7 +22,7 @@ class Block extends Realm.Object {
 Block = {
     name: 'Block',
     properties: {
-        ref: 'int', // reference to a program
+        ref: 'string', // reference to a program
         rep: {type: 'int', default: 1},
     },
 };
@@ -36,8 +36,8 @@ Program = {
     properties: {
         id: 'string',
         name: {type: 'string', indexed: true},
+        primitive: 'bool',              // true => NumberSequence, false => BlockSequence
         date: 'date',			// Creation-Date
-        primitive: 'bool',      // true => NumberSequence, false => BlockSequence
         steps: 'Instruction[]',  	//  either steps or blocks is empty.
         blocks: 'Block[]',
     },
