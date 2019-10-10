@@ -15,7 +15,7 @@ let repository = new Realm({
 // Checks whether the given `program` has a direct reference to the program with the id `program_id`.
 // This function is used to test whether the program `program_id` can be deleted.
 function isUsed(program, program_id): boolean {
-    console.log('comparing: ' + program_id + ' and ' + program.blocks.map(block => block.ref) + 'resutl : ' + program.blocks.map(block => block.ref).includes(program_id));
+    // console.log('comparing: ' + program_id + ' and ' + program.blocks.map(block => block.ref) + 'resutl : ' + program.blocks.map(block => block.ref).includes(program_id));
     return program.blocks.map(block => block.ref).includes(program_id);
 }
 
@@ -74,9 +74,9 @@ let RobbyDatabaseAction = {
             return false;
         }
     },
-    delete: function (program_id): String {
-        console.log(!RobbyDatabaseAction.findAll().reduce((acc, p) => acc && isUsed(p, program_id), false));
-        if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false)) {
+    delete: function (program_id, force = false): String {
+        // console.log('delte : ' + !RobbyDatabaseAction.findAll().reduce((acc, p) => acc && isUsed(p, program_id), false) || !force);
+        if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false) || force) {
             try {
                 repository.write(() => {
                     repository.delete(repository.objectForPrimaryKey('Program', program_id));
@@ -88,17 +88,6 @@ let RobbyDatabaseAction = {
         }
         return 'Program is used by other program';
     },
-    force_delete: function (program_id): String {
-        try {
-            repository.write(() => {
-                repository.delete(repository.objectForPrimaryKey('Program', program_id));
-            });
-            return 'Deleted Object: ' + program_id;
-        } catch (e) {
-            return e;
-        }
-    },
-
 };
 
 

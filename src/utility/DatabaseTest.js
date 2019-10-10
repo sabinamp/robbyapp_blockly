@@ -10,7 +10,7 @@ export class DatabaseTest {
         let l = RobbyDatabaseAction.findAll().length;
         console.log('clearing database, amount of entries: ' + l);
         RobbyDatabaseAction.findAll().forEach(elem => {
-            RobbyDatabaseAction.force_delete(elem.id);
+            RobbyDatabaseAction.delete(elem.id);
         });
         l = RobbyDatabaseAction.findAll().length;
         console.log('Database has this amount of entries: ' + l);
