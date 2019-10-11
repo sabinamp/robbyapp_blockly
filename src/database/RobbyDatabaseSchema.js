@@ -1,14 +1,13 @@
-
 import Realm from 'realm';
 
 // Update Schmea_Version when you do any changes to the schema
 const SCHEMA_VERSION = 11;
 
 
-class Instruction extends Realm.Object {
+class InstructionSchema extends Realm.Object {
 }
 
-Instruction = {
+InstructionSchema = {
     name: 'Instruction',
     properties: {
         left: 'int',
@@ -16,10 +15,10 @@ Instruction = {
     },
 };
 
-class Block extends Realm.Object {
+class BlockSchema extends Realm.Object {
 }
 
-Block = {
+BlockSchema = {
     name: 'Block',
     properties: {
         ref: 'string', // reference to a program
@@ -27,10 +26,10 @@ Block = {
     },
 };
 
-class Program extends Realm.Object {
+class ProgramSchema extends Realm.Object {
 }
 
-Program = {
+ProgramSchema = {
     name: 'Program',
     primaryKey: 'id',
     properties: {
@@ -56,4 +55,10 @@ const migration = (oldRealm, newRealm) => {
     }
 };
 
-module.exports = {Program, Block, Instruction, SCHEMA_VERSION, migration};
+module.exports = {
+    ProgramSchema: ProgramSchema,
+    BlockSchema: BlockSchema,
+    InstructionSchema: InstructionSchema,
+    SCHEMA_VERSION,
+    migration,
+};

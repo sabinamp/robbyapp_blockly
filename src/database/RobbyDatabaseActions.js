@@ -1,12 +1,12 @@
 import Realm from 'realm';
-import {ProgramModel, Speeds} from '../model/DatabaseModels';
-import {Program, Instruction, Block, SCHEMA_VERSION, migration} from './RobbyDatabaseSchema';
+import {Block, Program, Speeds} from '../model/DatabaseModels';
+import {ProgramSchema, InstructionSchema, BlockSchema, SCHEMA_VERSION, migration} from './RobbyDatabaseSchema';
 import {updateRightSpeed} from '../stores/SpeedsStore';
 import uuidv4 from 'uuid/v4';
 
 let repository = new Realm({
     path: 'robbyRealm.realm',
-    schema: [Program, Instruction, Block],
+    schema: [ProgramSchema, InstructionSchema, BlockSchema],
     schemaVersion: SCHEMA_VERSION,
     migration: migration,
 });
@@ -15,18 +15,16 @@ let repository = new Realm({
 // Checks whether the given `program` has a direct reference to the program with the id `program_id`.
 // This function is used to test whether the program `program_id` can be deleted.
 function isUsed(program, program_id): boolean {
-    // console.log('comparing: ' + program_id + ' and ' + program.blocks.map(block => block.ref) + 'resutl : ' + program.blocks.map(block => block.ref).includes(program_id));
     return program.blocks.map(block => block.ref).includes(program_id);
 }
 
 // Checks whether the given `program` has an indirect reference to the program with the id `program_id`.
 function isUsedRecursive(program, program_id): boolean {
-
-    return isUsed(program, program_id) || program.blocks.reduce((acc, p) => acc || isUsedRecursive(p, program_id), false);
+    return program_id === program.id || isUsed(program, program_id) || program.blocks.reduce((acc, p) => acc || isUsedRecursive(RobbyDatabaseAction.findOneByPK(Block.fromDatabase(p).ref), program_id), false);
 }
 
 function nameIsUnused(name) {
-    return Object.keys(RobbyDatabaseAction.findOne(name)).length === 0;
+    return (RobbyDatabaseAction.findOne(name) === undefined);
 }
 
 let RobbyDatabaseAction = {
@@ -44,34 +42,47 @@ let RobbyDatabaseAction = {
         return 'Name is already taken';
     },
     // returns all programs which can be added to the given program `program` without building a cycle
-    findAllNotCircular: function (program): ProgramModel[] {
-        return repository.objects('Program').filter(p => !isUsedRecursive(p, program.id)).map(elem => ProgramModel.fromDatabase(elem));
+    findAllNotCircular: function (program): Program[] {
+        // console.log(program);
+        return repository.objects('Program').map(elem => Program.fromDatabase(elem)).filter(p => !isUsedRecursive(p, program.id));
     },
-    findAll: function (): ProgramModel[] {
-        return repository.objects('Program').map(elem => ProgramModel.fromDatabase(elem));
+    findAll: function (): Program[] {
+        return repository.objects('Program').map(elem => Program.fromDatabase(elem));
     },
-    findOne: function (name): ProgramModel {
-        return repository.objects('Program').filtered('name = $0 LIMIT(1)', name);
+    findOne: function (name): Program {
+        return Program.fromDatabase(repository.objects('Program').filtered('name = $0 LIMIT(1)', name)['0']);
+    },
+    findOneByPK: function (pk): Program {
+        return Program.fromDatabase(repository.objectForPrimaryKey('Program', pk));
     },
     duplicate: function (program, newName = '') {
+        const cloneProgram = JSON.parse(JSON.stringify(program));
         let i = 1;
-        program.name = newName;
-        program.id = uuidv4();
-        while (!nameIsUnused(program.name)) {
-            i++;
-            program.name = program.name + '(' + i + ')';
+        try {
+            if (newName === '') {
+                newName = cloneProgram.name;
+            }
+            cloneProgram.name = newName;
+            cloneProgram.id = uuidv4();
+            while (!nameIsUnused(cloneProgram.name)) {
+                cloneProgram.name = newName + '(' + i + ')';
+                i++;
+            }
+            return RobbyDatabaseAction.add(cloneProgram);
+        } catch (e) {
+            return e;
         }
-        return RobbyDatabaseAction.save(program);
-
     },
     save: function (program): boolean {
-        try {
-            repository.write(() => {
-                repository.create('Program', program, true);
-            });
-            return true;
-        } catch (e) {
-            return false;
+        if (!isUsedRecursive(program, program.id)) {
+            try {
+                repository.write(() => {
+                    repository.create('Program', program, true);
+                });
+                return true;
+            } catch (e) {
+                return false;
+            }
         }
     },
     delete: function (program_id, force = false): String {

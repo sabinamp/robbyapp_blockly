@@ -13,7 +13,7 @@ import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
 // import {version} from './package.json';
 import i18n from './resources/locales/i18n';
 import RobbyDatabaseAction from './src/database/RobbyDatabaseActions';
-import {ProgramModel} from './src/model/DatabaseModels';
+import {Program} from './src/model/DatabaseModels';
 import {DatabaseTest} from './src/utility/DatabaseTest';
 
 export default class App extends Component {
@@ -23,8 +23,11 @@ export default class App extends Component {
         BleService.requestLocationPermission();
         let databasetest = new DatabaseTest();
         databasetest.clearDatabase();
+        databasetest.recurive();
+        //databasetest.findOneByPK();
+        // databasetest.updatingEntries();
         // databasetest.createDatabaseEntries();
-        databasetest.creatingDatabaseEntriesWithDependencies();
+        //databasetest.creatingDatabaseEntriesWithDependencies();
         //
     }
 

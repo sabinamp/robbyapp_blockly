@@ -1,5 +1,5 @@
 import {AsyncStorage} from 'react-native';
-import {ProgramModel} from '../model/DatabaseModels';
+import {Program} from '../model/DatabaseModels';
 
 
 const loadAppSettings = async () => {
@@ -26,7 +26,7 @@ const setSettings = async (key, value) => {
 const loadActiveProgram = async () => {
     try {
         AsyncStorage.getItem('ActiveProgram').then(res => {
-            return ProgramModel.fromDatabase(JSON.parse(res));
+            return Program.fromDatabase(JSON.parse(res));
         });
     } catch (e) {
         return e;
