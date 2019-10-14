@@ -4,7 +4,7 @@ import {Appbar} from 'react-native-paper';
 import { createAppContainer} from 'react-navigation';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {MainTab, MixedViewTab} from './tabs/index';
+import {MainTab, MixedViewTab, SecondTab} from './tabs/index';
 import RobotProxy from '../../../communication/RobotProxy';
 import {speeds, add, removeAll, addSpeedChangeListener} from '../../../stores/SpeedsStore';
 import {
@@ -164,10 +164,42 @@ export default class Programming extends Component {
                 <Appbar>
                     <Appbar.Action icon="menu" size={32} onPress={() => this.props.navigation.openDrawer()}/>
                     <Appbar.Content style={{position: 'absolute', left: 40}} title="Explore-it" size={32}/>
-                    <Appbar.Content style={{position: 'absolute', right: 0}}
+                    <Appbar.Content style={{position: 'absolute', right: 40}}
                                     title={this.state.device_name}
                                     subtitle={this.state.sub_title}
                                     size={32}/>
+                    <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
+                    style={{position: 'absolute', right: 0}}
+                    size={32}
+                    onPress={() => {
+                        if (RobotProxy.isConnected) {
+                            RobotProxy.disconnect();
+                            setDeviceName({device: i18n.t('Programming.noConnection')});
+                            setInterval(0);
+                            setConnected(false);
+                            this.setState({
+                                device: undefined,
+                                remaining_btns_disabled: true,
+                                stop_btn_disabled: true,
+                            });
+                        } else {
+                            // init scanning for robots over ble
+                            this.setState({
+                                devices: [],
+                            });
+                            RobotProxy.scanningForRobots((error) => {
+                                console.log(error);
+                            }, (device) => {
+                                // collect all devices found and publish them in the Dialog
+                                let devices = this.state.devices;
+                                devices.push(device);
+                                this.setState({devices: devices.sort()});
+                            });
+                            setTimeout(() => {
+                                this.setState({visible: true});
+                            }, 500);
+                        }
+                    }}/>
                 </Appbar>
                 <TabContainer/>
                 <Appbar style={styles.bottom}>
@@ -227,38 +259,10 @@ export default class Programming extends Component {
                                        });
                                        RobotProxy.upload(this.state.speeds);
                                    }}/>
-                    <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
-                                   style={{position: 'absolute', right: 0}}
-                                   size={32}
-                                   onPress={() => {
-                                       if (RobotProxy.isConnected) {
-                                           RobotProxy.disconnect();
-                                           setDeviceName({device: i18n.t('Programming.noConnection')});
-                                           setInterval(0);
-                                           setConnected(false);
-                                           this.setState({
-                                               device: undefined,
-                                               remaining_btns_disabled: true,
-                                               stop_btn_disabled: true,
-                                           });
-                                       } else {
-                                           // init scanning for robots over ble
-                                           this.setState({
-                                               devices: [],
-                                           });
-                                           RobotProxy.scanningForRobots((error) => {
-                                               console.log(error);
-                                           }, (device) => {
-                                               // collect all devices found and publish them in the Dialog
-                                               let devices = this.state.devices;
-                                               devices.push(device);
-                                               this.setState({devices: devices.sort()});
-                                           });
-                                           setTimeout(() => {
-                                               this.setState({visible: true});
-                                           }, 500);
-                                       }
-                                   }}/>
+                    <Appbar.Action  icon="save"
+                                    size={32} />
+                    <Appbar.Action  icon="add-box"
+                                    size={32} />
                 </Appbar>
             </View>
         );
@@ -274,11 +278,19 @@ const TabNavigator = createMaterialTopTabNavigator({
             ),
         },
     },
-    Second: {
-        screen: MixedViewTab,
+    Second:{
+        screen: SecondTab,
         navigationOptions: {
             tabBarIcon: ({tintColor}) => (
                 <MaterialCommunityIcon name="page-layout-body" size={24} color={tintColor}/>
+            ),
+        }
+    },
+    Third: {
+        screen: MixedViewTab,
+        navigationOptions: {
+            tabBarIcon: ({tintColor}) => (
+                <MaterialCommunityIcon name="content-copy" size={24} color={tintColor}/>
             ),
         },
     },
