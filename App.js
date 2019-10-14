@@ -12,12 +12,23 @@ import {View, Text, StyleSheet} from 'react-native';
 import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
 // import {version} from './package.json';
 import i18n from './resources/locales/i18n';
+import RobbyDatabaseAction from './src/database/RobbyDatabaseActions';
+import {Program} from './src/model/DatabaseModels';
+import {DatabaseTest} from './src/utility/DatabaseTest';
 
 export default class App extends Component {
     state = {device: undefined};
 
     componentDidMount() {
         BleService.requestLocationPermission();
+        let databasetest = new DatabaseTest();
+        databasetest.clearDatabase();
+        databasetest.recurive();
+        //databasetest.findOneByPK();
+        // databasetest.updatingEntries();
+        // databasetest.createDatabaseEntries();
+        //databasetest.creatingDatabaseEntriesWithDependencies();
+        //
     }
 
     render() {
@@ -68,7 +79,7 @@ class DrawerContent extends Component {
                             color: 'white',
                             fontWeight: 'bold',
                         }}>
-                        v{version}
+                        v{}
                     </Text>
                 </View>
             </View>
