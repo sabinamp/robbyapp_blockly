@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import {StyleSheet, View, Alert, Picker} from 'react-native';
 import React from 'react';
-import NumericInput from './NumericInput';
+import NumericInput from '../../../../controls/NumericInput';
 import i18n from '../../../../../../resources/locales/i18n';
 
 
@@ -10,7 +10,6 @@ export default class ProgramInput extends Component {
     // updating application state
 
     state = {
-        selected: -1, // id of currently selected row
         selectedProgram: {}
     }
 
@@ -36,13 +35,12 @@ export default class ProgramInput extends Component {
     render() {
         const index = this.props.index;
         return (
-            <View key={index} style={parseInt(index) == this.state.selected ? styles.selected_row : styles.row}>
+            <View key={index} style={parseInt(index) == this.props.selected ? styles.selected_row : styles.row}>
             <Picker selectedValue={this.state.selectedProgram[index]}
                     style={{height: 35, width: '80%', marginTop:12.5}} 
                     onValueChange={(itemValue, itemIndex) => {
-                        var selectedPrograms = this.state.selectedProgram;
-                        selectedPrograms[index] = itemValue; 
-                        this.setState({selectedProgram: selectedPrograms})}}>
+                        this.state.selectedProgram[index] = itemValue; 
+                        this.setState({})}}>
                         {this.props.pickerItems}
             </Picker>
             <View style={{width: '20%', height: '70%', marginTop: 9}}><NumericInput onchange={this.onChanged} val={this.props.val}></NumericInput></View>

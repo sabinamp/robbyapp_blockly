@@ -17,20 +17,32 @@ import {
     //storeSpeeds,
     //retrieveSpeeds
 } from '../../../../../stores/SpeedsStore';
-import i18n from '../../../../../../resources/locales/i18n';
-import NumericInput from './NumericInput';
 import ProgramInput from './ProgramInput';
-
+var RobbyDatabaseAction = require('../../../../../database/RobbyDatabaseActions');
 export default class SecondTab extends Component {
     state = {
-        programs: ['Zickzack', '--------------Circle-------------------', 'Angle'],
-        selected: -1, // id of currently selected row
+        programName: "",
+        programs: [{}],
+        pickerItems: [],
+        selected: 0, // id of currently selected row
         selectedProgram: {},
-        values: {"0": 0, "1": 0, "2": 0},
+        values: {"0": 1},
+        loadedProgram: undefined 
     };
 
     componentDidMount() {
-        //retrieveSpeeds;
+        if(this.state.loadedProgram){
+            this.state.pickerItems = RobbyDatabaseAction.findAllNotCircular(this.state.loadedProgram).map((prog) => {
+                return prog.name;
+            });
+            //TODO: load
+            this.state.programName = this.state.loadedProgram.name;
+        }else{
+            this.state.pickerItems = RobbyDatabaseAction.findAll().map((prog) => {
+                return prog.name;
+            });
+        }
+        this.setState({});
     }
 
     componentWillUnmount() {
@@ -46,8 +58,8 @@ export default class SecondTab extends Component {
 
     render() {
         let select_controls;
-        let pickerItems = [<Picker.Item label='Select a program' valeu='novalue'/>];
-        this.state.programs.forEach((p) => {
+        let pickerItems = [<Picker.Item label='Select a program' value='novalue'/>];
+        this.state.pickerItems.forEach((p) => {
             pickerItems.push(<Picker.Item label={p} value={p} />)
         })
         if (this.state.selected >= 0) {
@@ -80,8 +92,8 @@ export default class SecondTab extends Component {
 
         return (
             <View style={[styles.view, {flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
-                <View style={{marginTop: 30, marginBottom:20, height: 20, width: '100%', flexDirection: 'row'}}>
-                    <Text style={{textAlign: 'center', flex: 2}}> Some text here </Text>
+                <View style={{marginTop: 30, marginBottom:20, height: 40, width: '80%', flexDirection: 'row'}}>
+                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderColor: '#d6d6d6', borderWidth: 1.0}}></TextInput>
                 </View>
                 <ScrollView
                     style={{backgroundColor: 'white'}}
@@ -101,7 +113,7 @@ export default class SecondTab extends Component {
                                 this.setState({selected: parseInt(index)});
                             }
                         }}>
-                        <ProgramInput index={index} 
+                        <ProgramInput index={index} selected={this.state.selected}
                             pickerItems={pickerItems} 
                             onchange={(value)=>{
                                 var values = this.state.values; 
@@ -118,6 +130,9 @@ export default class SecondTab extends Component {
                         style={styles.fab}
                         icon="add"
                         onPress={() => {
+                            this.state.programs.push({});
+                            this.state.values[this.state.programs.length -1] = 1;
+                            this.setState({});
                         }}
                     />
                 </View>
