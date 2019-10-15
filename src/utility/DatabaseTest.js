@@ -8,7 +8,6 @@ export class DatabaseTest {
     amount = 10;
 
     clearDatabase() {
-        // console.log(RobbyDatabaseAction.findAll());
         let l = RobbyDatabaseAction.findAll().length;
         console.log('clearing database, amount of entries: ' + l);
         RobbyDatabaseAction.findAll().forEach(elem => {
@@ -22,17 +21,14 @@ export class DatabaseTest {
     createDatabaseEntries() {
         console.log('creating entries');
         let amountOfExisitingEntries = RobbyDatabaseAction.findAll().length;
-
-        var i;
-        for (i = 1; i < this.amount; i++) {
-            console.log(i);
-            console.log(RobbyDatabaseAction.add(new Program(this.basename + i, false, [], [])));
+        for (var i = 1; i < this.amount; i++) {
+            RobbyDatabaseAction.add(new Program(this.basename + i, false, [], []));
         }
         let l = RobbyDatabaseAction.findAll().length;
         console.log('Database has this amount of entries: ' + l);
         console.assert(l === this.amount + this.amountOfExisitingEntries, {
             length: l,
-            errorMsg: 'Database is not empty',
+            errorMsg: 'error or some entries have already existed',
         }.toString());
     }
 
