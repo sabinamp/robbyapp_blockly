@@ -36,3 +36,5 @@ const loadActiveProgram = async () => {
 function saveActiveProgram(program) {
     setSettings('ActiveProgram', JSON.stringify(program));
 }
+
+export {loadActiveProgram, setSettings, loadAppSettings, saveActiveProgram};

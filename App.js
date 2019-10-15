@@ -15,6 +15,7 @@ import i18n from './resources/locales/i18n';
 import RobbyDatabaseAction from './src/database/RobbyDatabaseActions';
 import {Program} from './src/model/DatabaseModels';
 import {DatabaseTest} from './src/utility/DatabaseTest';
+import * as ut from './src/utility/AppSettings';
 
 export default class App extends Component {
     state = {device: undefined};

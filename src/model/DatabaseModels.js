@@ -21,7 +21,6 @@ export class Program {
             Object.keys(blocks).forEach(key => temp_block.push(Block.fromDatabase(blocks[key])));
             this.blocks = temp_block;
         }
-
     }
 
     static fromDatabase(program) {
