@@ -190,6 +190,7 @@ export default class Programming extends Component {
                 <TabContainer
                     onNavigationStateChange={(prevState, currentState, action) => {
                         const currentScreen = this.getActiveRouteName(currentState);
+                        const prevScreen = this.getActiveRouteName(prevState);
                     }}
                 />
                 <Appbar style={styles.bottom}>
