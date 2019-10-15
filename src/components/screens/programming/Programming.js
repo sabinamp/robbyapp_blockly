@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Alert} from 'react-native';
 import {Appbar} from 'react-native-paper';
-import { createAppContainer} from 'react-navigation';
-import {createMaterialTopTabNavigator} from 'react-navigation-tabs'
+import {createAppContainer} from 'react-navigation';
+import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {MainTab, MixedViewTab} from './tabs/index';
 import RobotProxy from '../../../communication/RobotProxy';
@@ -44,6 +44,19 @@ export default class Programming extends Component {
         });
     }
 
+    // gets the current screen from navigation state
+    getActiveRouteName(navigationState) {
+        if (!navigationState) {
+            return null;
+        }
+        const route = navigationState.routes[navigationState.index];
+        // dive into nested navigators
+        if (route.routes) {
+            return this.getActiveRouteName(route);
+        }
+        return route.routeName;
+    }
+
     // handles messages from the communcation system
     handleCommunicationMessages(name) {
         setDeviceName({device: name.substr(name.length - 5)});
@@ -54,6 +67,11 @@ export default class Programming extends Component {
             remaining_btns_disabled: false,
             stop_btn_disabled: true,
         });
+    }
+
+
+    componentDidMount(): void {
+
     }
 
     handleResponse(res) {
@@ -169,7 +187,11 @@ export default class Programming extends Component {
                                     subtitle={this.state.sub_title}
                                     size={32}/>
                 </Appbar>
-                <TabContainer/>
+                <TabContainer
+                    onNavigationStateChange={(prevState, currentState, action) => {
+                        const currentScreen = this.getActiveRouteName(currentState);
+                    }}
+                />
                 <Appbar style={styles.bottom}>
                     <Appbar.Action icon="stop" size={32}
                                    disabled={this.state.stop_btn_disabled}
@@ -246,6 +268,7 @@ export default class Programming extends Component {
                                            this.setState({
                                                devices: [],
                                            });
+
                                            RobotProxy.scanningForRobots((error) => {
                                                console.log(error);
                                            }, (device) => {
@@ -254,6 +277,7 @@ export default class Programming extends Component {
                                                devices.push(device);
                                                this.setState({devices: devices.sort()});
                                            });
+
                                            setTimeout(() => {
                                                this.setState({visible: true});
                                            }, 500);
