@@ -86,9 +86,9 @@ let RobbyDatabaseAction = {
         }
         return 'Program is used recursively';
     },
-    delete: function (program_id, force = false): String {
+    delete: function (program_id): String {
         // console.log('delte : ' + !RobbyDatabaseAction.findAll().reduce((acc, p) => acc && isUsed(p, program_id), false) || !force);
-        if (force || !RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false)) {
+        if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false)) {
             try {
                 repository.write(() => {
                     repository.delete(repository.objectForPrimaryKey('Program', program_id));
@@ -99,6 +99,16 @@ let RobbyDatabaseAction = {
             }
         }
         return 'Program is used by other program';
+    },
+    deleteAll: function () {
+        try {
+            repository.write(() => {
+                repository.delete(repository.objects('Program'));
+            });
+            return true;
+        } catch (e) {
+            return false;
+        }
     },
 };
 

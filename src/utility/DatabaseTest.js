@@ -10,9 +10,8 @@ export class DatabaseTest {
     clearDatabase() {
         let l = RobbyDatabaseAction.findAll().length;
         console.log('clearing database, amount of entries: ' + l);
-        RobbyDatabaseAction.findAll().forEach(elem => {
-            RobbyDatabaseAction.delete(elem.id, true);
-        });
+        RobbyDatabaseAction.deleteAll();
+
         l = RobbyDatabaseAction.findAll().length;
         console.log('Database has this amount of entries: ' + l);
         console.assert(l === 0, {length: l, errorMsg: 'Database is not empty'}.toString());
