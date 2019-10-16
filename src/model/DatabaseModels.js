@@ -1,4 +1,5 @@
 import uuidv4 from 'uuid/v4';
+import {RobbyDatabaseAction} from '../database/RobbyDatabaseActions';
 
 export class Program {
     constructor(name, primitive, steps = [], blocks = [], id = uuidv4(), date = new Date(Date.now())) {
@@ -20,6 +21,15 @@ export class Program {
             let temp_block = [];
             Object.keys(blocks).forEach(key => temp_block.push(Block.fromDatabase(blocks[key])));
             this.blocks = temp_block;
+        }
+    }
+
+    length(mulitplier = 1) {
+        switch (this.primitive) {
+            case false:
+                return this.steps.length * mulitplier;
+            case true:
+                return this.blocks.reduce((acc, b) => acc + RobbyDatabaseAction.findOneByPK(b.ref).length(b.rep));
         }
     }
 
