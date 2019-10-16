@@ -1,6 +1,5 @@
 # App to control the robot from explore-it
 
-This is the entire source code of the terminal app. It is based on [react-native](https://facebook.github.io/react-native/). 
 
 To build the app run
 
@@ -109,24 +108,8 @@ service uuid:        0000ffe0-0000-1000-8000-00805f9b34fb
 characteristic uuid: 0000ffe1-0000-1000-8000-00805f9b34fb
 ```
 
-### RN Version 0.58.5
 
-Task: 
- - Renaming of project and upgrading from v0.57.8 to v0.58.5
 
-Actions: 
-- Start new React Native project from scratch with new name 'terminal' and copy all missing artefacts from the old project.
-- Copy image assets for android from `android/app/src/main/res` and for ios from `ios/terminal/Images.xcassets/AppIcon.appiconset`
-- Link `appcenter`
-- iOS: Check if cocoa pods is installed. If not install it `sudo gem install cocoapods`
-
-```
-$ react-native init robbyapp
-$ cd robbyapp
-$ yarn install
-$ react-native link
-
-```
 
 Read project [react-native-plx-ble](https://github.com/Polidea/react-native-ble-plx) carefully. Their are some updates needed 
     
