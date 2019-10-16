@@ -1,7 +1,7 @@
 import Realm from 'realm';
 
 // Update Schmea_Version when you do any changes to the schema
-const SCHEMA_VERSION = 12;
+const SCHEMA_VERSION = 13;
 
 
 class InstructionSchema extends Realm.Object {
@@ -35,7 +35,7 @@ ProgramSchema = {
     properties: {
         id: 'string',
         name: {type: 'string', indexed: true},
-        primitive: 'int',              // true => NumberSequence, false => BlockSequence
+        programType: 'int',              // true => NumberSequence, false => BlockSequence
         date: 'date',			// Creation-Date
         steps: 'Instruction[]',  	//  either steps or blocks is empty.
         blocks: 'Block[]',
