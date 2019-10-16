@@ -1,5 +1,5 @@
 import RobbyDatabaseAction from '../database/RobbyDatabaseActions';
-import {Block, Program} from '../model/DatabaseModels';
+import {Block, Program, ProgramType} from '../model/DatabaseModels';
 import uuidv4 from 'uuid/v4';
 
 export class DatabaseTest {
@@ -18,14 +18,14 @@ export class DatabaseTest {
     }
 
     createDatabaseEntries() {
-        console.log('creating entries');
         let amountOfExisitingEntries = RobbyDatabaseAction.findAll().length;
-        for (var i = 1; i < this.amount; i++) {
-            RobbyDatabaseAction.add(new Program(this.basename + i, false, [], []));
+        console.log('creating entries' + amountOfExisitingEntries);
+        for (var i = 1; i <= this.amount; i++) {
+            RobbyDatabaseAction.add(new Program(this.basename + i, ProgramType.BLOCKS, [], []));
         }
         let l = RobbyDatabaseAction.findAll().length;
         console.log('Database has this amount of entries: ' + l);
-        console.assert(l === this.amount + this.amountOfExisitingEntries, {
+        console.assert(l === this.amount + amountOfExisitingEntries, {
             length: l,
             errorMsg: 'error or some entries have already existed',
         }.toString());
@@ -34,12 +34,12 @@ export class DatabaseTest {
     creatingDatabaseEntriesWithDependencies() {
         console.log('creating entries');
         let amountOfExisitingEntries = RobbyDatabaseAction.findAll().length;
-        let firstProgram = new Program('Model64', false);
+        let firstProgram = new Program('Model64', ProgramType.BLOCKS);
         RobbyDatabaseAction.add(firstProgram);
         let amount = 10;
         let i;
         for (i = 0; i < this.amount; i++) {
-            RobbyDatabaseAction.add(new Program(this.basename + i, false, [], [new Block(firstProgram.id, 1)]));
+            RobbyDatabaseAction.add(new Program(this.basename + i, ProgramType.BLOCKS, [], [new Block(firstProgram.id, 1)]));
         }
         let l = RobbyDatabaseAction.findAll().length;
         console.log('Database has this amount of entries: ' + l);
@@ -66,7 +66,7 @@ export class DatabaseTest {
     }
 
     duplicate() {
-        let f = new Program(this.basename, false, [], [new Block(uuidv4(), 3)]);
+        let f = new Program(this.basename, ProgramType.BLOCKS, [], [new Block(uuidv4(), 3)]);
         RobbyDatabaseAction.add(f);
         let i;
         for (i = 0; i < this.amount; i++) {
@@ -78,7 +78,7 @@ export class DatabaseTest {
     recurive() {
         this.creatingDatabaseEntriesWithDependencies();
         let a = RobbyDatabaseAction.findOne(this.basename + 64);
-        RobbyDatabaseAction.add(new Program('you can use me', true));
+        RobbyDatabaseAction.add(new Program('you can use me', ProgramType.STEPS));
         console.log('Ready');
         console.log(a);
         console.log(RobbyDatabaseAction.findAllNotCircular(a));

@@ -6,8 +6,8 @@ export class Program {
 
         this.id = id;
         this.name = name;
-        this.primitive = primitive;
         this.date = date;
+        this.primitive = primitive;
         if (steps instanceof Array) {
             this.steps = steps;
         } else {
@@ -25,7 +25,7 @@ export class Program {
     }
 
     length(mulitplier = 1) {
-        switch (this.primitive) {
+        switch (this.primitive === ProgramType.STEPS) {
             case false:
                 return this.steps.length * mulitplier;
             case true:
@@ -64,3 +64,7 @@ export class Block {
     }
 }
 
+export const ProgramType = {
+    STEPS: 0,
+    BLOCKS: 1,
+};

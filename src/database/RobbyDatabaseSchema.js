@@ -1,7 +1,7 @@
 import Realm from 'realm';
 
 // Update Schmea_Version when you do any changes to the schema
-const SCHEMA_VERSION = 11;
+const SCHEMA_VERSION = 12;
 
 
 class InstructionSchema extends Realm.Object {
@@ -35,7 +35,7 @@ ProgramSchema = {
     properties: {
         id: 'string',
         name: {type: 'string', indexed: true},
-        primitive: 'bool',              // true => NumberSequence, false => BlockSequence
+        primitive: 'int',              // true => NumberSequence, false => BlockSequence
         date: 'date',			// Creation-Date
         steps: 'Instruction[]',  	//  either steps or blocks is empty.
         blocks: 'Block[]',
@@ -48,9 +48,9 @@ const migration = (oldRealm, newRealm) => {
         const oldObjects = oldRealm.objects('Program');
         const newObjects = newRealm.objects('Program');
         for (let i = 0; i < oldObjects.length; i++) {
-            // newObjects[i].name = oldObjects[i].name;
-            // newObjects[i].elements = [];
-            // newObjects[i].programs = [];
+            newObjects[i].name = oldObjects[i].name;
+            newObjects[i].elements = [];
+            newObjects[i].programs = [];
         }
     }
 };
