@@ -42,7 +42,7 @@ let RobbyDatabaseAction = {
         return 'Name is already taken';
     },
     // returns all programs which can be added to the given program `program` without building a cycle
-    findAllNotCircular: function (program): Program[] {
+    findAllWhichCanBeAddedTo: function (program): Program[] {
         // console.log(program);
         return repository.objects('Program').map(elem => Program.fromDatabase(elem)).filter(p => !isUsedRecursive(p, program.id));
     },
