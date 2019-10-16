@@ -30,7 +30,7 @@ export default class Settings extends Component {
         sub_title: i18n.t('Settings.device'),
         loops: getLoopCounter().toString(),
         duration: getDuration().toString(),
-        interval: getInterval() == 0 ? '' : getInterval().toString(),
+        interval: getInterval() === 0 ? '' : getInterval().toString(),
         connected: isConnected(),
     };
 

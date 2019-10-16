@@ -34,9 +34,6 @@ export default class MainTab extends Component {
 
     componentDidMount() {
         //retrieveSpeeds;
-    }
-
-    componentWillUnmount() {
         //storeSpeeds;
     }
 
@@ -77,7 +74,7 @@ export default class MainTab extends Component {
                         }}
                     />
                     <FAB
-                        disabled={this.state.selected == 0}
+                        disabled={this.state.selected === 0}
                         style={styles.move_up}
                         icon="arrow-upward"
                         onPress={() => {
@@ -113,8 +110,7 @@ export default class MainTab extends Component {
                 <ScrollView
                     style={{backgroundColor: 'white'}}
                     resetScrollToCoords={{x: 0, y: 0}}
-                    scrollEnabled={true}
-                >
+                    scrollEnabled={true}>
                     <FlatList
                         data={this.state.speeds}
                         extraData={this.state}
@@ -122,14 +118,14 @@ export default class MainTab extends Component {
                         renderItem={({item, index}) => (
                             <TouchableOpacity
                                 onPress={() => {
-                                    if (this.state.selected == parseInt(index)) {
+                                    if (this.state.selected === parseInt(index)) {
                                         this.setState({selected: -1});
                                     } else {
                                         this.setState({selected: parseInt(index)});
                                     }
                                 }}>
                                 <View key={index}
-                                      style={parseInt(index) == this.state.selected ? styles.selected_row : styles.row}>
+                                      style={parseInt(index) === this.state.selected ? styles.selected_row : styles.row}>
                                     <SpeedInput
                                         onchange={(text) => this.onChangeLeft(index, text)}
                                         val={item.left}

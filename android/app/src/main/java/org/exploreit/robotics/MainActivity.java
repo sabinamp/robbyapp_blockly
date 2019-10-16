@@ -1,4 +1,4 @@
-package com.robbyapp60;
+package org.exploreit.robotics;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "robbyapp60";
+        return "Robotics";
     }
 }
