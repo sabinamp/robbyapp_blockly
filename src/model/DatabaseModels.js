@@ -29,7 +29,7 @@ export class Program {
             case false:
                 return this.steps.length * mulitplier;
             case true:
-                return this.blocks.reduce((acc, b) => acc + RobbyDatabaseAction.findOneByPK(b.ref).length(b.rep));
+                return this.blocks.reduce((acc, b) => acc + RobbyDatabaseAction.findOneByPK(b.ref).length(b.rep), 0);
         }
     }
 
