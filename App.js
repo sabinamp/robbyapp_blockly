@@ -12,7 +12,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
 // import {version} from './package.json';
 import i18n from './resources/locales/i18n';
-import {RobbyDatabaseAction} from './src/database/RobbyDatabaseActions';
+// import {RobbyDatabaseAction} from './src/database/RobbyDatabaseActions';
 
 import * as ut from './src/utility/AppSettings';
 
