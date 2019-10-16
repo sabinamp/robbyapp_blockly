@@ -119,4 +119,3 @@ Read project [react-native-plx-ble](https://github.com/Polidea/react-native-ble-
 # Adding AppCenter
 
 To distribute the App during the development cycle the Cloud Service [AppCenter](https://visualstudio.microsoft.com/de/app-center/) will be used.
-
