@@ -85,11 +85,11 @@ PODS:
     - React-Core (= 0.60.5)
   - RNGestureHandler (1.4.1):
     - React
-  - RNLocalize (1.2.1):
+  - RNLocalize (1.3.0):
     - React
   - RNReanimated (1.3.0):
     - React
-  - RNSVG (9.10.2):
+  - RNSVG (9.11.1):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -118,7 +118,7 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-RCTWebSocket (from `../node_modules/react-native/Libraries/WebSocket`)
-  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler/RNGestureHandler.podspec`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -175,7 +175,7 @@ EXTERNAL SOURCES:
   React-RCTWebSocket:
     :path: "../node_modules/react-native/Libraries/WebSocket"
   RNGestureHandler:
-    :path: "../node_modules/react-native-gesture-handler"
+    :podspec: "../node_modules/react-native-gesture-handler/RNGestureHandler.podspec"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
   RNReanimated:
@@ -212,12 +212,12 @@ SPEC CHECKSUMS:
   React-RCTVibration: 2105b2e0e2b66a6408fc69a46c8a7fb5b2fdade0
   React-RCTWebSocket: cd932a16b7214898b6b7f788c8bddb3637246ac4
   RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
-  RNLocalize: 7206d44eb341d6e2a61a8184b831c64a5539fcdf
+  RNLocalize: 6e4a6b8582dfbb50b452464d208c30a7a20516f4
   RNReanimated: 6abbbae2e5e72609d85aabd92a982a94566885f1
-  RNSVG: d5a226b9f2e0acbc66e4d8fe3a1e325037618f9f
+  RNSVG: be27aa7c58819f97399388ae53d7fa0572f32c7f
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   yoga: 312528f5bbbba37b4dcea5ef00e8b4033fdd9411
 
-PODFILE CHECKSUM: c803d0c54407f2c4952ad7a455ae27befbd92e3f
+PODFILE CHECKSUM: 06f77e0216d0a9782be4e7f2ffd1c462d3ad23ed
 
 COCOAPODS: 1.8.1
