@@ -42,7 +42,7 @@ let RobbyDatabaseAction = {
         return 'Name is already taken';
     },
     // returns all programs which can be added to the given program `program` without building a cycle
-    findAllNotCircular: function (program): Program[] {
+    findAllWhichCanBeAddedTo: function (program): Program[] {
         // console.log(program);
         return repository.objects('Program').map(elem => Program.fromDatabase(elem)).filter(p => !isUsedRecursive(p, program.id));
     },
@@ -74,20 +74,18 @@ let RobbyDatabaseAction = {
         }
     },
     save: function (program): boolean {
-        if (!isUsedRecursive(program, program.id)) {
-            try {
-                repository.write(() => {
-                    repository.create('Program', program, true);
-                });
-                return true;
-            } catch (e) {
-                return false;
-            }
+        try {
+            repository.write(() => {
+                repository.create('Program', program, true);
+            });
+            return true;
+        } catch (e) {
+            return false;
         }
+
     },
-    delete: function (program_id, force = false): String {
-        // console.log('delte : ' + !RobbyDatabaseAction.findAll().reduce((acc, p) => acc && isUsed(p, program_id), false) || !force);
-        if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false) || force) {
+    delete: function (program_id): String {
+        if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false)) {
             try {
                 repository.write(() => {
                     repository.delete(repository.objectForPrimaryKey('Program', program_id));
@@ -98,6 +96,16 @@ let RobbyDatabaseAction = {
             }
         }
         return 'Program is used by other program';
+    },
+    deleteAll: function () {
+        try {
+            repository.write(() => {
+                repository.delete(repository.objects('Program'));
+            });
+            return true;
+        } catch (e) {
+            return false;
+        }
     },
 };
 

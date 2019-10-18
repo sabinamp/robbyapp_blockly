@@ -75,7 +75,7 @@ class BleService {
             }
             // new device detected. check it!
             console.log('new device detected: ' + device.name);
-            console.log(device);
+            //console.log(device);
             if (
                 device.name &&
                 device.name.startsWith('EXPLORE-IT') &&

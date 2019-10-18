@@ -1,12 +1,13 @@
 import uuidv4 from 'uuid/v4';
+import {RobbyDatabaseAction} from '../database/RobbyDatabaseActions';
 
 export class Program {
     constructor(name, primitive, steps = [], blocks = [], id = uuidv4(), date = new Date(Date.now())) {
 
         this.id = id;
         this.name = name;
-        this.primitive = primitive;
         this.date = date;
+        this.primitive = primitive;
         if (steps instanceof Array) {
             this.steps = steps;
         } else {
@@ -21,7 +22,15 @@ export class Program {
             Object.keys(blocks).forEach(key => temp_block.push(Block.fromDatabase(blocks[key])));
             this.blocks = temp_block;
         }
+    }
 
+    length() {
+        switch (this.primitive === ProgramType.STEPS) {
+            case false:
+                return this.steps.length;
+            case true:
+                return this.blocks.reduce((acc, b) => acc + b.rep * RobbyDatabaseAction.findOneByPK(b.ref).length(), 0);
+        }
     }
 
     static fromDatabase(program) {
@@ -55,3 +64,7 @@ export class Block {
     }
 }
 
+export const ProgramType = {
+    STEPS: 0,
+    BLOCKS: 1,
+};
