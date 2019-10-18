@@ -85,7 +85,6 @@ let RobbyDatabaseAction = {
 
     },
     delete: function (program_id): String {
-        // console.log('delte : ' + !RobbyDatabaseAction.findAll().reduce((acc, p) => acc && isUsed(p, program_id), false) || !force);
         if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false)) {
             try {
                 repository.write(() => {

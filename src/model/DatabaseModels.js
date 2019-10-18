@@ -24,12 +24,12 @@ export class Program {
         }
     }
 
-    length(mulitplier = 1) {
+    length() {
         switch (this.primitive === ProgramType.STEPS) {
             case false:
-                return this.steps.length * mulitplier;
+                return this.steps.length;
             case true:
-                return this.blocks.reduce((acc, b) => acc + RobbyDatabaseAction.findOneByPK(b.ref).length(b.rep), 0);
+                return this.blocks.reduce((acc, b) => acc + b.rep * RobbyDatabaseAction.findOneByPK(b.ref).length(), 0);
         }
     }
 
