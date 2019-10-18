@@ -21,12 +21,12 @@ export default class App extends Component {
 
     componentDidMount() {
         BleService.requestLocationPermission();
-        let databasetest = new DatabaseTest();
-        databasetest.clearDatabase();
-        databasetest.recurive();
+        //let databasetest = new DatabaseTest();
+        //databasetest.clearDatabase();
+        //databasetest.recurive();
         //databasetest.findOneByPK();
-        // databasetest.updatingEntries();
-        // databasetest.createDatabaseEntries();
+        //databasetest.updatingEntries();
+        //databasetest.createDatabaseEntries();
         //databasetest.creatingDatabaseEntriesWithDependencies();
         //
     }

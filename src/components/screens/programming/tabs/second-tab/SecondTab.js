@@ -7,26 +7,34 @@ import {
     TouchableOpacity,
     ScrollView,
     FlatList,
-    Picker
+    Picker, 
+    Button
 } from 'react-native';
 import {FAB} from 'react-native-paper';
 import React from 'react';
 import {
-    speeds,
-    addSpeedChangeListener,
-    //storeSpeeds,
-    //retrieveSpeeds
-} from '../../../../../stores/SpeedsStore';
+    programs,
+    add,
+    addAt,
+    swap,
+    remove,
+    addProgramsChangeListener,
+    updateProgram,
+    updateRepeatValue
+} from '../../../../../stores/ProgramsStore';
 import ProgramInput from './ProgramInput';
+import { Block, Program } from '../../../../../model/DatabaseModels';
 var RobbyDatabaseAction = require('../../../../../database/RobbyDatabaseActions');
 export default class SecondTab extends Component {
+    
+    // TODO: Replace static text with translated Text!!
+    
     state = {
+        programs: programs,
         programName: "",
-        programs: [{}],
         pickerItems: [],
-        selected: 0, // id of currently selected row
+        selected: -1, // id of currently selected row
         selectedProgram: {},
-        values: {"0": 1},
         loadedProgram: undefined 
     };
 
@@ -38,38 +46,64 @@ export default class SecondTab extends Component {
             //TODO: load
             this.state.programName = this.state.loadedProgram.name;
         }else{
-            this.state.pickerItems = RobbyDatabaseAction.findAll().map((prog) => {
-                return prog.name;
-            });
+            this.state.pickerItems = RobbyDatabaseAction.findAll();
         }
         this.setState({});
     }
 
     componentWillUnmount() {
-        //storeSpeeds;
     }
 
     constructor(props) {
         super(props);
-        addSpeedChangeListener((speeds) => {
-            this.setState({speeds: speeds});
+        addProgramsChangeListener((programs) => {
+            this.setState({programs: programs});
         });
+    }
+
+    save() {
+        var result = false;
+        let blocks = [];
+        var program;
+            this.state.programs.forEach((program) => {
+                if(program && program.rep && program.id > 0){
+                    blocks.push(new Block(program.ref, program.rep));
+                }
+            });
+            
+        if(this.state.loadedProgram){
+            program = this.state.loadedProgram;
+            program.blocks = blocks;
+            program.name = this.state.programName; 
+            result = RobbyDatabaseAction.save(program);
+            alert("save");
+        } else {     
+            var program = new Program(this.state.programName, false, [], blocks); 
+            result = RobbyDatabaseAction.add(program);
+            this.setState({loadedProgram: program});
+            alert("add");
+        }
+        alert(result);
     }
 
     render() {
         let select_controls;
-        let pickerItems = [<Picker.Item label='Select a program' value='novalue'/>];
+        let pickerItems = [<Picker.Item label='Select a program'/>];
         this.state.pickerItems.forEach((p) => {
-            pickerItems.push(<Picker.Item label={p} value={p} />)
+            pickerItems.push(<Picker.Item label={p.name} value={p.id} />)
         })
         if (this.state.selected >= 0) {
             select_controls =
                 <View>
                     <FAB
-                        disabled={speeds.length <= 1}
+                        disabled={programs.length <= 1}
                         style={styles.delete}
                         icon="delete"
                         onPress={() => {
+                            let curr = this.state.selected;
+                            alert(curr);
+                            remove(curr);
+                            this.setState({selected: curr - 1});
                         }}
                     />
                     <FAB
@@ -77,23 +111,34 @@ export default class SecondTab extends Component {
                         style={styles.move_up}
                         icon="arrow-upward"
                         onPress={() => {
-                            
+                            let curr = this.state.selected;
+                            alert(curr);
+                            swap(curr, curr - 1);
+                            this.setState({
+                                selected: curr - 1,
+                            });
                         }}
                     />
                     <FAB
-                        disabled={this.state.selected >= speeds.length - 1}
+                        disabled={this.state.selected >= programs.length - 1}
                         style={styles.move_down}
                         icon="arrow-downward"
                         onPress={() => {   
+                            let curr = this.state.selected;
+                            alert(curr);
+                            swap(curr, curr + 1);
+                            this.setState({
+                                selected: curr + 1,
+                            });
                         }}
                     />
-                </View>;
+                </View>
         }
 
         return (
             <View style={[styles.view, {flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
                 <View style={{marginTop: 30, marginBottom:20, height: 40, width: '80%', flexDirection: 'row'}}>
-                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderColor: '#d6d6d6', borderWidth: 1.0}}></TextInput>
+                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderBottomColor: '#828282', borderBottomWidth: 1.0}}  value={this.state.programName} onChangeText = { text => this.setState({programName: text})}/>
                 </View>
                 <ScrollView
                     style={{backgroundColor: 'white'}}
@@ -114,25 +159,41 @@ export default class SecondTab extends Component {
                             }
                         }}>
                         <ProgramInput index={index} selected={this.state.selected}
-                            pickerItems={pickerItems} 
-                            onchange={(value)=>{
-                                var values = this.state.values; 
-                                values[index] = parseInt(value); 
-                                this.setState({values: values});}
-                            } 
-                            val={parseInt(this.state.values[index])}></ProgramInput>
+                            pickerItems={pickerItems}
+                            selectedProgram={this.state.programs[index].ref}
+                            onRepeatValueChange = {(value) => {
+                                updateRepeatValue(index, value);
+                                this.setState({
+                                    selected: -1,
+                                });
+                                }
+                            }
+
+                            onProgramSelectionChange = {(value) => {
+                                updateProgram(index, value);
+                                this.setState({
+                                     selected: -1,
+                                });
+                            }}
+                            val={parseInt(this.state.programs[index].rep)}></ProgramInput>
                         </TouchableOpacity>
                     )} />
-                    
+                    <Button title="Save" onPress={() => {
+                            this.save();
+                        }
+                        } />
                 </ScrollView>
                 <View>
                     <FAB
                         style={styles.fab}
                         icon="add"
                         onPress={() => {
-                            this.state.programs.push({});
-                            this.state.values[this.state.programs.length -1] = 1;
-                            this.setState({});
+                            let curr = this.state.selected;
+                            if (curr == -1) {
+                                add({ref: undefined, rep: 1});
+                            } else {
+                                addAt(curr + 1, {ref: undefined, rep: 1});
+                            }
                         }}
                     />
                 </View>

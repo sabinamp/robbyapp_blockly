@@ -10,7 +10,7 @@ export default class ProgramInput extends Component {
     // updating application state
 
     state = {
-        selectedProgram: {}
+        selectedProgram: ""
     }
 
     onChanged = (text) => {
@@ -29,21 +29,23 @@ export default class ProgramInput extends Component {
                 }
             }
         }
-        this.props.onchange(newText);
+        this.props.onRepeatValueChange(newText);
     };
 
     render() {
         const index = this.props.index;
         return (
             <View key={index} style={parseInt(index) == this.props.selected ? styles.selected_row : styles.row}>
-            <Picker selectedValue={this.state.selectedProgram[index]}
-                    style={{height: 35, width: '80%', marginTop:12.5}} 
+            <Picker selectedValue={this.props.selectedProgram}
+                    style={{height: 35, width: '60%', marginTop:12.5}} 
                     onValueChange={(itemValue, itemIndex) => {
-                        this.state.selectedProgram[index] = itemValue; 
-                        this.setState({})}}>
+                            this.setState({selectedProgram: itemValue});
+                            this.props.onProgramSelectionChange(itemValue);
+                        }}>
                         {this.props.pickerItems}
             </Picker>
-            <View style={{width: '20%', height: '70%', marginTop: 9}}><NumericInput onchange={this.onChanged} val={this.props.val}></NumericInput></View>
+            <View style={{width: '23%'}}></View>
+            <View style={{width: '17%', height: '70%', marginTop: 9}}><NumericInput onchange={this.onChanged} val={this.props.val}></NumericInput></View>
         </View>
         );
     }

@@ -3,6 +3,7 @@ import {
     StyleSheet,
     View,
     Text,
+    TextInput,
     KeyboardAvoidingView,
     FlatList,
     TouchableOpacity,
@@ -30,6 +31,7 @@ export default class MainTab extends Component {
     state = {
         speeds: speeds,
         selected: -1, // id of currently selected row
+        programName: ""
     };
 
     componentDidMount() {
@@ -102,6 +104,9 @@ export default class MainTab extends Component {
 
         return (
             <View style={[styles.view, {flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
+                <View style={{marginTop: 30, marginBottom:20, height: 40, width: '80%', flexDirection: 'row'}}>
+                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderBottomColor: '#828282', borderBottomWidth: 1.0}}  value={this.state.programName} onChangeText = { text => this.setState({programName: text})}/>
+                </View>
                 <View style={{marginTop: 30, height: 20, width: '100%', flexDirection: 'row'}}>
                     <Text style={{flex: 1, textAlign: 'center'}}>L</Text>
                     <Text style={{flex: 2, textAlign: 'center'}}>{i18n.t('MainTab.speed')}</Text>
@@ -165,13 +170,6 @@ export default class MainTab extends Component {
             </View>
         );
     }
-
-    _deleteItem(id) {
-        this.setState({
-            rowToDelete: id,
-        });
-    }
-
 }
 
 const styles = StyleSheet.create({
