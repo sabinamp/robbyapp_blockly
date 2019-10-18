@@ -182,6 +182,12 @@ export default class SecondTab extends Component {
                             this.save();
                         }
                         } />
+                        <Button title="Load" onPress={()=>{
+                            var loadedProgram = RobbyDatabaseAction.findOne("Test");
+                            this.setState({loadedProgram: loadedProgram});
+                            this.setState({programName: loadedProgram.name});
+                            this.setState({programs: loadedProgram.blocks});
+                        }} />
                 </ScrollView>
                 <View>
                     <FAB
