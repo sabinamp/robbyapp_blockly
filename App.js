@@ -61,7 +61,7 @@ class DrawerContent extends Component {
                             color: 'white',
                             fontWeight: 'bold',
                         }}>
-                        robby app
+                        explore-it Robotics
                     </Text>
                     <Text
                         style={{
