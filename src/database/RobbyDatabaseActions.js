@@ -74,17 +74,15 @@ let RobbyDatabaseAction = {
         }
     },
     save: function (program): boolean {
-        if (!isUsedRecursive(program, program.id)) {
-            try {
-                repository.write(() => {
-                    repository.create('Program', program, true);
-                });
-                return true;
-            } catch (e) {
-                return false;
-            }
+        try {
+            repository.write(() => {
+                repository.create('Program', program, true);
+            });
+            return true;
+        } catch (e) {
+            return false;
         }
-        return 'Program is used recursively';
+
     },
     delete: function (program_id): String {
         // console.log('delte : ' + !RobbyDatabaseAction.findAll().reduce((acc, p) => acc && isUsed(p, program_id), false) || !force);
