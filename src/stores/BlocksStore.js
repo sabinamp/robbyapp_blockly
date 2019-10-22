@@ -76,6 +76,11 @@ function notifyProgramNameChangeListeners() {
     });
 }
 
+function updateProgramName(name){
+    currentProgramName = name;
+    notifyProgramNameChangeListeners();
+}
+
 
 // Picker Items
 
@@ -121,7 +126,7 @@ function loadProgramByName(name){
     notifyAll();
 }
 
-function newBlocksProgram(){
+function clearBlocksProgram(){
     removeAll();
     add(new Block(undefined,1));
     loadedProgram = undefined;
@@ -180,11 +185,12 @@ export {
     blocks,
     updateBlock,
     updateRepeatValue,
+    updateProgramName,
     loadedProgram,
     currentProgramName,
     pickerItems,
     refreshPickerItems,
     loadProgramByName,
-    newBlocksProgram,
+    clearBlocksProgram,
     storeBlocks
 };

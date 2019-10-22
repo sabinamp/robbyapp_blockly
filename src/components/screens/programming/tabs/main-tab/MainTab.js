@@ -22,10 +22,13 @@ import {
     swap,
     remove,
     addSpeedChangeListener,
+    addProgramNameChangeListener,
+    updateProgramName,
     //storeSpeeds,
     //retrieveSpeeds
 } from '../../../../../stores/SpeedsStore';
 import i18n from '../../../../../../resources/locales/i18n';
+import { Instruction } from '../../../../../model/DatabaseModels';
 
 export default class MainTab extends Component {
     state = {
@@ -44,6 +47,9 @@ export default class MainTab extends Component {
         addSpeedChangeListener((speeds) => {
             this.setState({speeds: speeds});
         });
+        addProgramNameChangeListener((name)=>{
+            this.setState({programName: name});
+        })
     }
 
     onChangeLeft(index, text) {
@@ -105,7 +111,7 @@ export default class MainTab extends Component {
         return (
             <View style={[styles.view, {flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
                 <View style={{marginTop: 30, marginBottom:20, height: 40, width: '80%', flexDirection: 'row'}}>
-                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderBottomColor: '#828282', borderBottomWidth: 1.0}}  value={this.state.programName} onChangeText = { text => this.setState({programName: text})}/>
+                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderBottomColor: '#828282', borderBottomWidth: 1.0}}  value={this.state.programName} onChangeText = { text => {updateProgramName(text)}}/>
                 </View>
                 <View style={{marginTop: 30, height: 20, width: '100%', flexDirection: 'row'}}>
                     <Text style={{flex: 1, textAlign: 'center'}}>L</Text>
@@ -159,9 +165,9 @@ export default class MainTab extends Component {
                         onPress={() => {
                             let curr = this.state.selected;
                             if (curr == -1) {
-                                add({left: 0, right: 0});
+                                add(new Instruction(0,0));
                             } else {
-                                addAt(curr + 1, {left: 0, right: 0});
+                                addAt(curr + 1, new Instruction(0,0));
                             }
                         }}
                     />

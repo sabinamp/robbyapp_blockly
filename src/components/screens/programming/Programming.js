@@ -6,7 +6,7 @@ import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {MainTab, MixedViewTab, SecondTab} from './tabs/index';
 import RobotProxy from '../../../communication/RobotProxy';
-import {speeds, add, removeAll, addSpeedChangeListener} from '../../../stores/SpeedsStore';
+import {speeds, add, removeAll, addSpeedChangeListener, clearSpeeds, storeSpeeds} from '../../../stores/SpeedsStore';
 import {blocks, addBlocksChangeListener} from '../../../stores/BlocksStore'
 import {
     addDeviceNameChangeListener,
@@ -21,7 +21,7 @@ import {
 import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import i18n from '../../../../resources/locales/i18n';
-import {storeBlocks, newBlocksProgram} from '../../../stores/BlocksStore';
+import {storeBlocks, clearBlocksProgram} from '../../../stores/BlocksStore';
 
 
 export default class Programming extends Component {
@@ -242,11 +242,10 @@ export default class Programming extends Component {
                             case "First":
                                 this.setState({save_and_new_btn_disabled: false});
                                 this.save = () => {
-                                    alert("store speeds (placeholder)");
-                                    //storeSpeeds()
+                                    storeSpeeds();
                                 }
                                 this.clear = () => {
-                                    alert("clear speeds (placeholder)");
+                                    clearSpeeds();
                                 }
                                 break;
                             case "Second":
@@ -255,7 +254,7 @@ export default class Programming extends Component {
                                         storeBlocks();
                                     }
                                     this.clear = () => {
-                                        newBlocksProgram();
+                                        clearBlocksProgram();
                                     }
                                     break;
                             default:

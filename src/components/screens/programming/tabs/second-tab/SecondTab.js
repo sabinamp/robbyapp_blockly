@@ -21,6 +21,7 @@ import {
     addBlocksChangeListener,
     updateBlock,
     updateRepeatValue,
+    updateProgramName,
     refreshPickerItems,
     loadProgramByName,
     addPickerItemsChangeListener,
@@ -117,7 +118,7 @@ export default class SecondTab extends Component {
         return (
             <View style={[styles.view, {flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
                 <View style={{marginTop: 30, marginBottom:20, height: 40, width: '80%', flexDirection: 'row'}}>
-                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderBottomColor: '#828282', borderBottomWidth: 1.0}}  value={this.state.programName} onChangeText = { text => this.setState({programName: text})}/>
+                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderBottomColor: '#828282', borderBottomWidth: 1.0}}  value={this.state.programName} onChangeText = { text => {updateProgramName(text)}}/>
                 </View>
                 <ScrollView
                     style={{backgroundColor: 'white'}}
