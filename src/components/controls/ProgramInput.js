@@ -1,8 +1,8 @@
 import {Component} from 'react';
 import {StyleSheet, View, Alert, Picker} from 'react-native';
 import React from 'react';
-import NumericInput from '../../../../controls/NumericInput';
-import i18n from '../../../../../../resources/locales/i18n';
+import NumericInput from './NumericInput';
+import i18n from '../../../resources/locales/i18n';
 
 
 export default class ProgramInput extends Component {
@@ -10,7 +10,6 @@ export default class ProgramInput extends Component {
     // updating application state
 
     state = {
-        selectedProgram: ""
     }
 
     onChanged = (text) => {
@@ -29,7 +28,7 @@ export default class ProgramInput extends Component {
                 }
             }
         }
-        this.props.onRepeatValueChange(newText);
+        this.props.onRepeatValueChange(parseInt(newText));
     };
 
     render() {
@@ -39,13 +38,13 @@ export default class ProgramInput extends Component {
             <Picker selectedValue={this.props.selectedProgram}
                     style={{height: 35, width: '60%', marginTop:12.5}} 
                     onValueChange={(itemValue, itemIndex) => {
-                            this.setState({selectedProgram: itemValue});
-                            this.props.onProgramSelectionChange(itemValue);
+                            this.props.onProgramSelectionChange(itemValue.toString());
                         }}>
                         {this.props.pickerItems}
             </Picker>
             <View style={{width: '23%'}}></View>
-            <View style={{width: '17%', height: '70%', marginTop: 9}}><NumericInput onchange={this.onChanged} val={this.props.val}></NumericInput></View>
+            <View style={{width: '17%', height: '70%', marginTop: 9}}>
+                <NumericInput onchange={this.props.onRepeatValueChange} val={this.props.val}></NumericInput></View>
         </View>
         );
     }

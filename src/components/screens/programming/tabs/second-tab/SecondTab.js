@@ -13,24 +13,28 @@ import {
 import {FAB} from 'react-native-paper';
 import React from 'react';
 import {
-    programs,
+    blocks,
     add,
     addAt,
     swap,
     remove,
-    addProgramsChangeListener,
-    updateProgram,
-    updateRepeatValue
-} from '../../../../../stores/ProgramsStore';
-import ProgramInput from './ProgramInput';
-import { Block, Program } from '../../../../../model/DatabaseModels';
-var RobbyDatabaseAction = require('../../../../../database/RobbyDatabaseActions');
+    addBlocksChangeListener,
+    updateBlock,
+    updateRepeatValue,
+    refreshPickerItems,
+    loadProgramByName,
+    addPickerItemsChangeListener,
+    addProgramNameChangeListener,
+    addLoadedProgramChangeListener
+} from '../../../../../stores/BlocksStore';
+import ProgramInput from '../../../../controls/ProgramInput';
+import { Block } from '../../../../../model/DatabaseModels';
 export default class SecondTab extends Component {
     
     // TODO: Replace static text with translated Text!!
     
     state = {
-        programs: programs,
+        blocks: blocks,
         programName: "",
         pickerItems: [],
         selected: -1, // id of currently selected row
@@ -39,16 +43,7 @@ export default class SecondTab extends Component {
     };
 
     componentDidMount() {
-        if(this.state.loadedProgram){
-            this.state.pickerItems = RobbyDatabaseAction.findAllNotCircular(this.state.loadedProgram).map((prog) => {
-                return prog.name;
-            });
-            //TODO: load
-            this.state.programName = this.state.loadedProgram.name;
-        }else{
-            this.state.pickerItems = RobbyDatabaseAction.findAll();
-        }
-        this.setState({});
+        refreshPickerItems();
     }
 
     componentWillUnmount() {
@@ -56,47 +51,31 @@ export default class SecondTab extends Component {
 
     constructor(props) {
         super(props);
-        addProgramsChangeListener((programs) => {
-            this.setState({programs: programs});
+        addPickerItemsChangeListener((items) => {
+            this.setState({pickerItems: items});
         });
-    }
-
-    save() {
-        var result = false;
-        let blocks = [];
-        var program;
-            this.state.programs.forEach((program) => {
-                if(program && program.rep && program.id > 0){
-                    blocks.push(new Block(program.ref, program.rep));
-                }
-            });
-            
-        if(this.state.loadedProgram){
-            program = this.state.loadedProgram;
-            program.blocks = blocks;
-            program.name = this.state.programName; 
-            result = RobbyDatabaseAction.save(program);
-            alert("save");
-        } else {     
-            var program = new Program(this.state.programName, false, [], blocks); 
-            result = RobbyDatabaseAction.add(program);
+        addBlocksChangeListener((blocks) => {
+            this.setState({blocks: blocks});
+        });
+        addProgramNameChangeListener((name) => {
+            this.setState({programName: name});
+        });
+        addLoadedProgramChangeListener((program) => {
             this.setState({loadedProgram: program});
-            alert("add");
-        }
-        alert(result);
+        });
     }
 
     render() {
         let select_controls;
-        let pickerItems = [<Picker.Item label='Select a program'/>];
+        let items = [<Picker.Item label='Select a program'/>];
         this.state.pickerItems.forEach((p) => {
-            pickerItems.push(<Picker.Item label={p.name} value={p.id} />)
+            items.push(<Picker.Item label={p.name} value={p.id} />)
         })
         if (this.state.selected >= 0) {
             select_controls =
                 <View>
                     <FAB
-                        disabled={programs.length <= 1}
+                        disabled={blocks.length <= 1}
                         style={styles.delete}
                         icon="delete"
                         onPress={() => {
@@ -120,7 +99,7 @@ export default class SecondTab extends Component {
                         }}
                     />
                     <FAB
-                        disabled={this.state.selected >= programs.length - 1}
+                        disabled={this.state.selected >= blocks.length - 1}
                         style={styles.move_down}
                         icon="arrow-downward"
                         onPress={() => {   
@@ -145,7 +124,7 @@ export default class SecondTab extends Component {
                     resetScrollToCoords={{x: 0, y: 0}}
                     scrollEnabled={true}>
                     <FlatList 
-                        data={this.state.programs} 
+                        data={this.state.blocks} 
                         extraData={this.state} 
                         keyExtractor={(item, index) => index.toString()} 
                         renderItem={({item, index}) => (
@@ -159,10 +138,10 @@ export default class SecondTab extends Component {
                             }
                         }}>
                         <ProgramInput index={index} selected={this.state.selected}
-                            pickerItems={pickerItems}
-                            selectedProgram={this.state.programs[index].ref}
+                            pickerItems={items}
+                            selectedProgram={this.state.blocks[index].ref}
                             onRepeatValueChange = {(value) => {
-                                updateRepeatValue(index, value);
+                                updateRepeatValue(index, parseInt(value));                     
                                 this.setState({
                                     selected: -1,
                                 });
@@ -170,23 +149,16 @@ export default class SecondTab extends Component {
                             }
 
                             onProgramSelectionChange = {(value) => {
-                                updateProgram(index, value);
+                                updateBlock(index, value);
                                 this.setState({
                                      selected: -1,
                                 });
                             }}
-                            val={parseInt(this.state.programs[index].rep)}></ProgramInput>
+                            val={parseInt(this.state.blocks[index].rep)}></ProgramInput>
                         </TouchableOpacity>
                     )} />
-                    <Button title="Save" onPress={() => {
-                            this.save();
-                        }
-                        } />
                         <Button title="Load" onPress={()=>{
-                            var loadedProgram = RobbyDatabaseAction.findOne("Test");
-                            this.setState({loadedProgram: loadedProgram});
-                            this.setState({programName: loadedProgram.name});
-                            this.setState({programs: loadedProgram.blocks});
+                            loadProgramByName("Model4");
                         }} />
                 </ScrollView>
                 <View>
@@ -196,9 +168,9 @@ export default class SecondTab extends Component {
                         onPress={() => {
                             let curr = this.state.selected;
                             if (curr == -1) {
-                                add({ref: undefined, rep: 1});
+                                add( new Block(undefined,1));
                             } else {
-                                addAt(curr + 1, {ref: undefined, rep: 1});
+                                addAt(curr + 1, new Block(undefined,1));
                             }
                         }}
                     />

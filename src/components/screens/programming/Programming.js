@@ -7,6 +7,7 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import {MainTab, MixedViewTab, SecondTab} from './tabs/index';
 import RobotProxy from '../../../communication/RobotProxy';
 import {speeds, add, removeAll, addSpeedChangeListener} from '../../../stores/SpeedsStore';
+import {blocks, addBlocksChangeListener} from '../../../stores/BlocksStore'
 import {
     addDeviceNameChangeListener,
     getDeviceName,
@@ -20,6 +21,7 @@ import {
 import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import i18n from '../../../../resources/locales/i18n';
+import {storeBlocks, newBlocksProgram} from '../../../stores/BlocksStore';
 
 
 export default class Programming extends Component {
@@ -32,6 +34,9 @@ export default class Programming extends Component {
         speeds: speeds,
         stop_btn_disabled: true,
         remaining_btns_disabled: true,
+        blocks: blocks,
+        currentRoute: "First",
+        save_and_new_btn_disabled: false
     };
 
     constructor(props) {
@@ -42,6 +47,9 @@ export default class Programming extends Component {
         addSpeedChangeListener((speeds) => {
             this.setState({speeds: speeds});
         });
+        addBlocksChangeListener((blocks) => {
+            this.setState({blocks: blocks});
+        })
     }
 
     // gets the current screen from navigation state
@@ -121,6 +129,12 @@ export default class Programming extends Component {
         }
     }
 
+    save = ()=> {
+        alert("store speeds (placeholder)");
+    }
+    clear = () => {
+        alert("clear speeds (placeholder)");
+    }
     render() {
         return (
             <View style={[styles.container]}>
@@ -223,6 +237,33 @@ export default class Programming extends Component {
                     onNavigationStateChange={(prevState, currentState, action) => {
                         const currentScreen = this.getActiveRouteName(currentState);
                         const prevScreen = this.getActiveRouteName(prevState);
+                        this.setState({currentRoute: currentScreen});
+                        switch(currentScreen){
+                            case "First":
+                                this.setState({save_and_new_btn_disabled: false});
+                                this.save = () => {
+                                    alert("store speeds (placeholder)");
+                                    //storeSpeeds()
+                                }
+                                this.clear = () => {
+                                    alert("clear speeds (placeholder)");
+                                }
+                                break;
+                            case "Second":
+                                    this.setState({save_and_new_btn_disabled: false});
+                                    this.save = () => {
+                                        storeBlocks();
+                                    }
+                                    this.clear = () => {
+                                        newBlocksProgram();
+                                    }
+                                    break;
+                            default:
+                                    this.setState({save_and_new_btn_disabled: true});
+                                    this.clear = undefined;
+                                    this.save = undefined;
+                                    break;
+                        }
                     }}
                 />
                 <Appbar style={styles.bottom}>
@@ -283,9 +324,18 @@ export default class Programming extends Component {
                                        RobotProxy.upload(this.state.speeds);
                                    }}/>
                     <Appbar.Action  icon="save"
-                                    size={32} />
-                    <Appbar.Action  icon="add-box"
-                                    size={32} />
+                                    size={32}
+                                    disabled={this.state.save_and_new_btn_disabled}
+                                    onPress={() =>{
+                                        this.save();
+                                    }} />
+                    <Appbar.Action  icon="delete"
+                                    size={32}
+                                    disabled={this.state.save_and_new_btn_disabled}
+                                    onPress={() => {
+                                        this.clear();
+                                    }}
+                                    />
 
 
                 </Appbar>

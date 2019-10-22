@@ -2,12 +2,12 @@ import uuidv4 from 'uuid/v4';
 import {RobbyDatabaseAction} from '../database/RobbyDatabaseActions';
 
 export class Program {
-    constructor(name, primitive, steps = [], blocks = [], id = uuidv4(), date = new Date(Date.now())) {
+    constructor(name, programType, steps = [], blocks = [], id = uuidv4(), date = new Date(Date.now())) {
 
         this.id = id;
         this.name = name;
         this.date = date;
-        this.primitive = primitive;
+        this.programType = programType;
         if (steps instanceof Array) {
             this.steps = steps;
         } else {

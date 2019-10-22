@@ -10,7 +10,7 @@ import {
     Platform,
     ScrollView,
 } from 'react-native';
-import SpeedInput from './SpeedInput';
+import SpeedInput from '../../../../controls/SpeedInput';
 import {FAB} from 'react-native-paper';
 import React from 'react';
 import {

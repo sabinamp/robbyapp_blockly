@@ -80,6 +80,7 @@ let RobbyDatabaseAction = {
             });
             return true;
         } catch (e) {
+            alert(e); // TODO: remove?
             return false;
         }
 

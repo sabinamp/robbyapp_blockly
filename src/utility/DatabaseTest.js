@@ -39,7 +39,7 @@ export class DatabaseTest {
         let amount = 10;
         let i;
         for (i = 0; i < this.amount; i++) {
-            RobbyDatabaseAction.add(new Program(this.basename + i, ProgramType.BLOCKS, [], [new Block(firstProgram.id, 1)]));
+            var result = RobbyDatabaseAction.add(new Program(this.basename + i, ProgramType.BLOCKS, [], [new Block(firstProgram.id, 17)]));
         }
         let l = RobbyDatabaseAction.findAll().length;
         console.log('Database has this amount of entries: ' + l);
@@ -81,14 +81,13 @@ export class DatabaseTest {
         RobbyDatabaseAction.add(new Program('you can use me', ProgramType.STEPS));
         console.log('Ready');
         console.log(a);
-        console.log(RobbyDatabaseAction.findAllNotCircular(a));
+        console.log(RobbyDatabaseAction.findAllWhichCanBeAddedTo(a));
     }
 
     findOneByPK() {
         this.creatingDatabaseEntriesWithDependencies();
-
         let pk = RobbyDatabaseAction.findAll()[0].id;
-        console.log(pk);
-        console.log(RobbyDatabaseAction.findOneByPK(pk));
+        //console.log(pk);
+        //console.log(RobbyDatabaseAction.findOneByPK(pk));
     }
 }
