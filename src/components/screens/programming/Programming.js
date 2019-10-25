@@ -85,6 +85,17 @@ export default class Programming extends Component {
         return route.routeName;
     }
 
+    handleDisconnect() {
+        setDeviceName({device: i18n.t('Programming.noConnection')});
+        setInterval(0, error => this.handleDisconnect());
+        setConnected(false);
+        this.setState({
+            device: undefined,
+            remaining_btns_disabled: true,
+            stop_btn_disabled: true,
+        });
+    }
+
     // handles messages from the communcation system
     handleCommunicationMessages(name) {
         setDeviceName({device: name.substr(name.length - 5)});
@@ -105,7 +116,7 @@ export default class Programming extends Component {
     handleResponse(res) {
         switch (res.type) {
             case 'interval':
-                setInterval(res.value);
+                setInterval(res.value, error => this.handleDisconnect());
                 break;
             case 'speedLine':
                 add({left: res.left, right: res.right});
@@ -192,7 +203,7 @@ export default class Programming extends Component {
                                     (error) => {
                                         console.log('Error: ' + error);
                                         setDeviceName({device: i18n.t('Programming.noConnection')});
-                                        setInterval(0);
+                                        setInterval(0, error => this.handleDisconnect());
                                         setConnected(false);
                                         this.setState({
                                             remaining_btns_disabled: true,
@@ -225,7 +236,7 @@ export default class Programming extends Component {
                     <Appbar.Action icon="stop" size={32}
                                    disabled={this.state.stop_btn_disabled}
                                    onPress={() => {
-                                       RobotProxy.stop();
+                                       RobotProxy.stop(error => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="play-arrow"
                                    size={32}
@@ -235,7 +246,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.run();
+                                       RobotProxy.run(error => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="fiber-manual-record"
                                    size={32}
@@ -245,7 +256,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.record(getDuration(), getInterval());
+                                       RobotProxy.record(getDuration(), getInterval(), error => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="fast-forward"
                                    size={32}
@@ -255,7 +266,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.go(getLoopCounter());
+                                       RobotProxy.go(getLoopCounter(), error => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="file-download"
                                    size={32}
@@ -266,7 +277,7 @@ export default class Programming extends Component {
                                            remaining_btns_disabled: true,
                                        });
                                        removeAll();
-                                       RobotProxy.download();
+                                       RobotProxy.download(error => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="file-upload"
                                    size={32}
@@ -276,7 +287,9 @@ export default class Programming extends Component {
                                            stop_btn_disabled: true,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.upload(this.state.speeds);
+                                       RobotProxy.upload(this.state.speeds, (error) => {
+                                           this.handleDisconnect();
+                                       });
                                    }}/>
                     <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
                                    style={{position: 'absolute', right: 0}}
@@ -285,14 +298,7 @@ export default class Programming extends Component {
                                    onPress={() => {
                                        if (RobotProxy.isConnected) {
                                            RobotProxy.disconnect();
-                                           setDeviceName({device: i18n.t('Programming.noConnection')});
-                                           setInterval(0);
-                                           setConnected(false);
-                                           this.setState({
-                                               device: undefined,
-                                               remaining_btns_disabled: true,
-                                               stop_btn_disabled: true,
-                                           });
+                                           this.handleDisconnect();
                                        } else {
                                            // init scanning for robots over ble
                                            this.setState({
