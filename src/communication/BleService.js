@@ -45,6 +45,16 @@ class BleService {
         }, true);
     }
 
+    checkDeviceScanStatus(errorHandler, successHandler) {
+        this.manager.startDeviceScan(null, null, ((error, scannedDevice) => {
+            if (error) {
+                errorHandler(error);
+            } else {
+                successHandler(true);
+            }
+        }));
+    }
+
     scanningForRobots(errorHandler, deviceHandler) {
         console.log('BleService scanning...');
         //        // Just for testing
@@ -68,7 +78,6 @@ class BleService {
                 // error.errorCode == BleErrorCode.BluetoothPoweredOff (102) if bluetooth is turned off
                 // error.errorCode == BleErrorCode.LocationServicesDisabled (601) if location is turned off
                 // Probably other error codes should be supported as well.
-
                 // Handle error (scanning will be stopped automatically)
                 errorHandler(error);
                 return;

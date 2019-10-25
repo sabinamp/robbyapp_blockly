@@ -32,16 +32,44 @@ export default class Programming extends Component {
         speeds: speeds,
         stop_btn_disabled: true,
         remaining_btns_disabled: true,
+        ble_connection: {
+            allowed: false,
+            errormessage: '',
+        },
     };
 
     constructor(props) {
         super(props);
+        RobotProxy.testScan(err => {
+                this.setState({
+                    ble_connection: {
+                        allowed: false,
+                        errormessage: err.message,
+                    },
+                });
+                this.openBLEErrorAlert();
+                console.log('error state is set to ' + this.state.ble_connection.allowed);
+            },
+            dh => {
+                this.setState({
+                    ble_connection: {
+                        allowed: true,
+                        errormessage: '',
+                    },
+                });
+                RobotProxy.stopScanning();
+                console.log('state is set to ' + this.state.ble_connection.allowed);
+            });
         addDeviceNameChangeListener((name) => {
             this.setState({device_name: name});
         });
         addSpeedChangeListener((speeds) => {
             this.setState({speeds: speeds});
         });
+    }
+
+    openBLEErrorAlert() {
+        Alert.alert('BLE Error', this.state.ble_connection.errormessage);
     }
 
     // gets the current screen from navigation state
@@ -131,7 +159,7 @@ export default class Programming extends Component {
                         label: row,
                         selected: false,
                     }))}
-                    visible={this.state.visible}
+                    visible={this.state.visible && this.state.ble_connection.allowed}
                     onCancel={
                         () => {
                             this.setState({
@@ -253,6 +281,7 @@ export default class Programming extends Component {
                     <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
                                    style={{position: 'absolute', right: 0}}
                                    size={32}
+                        // disabled={this.state.ble_connection.allowed}
                                    onPress={() => {
                                        if (RobotProxy.isConnected) {
                                            RobotProxy.disconnect();
@@ -272,16 +301,24 @@ export default class Programming extends Component {
 
                                            RobotProxy.scanningForRobots((error) => {
                                                console.log(error);
+                                               this.setState({
+                                                   ble_connection: {
+                                                       allowed: false,
+                                                       errormessage: error.message,
+                                                   },
+                                               });
+                                               this.openBLEErrorAlert();
                                            }, (device) => {
                                                // collect all devices found and publish them in the Dialog
                                                let devices = this.state.devices;
                                                devices.push(device);
                                                this.setState({devices: devices.sort()});
                                            });
-
                                            setTimeout(() => {
                                                this.setState({visible: true});
                                            }, 500);
+
+
                                        }
                                    }}/>
                 </Appbar>
