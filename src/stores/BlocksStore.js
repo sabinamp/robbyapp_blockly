@@ -4,11 +4,12 @@ var RobbyDatabaseAction = require('../database/RobbyDatabaseActions');
 let loadedProgram = undefined;
 let currentProgramName = "";
 let pickerItems = [];
-let blocks = [new Block(undefined, 1)];
+let blocks = [new Block("", 1)];
 let blockChangeCallbacks = [];
 let programNameChangeCallbacks = [];
 let pickerItemsChangeCallbacks = [];
 let loadedProgramChangeCallbacks = [];
+let programsChangeCallbacks = [];
 
 // Blocks
 
@@ -24,13 +25,13 @@ function addAt(index, block) {
 }
 
 function swap(old_index, new_index) {
-    // TODO: potential swap bug here!
-    const sl = blocks[old_index];
-    const sr = blocks[old_index];
-    blocks[old_index] = blocks[new_index];
-    blocks[old_index] = blocks[new_index];
-    blocks[new_index] = sl;
-    blocks[new_index] = sr;
+    const oref = blocks[old_index].ref;
+    const orep = blocks[old_index].rep;
+
+    blocks[old_index].ref = blocks[new_index].ref;
+    blocks[old_index].rep = blocks[new_index].rep;
+    blocks[new_index].ref = oref;
+    blocks[new_index].rep = orep;
     notifyBlockChangeListeners();
 }
 
@@ -103,8 +104,6 @@ function refreshPickerItems(program) {
     notifyPickerItemsChangeListeners();
 }
 
-
-
 // Loaded Program
 
 function addLoadedProgramChangeListener(fn) {
@@ -128,7 +127,7 @@ function loadProgramByName(name){
 
 function clearBlocksProgram(){
     removeAll();
-    add(new Block(undefined,1));
+    add(new Block("",1));
     loadedProgram = undefined;
     currentProgramName = "";
     refreshPickerItems();
@@ -144,7 +143,19 @@ function notifyAll() {
     notifyLoadedProgramChangeListeners();
     notifyBlockChangeListeners();
     notifyPickerItemsChangeListeners();
+    notifyProgramsChangeListeners();
 }
+
+function addBlocksProgramsChangeListener(fn){
+    programsChangeCallbacks.push(fn);
+}
+
+function notifyProgramsChangeListeners(){
+    programsChangeCallbacks.forEach(listener => {
+        listener();
+    });
+}
+
 
 function storeBlocks() {
         var program;
@@ -162,13 +173,14 @@ function storeBlocks() {
             program.blocks = blocks;
             program.name = currentProgramName;
             RobbyDatabaseAction.save(program);
+            notifyProgramsChangeListeners();
         } else {     
             program = new Program(currentProgramName, ProgramType.BLOCKS, [], blocksToSave); 
             RobbyDatabaseAction.add(program);
             loadedProgram = program;
+            notifyProgramsChangeListeners();
         }
 }
-
 
 // Export
 
@@ -182,6 +194,7 @@ export {
     addLoadedProgramChangeListener,
     addPickerItemsChangeListener,
     addProgramNameChangeListener,
+    addBlocksProgramsChangeListener,
     blocks,
     updateBlock,
     updateRepeatValue,

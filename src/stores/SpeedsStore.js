@@ -4,6 +4,7 @@ var RobbyDatabaseAction = require('../database/RobbyDatabaseActions');
 let speeds = [new Instruction(0,0)]; // containing pairs of speed instructions of left and right wheel in 1-100%
 let speedsChangeCallbacks = [];
 let programNameChangeCallbacks = [];
+let stepsProgramsChangeCallbacks = [];
 let currentProgramName = "";
 let loadedProgram = undefined;
 
@@ -65,13 +66,15 @@ function storeSpeeds() {
     var program;    
         if(loadedProgram){
             program = loadedProgram;
-            program.speeds = speeds;
+            program.steps = speeds;
             program.name = currentProgramName;
             RobbyDatabaseAction.save(program);
+            notifyStepsProgramsChangeListeners();
         } else {     
             program = new Program(currentProgramName, ProgramType.STEPS, speeds); 
             RobbyDatabaseAction.add(program);
             loadedProgram = program;
+            notifyStepsProgramsChangeListeners();
         }
 };
 
@@ -83,8 +86,8 @@ function clearSpeeds(){
 }
 
 function loadSpeedProgramByName(name){
-    loadSpeedProgram = RobbyDatabaseAction.findOne(name);
-    speeds = loadedProgram.speeds;
+    loadedProgram = RobbyDatabaseAction.findOne(name);
+    speeds = loadedProgram.steps;
     currentProgramName = loadedProgram.name;
 
     notifyProgramNameChangeListeners();
@@ -109,7 +112,15 @@ function updateProgramName(name) {
 }
 
 // Other
+function addStepsProgramsChangeListener(fn){
+    stepsProgramsChangeCallbacks.push(fn);
+}
 
+function notifyStepsProgramsChangeListeners() {
+    stepsProgramsChangeCallbacks.forEach(listener => {
+        listener();
+    })
+}
 // Export
 
 export {
@@ -128,4 +139,5 @@ export {
     storeSpeeds,
     clearSpeeds,
     loadSpeedProgramByName,
+    addStepsProgramsChangeListener
 };

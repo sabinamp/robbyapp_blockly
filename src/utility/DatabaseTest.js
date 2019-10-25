@@ -1,5 +1,5 @@
 import RobbyDatabaseAction from '../database/RobbyDatabaseActions';
-import {Block, Program, ProgramType} from '../model/DatabaseModels';
+import {Block, Program, ProgramType, Instruction} from '../model/DatabaseModels';
 import uuidv4 from 'uuid/v4';
 
 export class DatabaseTest {
@@ -78,7 +78,7 @@ export class DatabaseTest {
     recurive() {
         this.creatingDatabaseEntriesWithDependencies();
         let a = RobbyDatabaseAction.findOne(this.basename + 64);
-        RobbyDatabaseAction.add(new Program('you can use me', ProgramType.STEPS));
+        RobbyDatabaseAction.add(new Program('you can use me', ProgramType.STEPS, [new Instruction(50,50), new Instruction(20,90)]));
         console.log('Ready');
         console.log(a);
         console.log(RobbyDatabaseAction.findAllWhichCanBeAddedTo(a));

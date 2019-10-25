@@ -38,7 +38,7 @@ export default class SecondTab extends Component {
         blocks: blocks,
         programName: "",
         pickerItems: [],
-        selected: -1, // id of currently selected row
+        selected: -1, // index currently selected row
         selectedProgram: {},
         loadedProgram: undefined 
     };
@@ -50,12 +50,30 @@ export default class SecondTab extends Component {
     componentWillUnmount() {
     }
 
+    up = () => {
+        let curr = this.state.selected;
+        swap(curr, curr - 1);
+        this.setState({
+            selected: curr - 1,
+        });
+        return null;
+    }
+    down = () => {
+        let curr = this.state.selected;
+        swap(curr, curr + 1);
+        this.setState({
+            selected: curr + 1,
+        });
+        return null;
+    }
+
     constructor(props) {
         super(props);
         addPickerItemsChangeListener((items) => {
             this.setState({pickerItems: items});
         });
         addBlocksChangeListener((blocks) => {
+           // alert(JSON.stringify(blocks));
             this.setState({blocks: blocks});
         });
         addProgramNameChangeListener((name) => {
@@ -81,36 +99,22 @@ export default class SecondTab extends Component {
                         icon="delete"
                         onPress={() => {
                             let curr = this.state.selected;
-                            alert(curr);
                             remove(curr);
                             this.setState({selected: curr - 1});
+                            return;
                         }}
                     />
                     <FAB
-                        disabled={this.state.selected == 0}
+                        disabled={this.state.selected === 0}
                         style={styles.move_up}
                         icon="arrow-upward"
-                        onPress={() => {
-                            let curr = this.state.selected;
-                            alert(curr);
-                            swap(curr, curr - 1);
-                            this.setState({
-                                selected: curr - 1,
-                            });
-                        }}
+                        onPress={this.up}
                     />
                     <FAB
                         disabled={this.state.selected >= blocks.length - 1}
                         style={styles.move_down}
                         icon="arrow-downward"
-                        onPress={() => {   
-                            let curr = this.state.selected;
-                            alert(curr);
-                            swap(curr, curr + 1);
-                            this.setState({
-                                selected: curr + 1,
-                            });
-                        }}
+                        onPress={this.down}
                     />
                 </View>
         }
@@ -124,13 +128,13 @@ export default class SecondTab extends Component {
                     style={{backgroundColor: 'white'}}
                     resetScrollToCoords={{x: 0, y: 0}}
                     scrollEnabled={true}>
-                    <FlatList 
+                    <FlatList
                         data={this.state.blocks} 
                         extraData={this.state} 
                         keyExtractor={(item, index) => index.toString()} 
                         renderItem={({item, index}) => (
-                        <TouchableOpacity
-                        style={{paddingHorizontal: 30, paddingVertical: 10}}
+                        <TouchableOpacity index={index} 
+                        style={parseInt(index) == this.state.selected ? styles.selected_row : styles.row}
                         onPress={() => {
                             if (this.state.selected == parseInt(index)) {
                                 this.setState({selected: -1});
@@ -148,7 +152,6 @@ export default class SecondTab extends Component {
                                 });
                                 }
                             }
-
                             onProgramSelectionChange = {(value) => {
                                 updateBlock(index, value);
                                 this.setState({
@@ -158,9 +161,6 @@ export default class SecondTab extends Component {
                             val={parseInt(this.state.blocks[index].rep)}></ProgramInput>
                         </TouchableOpacity>
                     )} />
-                        <Button title="Load" onPress={()=>{
-                            loadProgramByName("Model4");
-                        }} />
                 </ScrollView>
                 <View>
                     <FAB
@@ -169,9 +169,11 @@ export default class SecondTab extends Component {
                         onPress={() => {
                             let curr = this.state.selected;
                             if (curr == -1) {
-                                add( new Block(undefined,1));
+                                add( new Block("",1));
+                                return;
                             } else {
-                                addAt(curr + 1, new Block(undefined,1));
+                                addAt(curr + 1, new Block("",1));
+                                return;
                             }
                         }}
                     />
@@ -183,18 +185,15 @@ export default class SecondTab extends Component {
 
 }
 const styles = StyleSheet.create({
-    col: {
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: '#FAFAFA',
-        margin: 5,
-    },
     row: {
         height: 60,
         margin: 0,
         width: '100%',
         flexDirection: 'row',
         alignContent: 'center',
+        paddingHorizontal: 30, 
+        paddingVertical: 10,
+        backgroundColor: '#FAFAFA'
     },
     selected_row: {
         height: 60,
@@ -203,6 +202,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderColor: '#d6d6d6',
         borderWidth: 1.0,
+        paddingHorizontal: 30,
+        paddingVertical: 10,
+        backgroundColor: '#FAFAFA'
     },
     view: {
         marginBottom: 55,

@@ -85,6 +85,9 @@ let RobbyDatabaseAction = {
         }
 
     },
+    canBeDeleted : function (program_id): Boolean {
+        return false;
+    },
     delete: function (program_id): String {
         if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false)) {
             try {

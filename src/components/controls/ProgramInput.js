@@ -36,14 +36,14 @@ export default class ProgramInput extends Component {
         return (
             <View key={index} style={parseInt(index) == this.props.selected ? styles.selected_row : styles.row}>
             <Picker selectedValue={this.props.selectedProgram}
-                    style={{height: 35, width: '60%', marginTop:12.5}} 
+                    style={{height: 35, width: '60%'}} 
                     onValueChange={(itemValue, itemIndex) => {
                             this.props.onProgramSelectionChange(itemValue.toString());
                         }}>
                         {this.props.pickerItems}
             </Picker>
             <View style={{width: '23%'}}></View>
-            <View style={{width: '17%', height: '70%', marginTop: 9}}>
+            <View style={{width: '17%', height: '65%'}}>
                 <NumericInput onchange={this.props.onRepeatValueChange} val={this.props.val}></NumericInput></View>
         </View>
         );
@@ -63,8 +63,6 @@ const styles = StyleSheet.create({
         margin: 0,
         width: '100%',
         flexDirection: 'row',
-        borderColor: '#d6d6d6',
-        borderWidth: 1.0,
     },
     numinput: {
         justifyContent: 'center',
@@ -72,6 +70,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '30%',
         height: '70%',
+        
     },
 
 });

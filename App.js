@@ -25,7 +25,7 @@ export default class App extends Component {
         BleService.requestLocationPermission();
         let databasetest = new DatabaseTest();
         databasetest.clearDatabase();
-        //databasetest.recurive();
+        databasetest.recurive();
         //databasetest.findOneByPK();
         //databasetest.updatingEntries();
         //databasetest.createDatabaseEntries();

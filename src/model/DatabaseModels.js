@@ -25,7 +25,7 @@ export class Program {
     }
 
     length() {
-        switch (this.primitive === ProgramType.STEPS) {
+        switch (this.programType === ProgramType.STEPS) {
             case false:
                 return this.steps.length;
             case true:
@@ -37,7 +37,7 @@ export class Program {
         if (program === undefined) {
             return undefined;
         }
-        return new Program(program.name, program.primitive, program.steps, program.blocks, program.id, program.date);
+        return new Program(program.name, program.programType, program.steps, program.blocks, program.id, program.date);
     }
 }
 

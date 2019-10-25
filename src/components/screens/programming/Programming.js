@@ -130,10 +130,10 @@ export default class Programming extends Component {
     }
 
     save = ()=> {
-        alert("store speeds (placeholder)");
+        storeSpeeds();
     }
     clear = () => {
-        alert("clear speeds (placeholder)");
+        clearSpeeds();
     }
     render() {
         return (
@@ -333,10 +333,7 @@ export default class Programming extends Component {
                                     disabled={this.state.save_and_new_btn_disabled}
                                     onPress={() => {
                                         this.clear();
-                                    }}
-                                    />
-
-
+                                    }} />
                 </Appbar>
             </View>
         );
