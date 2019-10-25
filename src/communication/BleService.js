@@ -123,14 +123,14 @@ class BleService {
                     characteristicsUUID,
                     // Add listener to handle responses from connected device
                     (error, characteristic) => {
-                        if (this.c == localc) {
-                            if (error) {
-                                throw error;
+                        if (this.c === localc) {
+                            if (!error) {
+                                let response = Buffer.from(characteristic.value, 'base64').toString(
+                                    'ascii',
+                                );
+                                responseHandler(response);
                             }
-                            response = Buffer.from(characteristic.value, 'base64').toString(
-                                'ascii',
-                            );
-                            responseHandler(response);
+
                         }
                     },
                     transactionId,
@@ -174,7 +174,10 @@ class BleService {
             characteristicsUUID,
             Buffer.from(command).toString('base64'),
             null,
-        );
+        ).catch(reason => {
+            console.log(0);
+            throw reason;
+        });
     }
 
     shutdown() {

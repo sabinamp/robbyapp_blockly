@@ -196,8 +196,10 @@ class RobotProxy {
                     return promise.then((c) => {
                         return BleService.sendCommandToActDevice2('end');
                     }).catch((e) => {
+                        console.log(1);
+                        console.log(e)
                         throw e;
-                        // console.log(e);
+
                     });
                 default:
                     console.log('upload: version not supported: ' + this.version);

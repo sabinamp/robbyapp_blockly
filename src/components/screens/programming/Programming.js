@@ -287,7 +287,10 @@ export default class Programming extends Component {
                                            stop_btn_disabled: true,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.upload(this.state.speeds).catch(e => this.handleDisconnect());
+                                       RobotProxy.upload(this.state.speeds).catch(e => {
+                                           console.log(2);
+                                           this.handleDisconnect();
+                                       });
                                    }}/>
                     <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
                                    style={{position: 'absolute', right: 0}}
