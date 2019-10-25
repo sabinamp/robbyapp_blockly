@@ -53,10 +53,6 @@ class RobotProxy {
                     .then(() => {
                         // connection established, query for I now
                         return BleService.sendCommandToActDevice2('I?');
-                    })
-                    .catch((e) => {
-                        console.log('Device not set');
-                        //console.log(e);
                     });
             },
             errorHandler,
@@ -75,11 +71,7 @@ class RobotProxy {
 
     run() {
         if (this.isConnected) {
-            return BleService.sendCommandToActDevice2('R')
-                .catch((e) => {
-                    throw e;
-                    //console.log(e);
-                });
+            return BleService.sendCommandToActDevice2('R');
         }
     }
 
@@ -87,12 +79,7 @@ class RobotProxy {
     go(loops) {
         if (this.isConnected) {
             this.loops = loops;
-            return BleService.sendCommandToActDevice2('G')
-                .catch((e) => {
-                    throw (e);
-                    // console.log('Device not set');
-                    //console.log(e);
-                });
+            return BleService.sendCommandToActDevice2('G');
         }
     }
 
@@ -101,12 +88,7 @@ class RobotProxy {
         if (this.isConnected) {
             this.isLearning = false;
             this.loops = 0;
-            return BleService.sendCommandToActDevice2('S')
-                .catch((e) => {
-                    throw e;
-                    console.log('Device not set');
-                    //console.log(e);
-                });
+            return BleService.sendCommandToActDevice2('S');
         }
     }
 
@@ -131,11 +113,6 @@ class RobotProxy {
                         })
                         .then((c) => {
                             return BleService.sendCommandToActDevice2('L');
-                        })
-                        .catch((e) => {
-                            throw e;
-                            // console.log('Device not set');
-                            // console.log(e);
                         });
                 default:
                     console.log('record: version not supported: ' + this.version);
@@ -195,11 +172,6 @@ class RobotProxy {
                     }
                     return promise.then((c) => {
                         return BleService.sendCommandToActDevice2('end');
-                    }).catch((e) => {
-                        console.log(1);
-                        console.log(e)
-                        throw e;
-
                     });
                 default:
                     console.log('upload: version not supported: ' + this.version);
@@ -211,11 +183,7 @@ class RobotProxy {
     download() {
         if (this.isConnected) {
             this.isLearning = false;
-            return BleService.sendCommandToActDevice2('B')
-                .catch((e) => {
-                    throw e;
-                    //console.log(e);
-                });
+            return BleService.sendCommandToActDevice2('B');
         }
     }
 
@@ -225,12 +193,8 @@ class RobotProxy {
             return BleService.sendCommandToActDevice2('I' + interval)
                 .then((c) => {
                     BleService.sendCommandToActDevice2('I?');
-                })
-                .catch((e) => {
-                    throw e;
-                    console.log('Device not set');
-                    //console.log(e);
                 });
+
         }
     }
 
@@ -279,11 +243,7 @@ class RobotProxy {
                     var res = {type: 'finishedDriving'};
                     this.loops--;
                     if (this.loops > 0) {
-                        BleService.sendCommandToActDevice2('G')
-                            .catch((e) => {
-                                console.log('Device not set');
-                                // console.log(e);
-                            });
+                        BleService.sendCommandToActDevice2('G');
                     } else {
                         responseHandler(res);
                     }
