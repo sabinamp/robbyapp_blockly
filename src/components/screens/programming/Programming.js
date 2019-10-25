@@ -87,7 +87,7 @@ export default class Programming extends Component {
 
     handleDisconnect() {
         setDeviceName({device: i18n.t('Programming.noConnection')});
-        setInterval(0, error => this.handleDisconnect());
+        setInterval(0);
         setConnected(false);
         this.setState({
             device: undefined,
@@ -116,7 +116,7 @@ export default class Programming extends Component {
     handleResponse(res) {
         switch (res.type) {
             case 'interval':
-                setInterval(res.value, error => this.handleDisconnect());
+                setInterval(res.value);
                 break;
             case 'speedLine':
                 add({left: res.left, right: res.right});
@@ -203,7 +203,7 @@ export default class Programming extends Component {
                                     (error) => {
                                         console.log('Error: ' + error);
                                         setDeviceName({device: i18n.t('Programming.noConnection')});
-                                        setInterval(0, error => this.handleDisconnect());
+                                        setInterval(0);
                                         setConnected(false);
                                         this.setState({
                                             remaining_btns_disabled: true,
@@ -236,7 +236,7 @@ export default class Programming extends Component {
                     <Appbar.Action icon="stop" size={32}
                                    disabled={this.state.stop_btn_disabled}
                                    onPress={() => {
-                                       RobotProxy.stop(error => this.handleDisconnect());
+                                       RobotProxy.stop().catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="play-arrow"
                                    size={32}
@@ -246,7 +246,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.run(error => this.handleDisconnect());
+                                       RobotProxy.run().catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="fiber-manual-record"
                                    size={32}
@@ -256,7 +256,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.record(getDuration(), getInterval(), error => this.handleDisconnect());
+                                       RobotProxy.record(getDuration(), getInterval()).catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="fast-forward"
                                    size={32}
@@ -266,7 +266,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.go(getLoopCounter(), error => this.handleDisconnect());
+                                       RobotProxy.go(getLoopCounter()).catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="file-download"
                                    size={32}
@@ -277,7 +277,7 @@ export default class Programming extends Component {
                                            remaining_btns_disabled: true,
                                        });
                                        removeAll();
-                                       RobotProxy.download(error => this.handleDisconnect());
+                                       RobotProxy.download().catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="file-upload"
                                    size={32}
@@ -287,9 +287,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: true,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.upload(this.state.speeds, (error) => {
-                                           this.handleDisconnect();
-                                       });
+                                       RobotProxy.upload(this.state.speeds).catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
                                    style={{position: 'absolute', right: 0}}
