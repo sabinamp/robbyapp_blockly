@@ -72,6 +72,7 @@ class RobotProxy {
     run() {
         if (this.isConnected) {
             return BleService.sendCommandToActDevice2('R');
+
         }
     }
 
@@ -80,6 +81,7 @@ class RobotProxy {
         if (this.isConnected) {
             this.loops = loops;
             return BleService.sendCommandToActDevice2('G');
+
         }
     }
 
@@ -89,6 +91,7 @@ class RobotProxy {
             this.isLearning = false;
             this.loops = 0;
             return BleService.sendCommandToActDevice2('S');
+
         }
     }
 
@@ -114,6 +117,7 @@ class RobotProxy {
                         .then((c) => {
                             return BleService.sendCommandToActDevice2('L');
                         });
+
                 default:
                     console.log('record: version not supported: ' + this.version);
             }
@@ -184,6 +188,7 @@ class RobotProxy {
         if (this.isConnected) {
             this.isLearning = false;
             return BleService.sendCommandToActDevice2('B');
+
         }
     }
 
@@ -194,7 +199,6 @@ class RobotProxy {
                 .then((c) => {
                     BleService.sendCommandToActDevice2('I?');
                 });
-
         }
     }
 
@@ -244,6 +248,7 @@ class RobotProxy {
                     this.loops--;
                     if (this.loops > 0) {
                         BleService.sendCommandToActDevice2('G');
+
                     } else {
                         responseHandler(res);
                     }

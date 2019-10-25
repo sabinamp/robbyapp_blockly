@@ -316,6 +316,12 @@ export default class Programming extends Component {
                                                });
                                                this.openBLEErrorAlert();
                                            }, (device) => {
+                                               this.setState({
+                                                   ble_connection: {
+                                                       allowed: true,
+                                                       errormessage: '',
+                                                   },
+                                               });
                                                // collect all devices found and publish them in the Dialog
                                                let devices = this.state.devices;
                                                devices.push(device);
