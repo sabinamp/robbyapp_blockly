@@ -1,5 +1,5 @@
 export default {
     APP_NAME: 'explore-it Robotics',
     SHORT_APP_NAME: 'Robotics',
-    VERSION: '6.0.1',
+    VERSION: '0.6.5',
 };
