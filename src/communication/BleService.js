@@ -39,10 +39,20 @@ class BleService {
     checkBluetoothState(stateHandler) {
         // state of Bluetooth on client device (on/off/etc)
         this.manager.onStateChange(state => {
-            if (state == 'PoweredOn') {
+            if (state === 'PoweredOn') {
                 stateHandler();
             }
         }, true);
+    }
+
+    checkDeviceScanStatus(errorHandler, successHandler) {
+        this.manager.startDeviceScan(null, null, ((error, scannedDevice) => {
+            if (error) {
+                errorHandler(error);
+            } else {
+                successHandler(true);
+            }
+        }));
     }
 
     scanningForRobots(errorHandler, deviceHandler) {
@@ -68,7 +78,6 @@ class BleService {
                 // error.errorCode == BleErrorCode.BluetoothPoweredOff (102) if bluetooth is turned off
                 // error.errorCode == BleErrorCode.LocationServicesDisabled (601) if location is turned off
                 // Probably other error codes should be supported as well.
-
                 // Handle error (scanning will be stopped automatically)
                 errorHandler(error);
                 return;
@@ -114,14 +123,14 @@ class BleService {
                     characteristicsUUID,
                     // Add listener to handle responses from connected device
                     (error, characteristic) => {
-                        if (this.c == localc) {
-                            if (error) {
-                                throw error;
+                        if (this.c === localc) {
+                            if (!error) {
+                                let response = Buffer.from(characteristic.value, 'base64').toString(
+                                    'ascii',
+                                );
+                                responseHandler(response);
                             }
-                            response = Buffer.from(characteristic.value, 'base64').toString(
-                                'ascii',
-                            );
-                            responseHandler(response);
+
                         }
                     },
                     transactionId,
@@ -165,7 +174,10 @@ class BleService {
             characteristicsUUID,
             Buffer.from(command).toString('base64'),
             null,
-        );
+        ).catch(reason => {
+            console.log(0);
+            throw reason;
+        });
     }
 
     shutdown() {

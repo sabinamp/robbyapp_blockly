@@ -34,13 +34,38 @@ export default class Programming extends Component {
         instructions: instructions,
         stop_btn_disabled: true,
         remaining_btns_disabled: true,
+
         blocks: blocks,
         currentRoute: "First",
         save_and_new_btn_disabled: false
+        ble_connection: {
+            allowed: false,
+            errormessage: '',
+        },
     };
 
     constructor(props) {
         super(props);
+        RobotProxy.testScan(err => {
+                this.setState({
+                    ble_connection: {
+                        allowed: false,
+                        errormessage: err.message,
+                    },
+                });
+                this.openBLEErrorAlert();
+                console.log('error state is set to ' + this.state.ble_connection.allowed);
+            },
+            dh => {
+                this.setState({
+                    ble_connection: {
+                        allowed: true,
+                        errormessage: '',
+                    },
+                });
+                RobotProxy.stopScanning();
+                console.log('state is set to ' + this.state.ble_connection.allowed);
+            });
         addDeviceNameChangeListener((name) => {
             this.setState({device_name: name});
         });
@@ -50,6 +75,10 @@ export default class Programming extends Component {
         addBlocksChangeListener((blocks) => {
             this.setState({blocks: blocks});
         })
+    }
+
+    openBLEErrorAlert() {
+        Alert.alert('BLE Error', this.state.ble_connection.errormessage);
     }
 
     // gets the current screen from navigation state
@@ -63,6 +92,17 @@ export default class Programming extends Component {
             return this.getActiveRouteName(route);
         }
         return route.routeName;
+    }
+
+    handleDisconnect() {
+        setDeviceName({device: i18n.t('Programming.noConnection')});
+        setInterval(0);
+        setConnected(false);
+        this.setState({
+            device: undefined,
+            remaining_btns_disabled: true,
+            stop_btn_disabled: true,
+        });
     }
 
     // handles messages from the communcation system
@@ -143,7 +183,7 @@ export default class Programming extends Component {
                         label: row,
                         selected: false,
                     }))}
-                    visible={this.state.visible}
+                    visible={this.state.visible && this.state.ble_connection.allowed}
                     onCancel={
                         () => {
                             this.setState({
@@ -267,7 +307,7 @@ export default class Programming extends Component {
                     <Appbar.Action icon="stop" size={32}
                                    disabled={this.state.stop_btn_disabled}
                                    onPress={() => {
-                                       RobotProxy.stop();
+                                       RobotProxy.stop().catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="play-arrow"
                                    size={32}
@@ -277,7 +317,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.run();
+                                       RobotProxy.run().catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="fiber-manual-record"
                                    size={32}
@@ -287,7 +327,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.record(getDuration(), getInterval());
+                                       RobotProxy.record(getDuration(), getInterval()).catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="fast-forward"
                                    size={32}
@@ -297,7 +337,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: false,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.go(getLoopCounter());
+                                       RobotProxy.go(getLoopCounter()).catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="file-download"
                                    size={32}
@@ -308,7 +348,7 @@ export default class Programming extends Component {
                                            remaining_btns_disabled: true,
                                        });
                                        removeAll();
-                                       RobotProxy.download();
+                                       RobotProxy.download().catch(e => this.handleDisconnect());
                                    }}/>
                     <Appbar.Action icon="file-upload"
                                    size={32}
@@ -318,7 +358,52 @@ export default class Programming extends Component {
                                            stop_btn_disabled: true,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.upload(this.state.instructions);
+                                       RobotProxy.upload(this.state.speeds).catch(e => {
+                                           console.log(2);
+                                           this.handleDisconnect();
+                                       });
+                                   }}/>
+                    <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
+                                   style={{position: 'absolute', right: 0}}
+                                   size={32}
+                        // disabled={this.state.ble_connection.allowed}
+                                   onPress={() => {
+                                       if (RobotProxy.isConnected) {
+                                           RobotProxy.disconnect();
+                                           this.handleDisconnect();
+                                       } else {
+                                           // init scanning for robots over ble
+                                           this.setState({
+                                               devices: [],
+                                           });
+
+                                           RobotProxy.scanningForRobots((error) => {
+                                               console.log(error);
+                                               this.setState({
+                                                   ble_connection: {
+                                                       allowed: false,
+                                                       errormessage: error.message,
+                                                   },
+                                               });
+                                               this.openBLEErrorAlert();
+                                           }, (device) => {
+                                               this.setState({
+                                                   ble_connection: {
+                                                       allowed: true,
+                                                       errormessage: '',
+                                                   },
+                                               });
+                                               // collect all devices found and publish them in the Dialog
+                                               let devices = this.state.devices;
+                                               devices.push(device);
+                                               this.setState({devices: devices.sort()});
+                                           });
+                                           setTimeout(() => {
+                                               this.setState({visible: true});
+                                           }, 500);
+
+
+                                       }
                                    }}/>
                     <Appbar.Action  icon="save"
                                     size={32}
