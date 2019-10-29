@@ -26,8 +26,9 @@ import {
     loadProgramByName,
     addPickerItemsChangeListener,
     addProgramNameChangeListener,
-    addLoadedProgramChangeListener
+    addLoadedProgramChangeListener,
 } from '../../../../../stores/BlocksStore';
+import {addStepsProgramsChangeListener} from '../../../../../stores/InstructionsStore';
 import ProgramInput from '../../../../controls/ProgramInput';
 import { Block } from '../../../../../model/DatabaseModels';
 export default class SecondTab extends Component {
@@ -40,11 +41,11 @@ export default class SecondTab extends Component {
         pickerItems: [],
         selected: -1, // index currently selected row
         selectedProgram: {},
-        loadedProgram: undefined 
+        loadedProgram: undefined
     };
 
     componentDidMount() {
-        refreshPickerItems();
+        refreshPickerItems(this.state.loadedProgram);
     }
 
     componentWillUnmount() {
@@ -73,7 +74,6 @@ export default class SecondTab extends Component {
             this.setState({pickerItems: items});
         });
         addBlocksChangeListener((blocks) => {
-           // alert(JSON.stringify(blocks));
             this.setState({blocks: blocks});
         });
         addProgramNameChangeListener((name) => {
@@ -82,6 +82,9 @@ export default class SecondTab extends Component {
         addLoadedProgramChangeListener((program) => {
             this.setState({loadedProgram: program});
         });
+        addStepsProgramsChangeListener(() => {
+            refreshPickerItems()
+        })
     }
 
     clear(){
@@ -89,6 +92,14 @@ export default class SecondTab extends Component {
         remove(curr);
         this.setState({selected: curr - 1});
         return;
+    }
+
+    touchableOpacity_press(index){
+        if (this.state.selected == parseInt(index)) {
+            this.setState({selected: -1});
+        } else {
+            this.setState({selected: parseInt(index)});
+        }
     }
 
     render() {
@@ -138,11 +149,7 @@ export default class SecondTab extends Component {
                         <TouchableOpacity index={index} 
                         style={parseInt(index) == this.state.selected ? styles.selected_row : styles.row}
                         onPress={() => {
-                            if (this.state.selected == parseInt(index)) {
-                                this.setState({selected: -1});
-                            } else {
-                                this.setState({selected: parseInt(index)});
-                            }
+                           this.touchableOpacity_press(index);
                         }}>
                         <ProgramInput index={index} selected={this.state.selected}
                             pickerItems={items}
