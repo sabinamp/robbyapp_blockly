@@ -109,11 +109,6 @@ export default class Programming extends Component {
         });
     }
 
-
-    componentDidMount(): void {
-        console.log(this.state);
-    }
-
     handleResponse(res) {
         switch (res.type) {
             case 'interval':
