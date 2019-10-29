@@ -1,7 +1,6 @@
 import Realm from 'realm';
-import {Block, Program, Speeds} from '../model/DatabaseModels';
+import {Block, Program} from '../model/DatabaseModels';
 import {ProgramSchema, InstructionSchema, BlockSchema, SCHEMA_VERSION, migration} from './RobbyDatabaseSchema';
-import {updateRightSpeed} from '../stores/SpeedsStore';
 import uuidv4 from 'uuid/v4';
 
 let repository = new Realm({

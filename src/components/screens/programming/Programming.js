@@ -6,7 +6,7 @@ import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {MainTab, MixedViewTab, SecondTab} from './tabs/index';
 import RobotProxy from '../../../communication/RobotProxy';
-import {speeds, add, removeAll, addSpeedChangeListener, clearSpeeds, storeSpeeds} from '../../../stores/SpeedsStore';
+import {instructions, add, removeAll, addSpeedChangeListener, clearInstructions, storeInstructions} from '../../../stores/InstructionsStore';
 import {blocks, addBlocksChangeListener} from '../../../stores/BlocksStore'
 import {
     addDeviceNameChangeListener,
@@ -31,7 +31,7 @@ export default class Programming extends Component {
         visible: false,
         device: undefined,
         devices: [],
-        speeds: speeds,
+        instructions: instructions,
         stop_btn_disabled: true,
         remaining_btns_disabled: true,
         blocks: blocks,
@@ -44,8 +44,8 @@ export default class Programming extends Component {
         addDeviceNameChangeListener((name) => {
             this.setState({device_name: name});
         });
-        addSpeedChangeListener((speeds) => {
-            this.setState({speeds: speeds});
+        addSpeedChangeListener((instructions) => {
+            this.setState({instructions: instructions});
         });
         addBlocksChangeListener((blocks) => {
             this.setState({blocks: blocks});
@@ -77,9 +77,7 @@ export default class Programming extends Component {
         });
     }
 
-
     componentDidMount(): void {
-
     }
 
     handleResponse(res) {
@@ -130,10 +128,10 @@ export default class Programming extends Component {
     }
 
     save = ()=> {
-        storeSpeeds();
+        storeInstructions();
     }
     clear = () => {
-        clearSpeeds();
+        clearInstructions();
     }
     render() {
         return (
@@ -242,10 +240,10 @@ export default class Programming extends Component {
                             case "First":
                                 this.setState({save_and_new_btn_disabled: false});
                                 this.save = () => {
-                                    storeSpeeds();
+                                    storeInstructions();
                                 }
                                 this.clear = () => {
-                                    clearSpeeds();
+                                    clearInstructions();
                                 }
                                 break;
                             case "Second":
@@ -320,7 +318,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: true,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.upload(this.state.speeds);
+                                       RobotProxy.upload(this.state.instructions);
                                    }}/>
                     <Appbar.Action  icon="save"
                                     size={32}

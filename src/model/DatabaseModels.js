@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import {RobbyDatabaseAction} from '../database/RobbyDatabaseActions';
+var RobbyDatabaseAction = require('../database/RobbyDatabaseActions');
 
 export class Program {
     constructor(name, programType, steps = [], blocks = [], id = uuidv4(), date = new Date(Date.now())) {
@@ -31,6 +31,33 @@ export class Program {
             case true:
                 return this.blocks.reduce((acc, b) => acc + b.rep * RobbyDatabaseAction.findOneByPK(b.ref).length(), 0);
         }
+    }
+
+    delete(){
+        return RobbyDatabaseAction.delete(this.id);
+    }
+
+    duplicate(){
+        return RobbyDatabaseAction.duplicate(this);
+    }
+
+    flatten(rep = 1){
+        var result = [];
+        if(this.programType === ProgramType.BLOCKS){
+            this.blocks.forEach((block) => {
+                var prg = RobbyDatabaseAction.findOneByPK(block.ref);
+                if(rep){
+                    for(var i = 0; i < rep; i++){
+                        result.push(...prg.flatten(block.rep));
+                    }
+                }
+            });
+        }else{        
+            for(i = 0; i < rep; i++){
+                result.push(...this.steps);
+            }
+        }
+        return result;
     }
 
     static fromDatabase(program) {

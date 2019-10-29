@@ -3,7 +3,7 @@ import {StyleSheet,View, ScrollView, FlatList, TouchableOpacity, Button} from "r
 import {Text} from "react-native-paper";
 var RobbyDatabaseAction = require('../../../../database/RobbyDatabaseActions');
 import { ProgramType } from "../../../../model/DatabaseModels";
-import { loadSpeedProgramByName, addStepsProgramsChangeListener } from "../../../../stores/SpeedsStore";
+import { loadSpeedProgramByName, addStepsProgramsChangeListener } from "../../../../stores/InstructionsStore";
 import { loadProgramByName, addBlocksProgramsChangeListener } from "../../../../stores/BlocksStore";
 
 export default class MixedViewScreen extends Component {
@@ -29,6 +29,30 @@ export default class MixedViewScreen extends Component {
         this.setState({programs: loadedPrograms});
     }
 
+    delete(item){
+        var result = item.delete();
+        var fetchedPrograms = RobbyDatabaseAction.findAll();
+        this.setState({programs: fetchedPrograms});
+        alert(result);
+    }
+
+    duplicate(item){
+        var result = item.duplicate();
+        var fetchedPrograms = RobbyDatabaseAction.findAll();
+        this.setState({programs: fetchedPrograms});
+        alert(result);
+    }
+
+    load(item){
+        if(item.programType === ProgramType.STEPS){
+            loadSpeedProgramByName(item.name);
+            this.props.navigation.navigate("First");
+        }else{
+            loadProgramByName(item.name);
+            this.props.navigation.navigate("Second");
+        }
+    }
+
     render() {
         return (
             <View style={[styles.view, {flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
@@ -45,27 +69,22 @@ export default class MixedViewScreen extends Component {
                             <TouchableOpacity
                                 style={{width: '100%', flexDirection: 'row'}}
                                 onPress={() => {
-                                    if(item.programType === ProgramType.STEPS){
-                                        loadSpeedProgramByName(item.name);
-                                        this.props.navigation.navigate("First");
-                                    }else{
-                                        loadProgramByName(item.name);
-                                        this.props.navigation.navigate("Second");
-                                    }
+                                    this.load(item);
                                 }}>
                                     <View style={{padding: 20, width: '100%', flexDirection: 'row'}}>
-                                    <Text style={{flex: 1}}>{item.name}</Text>
-                                    <View style={{marginRight: 20}}>
-                                    <Button onPress={()=>{
-                                        var result = RobbyDatabaseAction.delete(item.id);
-                                        var fetchedPrograms = RobbyDatabaseAction.findAll();
-                                        this.setState({programs: fetchedPrograms});
-                                        alert(result);
-                                    }} title="Del"/>
-                                    </View>
-                                    <View style={{marginRight: 20}}>
-                                    <Button title="Dup"/>
-                                    </View>
+                                        <Text style={{flex: 1}}>
+                                            {item.name}
+                                        </Text>
+                                        <View style={{marginRight: 20}}>
+                                            <Button onPress={()=>{
+                                                this.delete(item);
+                                            }} title="Delete"/>
+                                        </View>
+                                        <View style={{marginRight: 20}}>
+                                            <Button title="Duplicate" onPress={() => {
+                                                this.duplicate(item);
+                                            }} />
+                                        </View>
                                     </View>
                             </TouchableOpacity>
                         )}

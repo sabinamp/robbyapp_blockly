@@ -1,93 +1,94 @@
 import { ProgramType, Program, Instruction } from '../model/DatabaseModels';
 var RobbyDatabaseAction = require('../database/RobbyDatabaseActions');
 
-let speeds = [new Instruction(0,0)]; // containing pairs of speed instructions of left and right wheel in 1-100%
-let speedsChangeCallbacks = [];
+let instructions = [new Instruction(0,0)]; // containing pairs of speed instructions of left and right wheel in 1-100%
+let instructionsChangeCallbacks = [];
 let programNameChangeCallbacks = [];
 let stepsProgramsChangeCallbacks = [];
 let currentProgramName = "";
 let loadedProgram = undefined;
 
 
-// Speeds
+// Instructions
 
 function add(value) {
-    speeds.push(value);
+    instructions.push(value);
     notifySpeedChangeListeners();
-    return speeds;
+    return instructions;
 }
 
 function addAt(index, value) {
-    speeds.splice(index, 0, value);
+    instructions.splice(index, 0, value);
     notifySpeedChangeListeners();
 }
 
 function swap(old_index, new_index) {
-    const sl = speeds[old_index].left;
-    const sr = speeds[old_index].right;
-    speeds[old_index].left = speeds[new_index].left;
-    speeds[old_index].right = speeds[new_index].right;
-    speeds[new_index].left = sl;
-    speeds[new_index].right = sr;
+    const sl = instructions[old_index].left;
+    const sr = instructions[old_index].right;
+    instructions[old_index].left = instructions[new_index].left;
+    instructions[old_index].right = instructions[new_index].right;
+    instructions[new_index].left = sl;
+    instructions[new_index].right = sr;
     notifySpeedChangeListeners();
 }
 
 function remove(index) {
-    speeds.splice(index, 1);
+    instructions.splice(index, 1);
     notifySpeedChangeListeners();
 }
 
 function removeAll() {
-    speeds = [];
+    instructions = [];
     notifySpeedChangeListeners();
 }
 
 function updateLeftSpeed(index, new_speed) {
-    speeds[index].left = new_speed;
+    instructions[index].left = new_speed;
     notifySpeedChangeListeners();
 }
 
 function updateRightSpeed(index, new_speed) {
-    speeds[index].right = new_speed;
+    instructions[index].right = new_speed;
     notifySpeedChangeListeners();
 }
 
 function addSpeedChangeListener(fn) {
-    speedsChangeCallbacks.push(fn);
+    instructionsChangeCallbacks.push(fn);
 }
 
 function notifySpeedChangeListeners() {
-    speedsChangeCallbacks.forEach(listener => {
-        listener(speeds);
+    instructionsChangeCallbacks.forEach(listener => {
+        listener(instructions);
     });
 }
 
-function storeSpeeds() {
+function storeInstructions() {
     var program;    
         if(loadedProgram){
             program = loadedProgram;
-            program.steps = speeds;
+            program.steps = instructions;
             program.name = currentProgramName;
             RobbyDatabaseAction.save(program);
             notifyStepsProgramsChangeListeners();
         } else {     
-            program = new Program(currentProgramName, ProgramType.STEPS, speeds); 
+            program = new Program(currentProgramName, ProgramType.STEPS, instructions); 
             RobbyDatabaseAction.add(program);
             loadedProgram = program;
             notifyStepsProgramsChangeListeners();
         }
 };
 
-function clearSpeeds(){
-    speeds = [new Instruction(0,0)];
+function clearInstructions(){
+    instructions = [new Instruction(0,0)];
     currentProgramName = "";
+    loadedProgram = undefined;
     notifyProgramNameChangeListeners();
     notifySpeedChangeListeners();
 }
 
 function loadSpeedProgramByName(name){
     loadedProgram = RobbyDatabaseAction.findOne(name);
-    speeds = loadedProgram.steps;
+    instructions = loadedProgram.steps;
     currentProgramName = loadedProgram.name;
 
     notifyProgramNameChangeListeners();
@@ -132,12 +133,12 @@ export {
     updateLeftSpeed,
     updateRightSpeed,
     addSpeedChangeListener,
-    speeds,
+    instructions,
     updateProgramName,
     addProgramNameChangeListener,
     currentProgramName,
-    storeSpeeds,
-    clearSpeeds,
+    storeInstructions,
+    clearInstructions,
     loadSpeedProgramByName,
     addStepsProgramsChangeListener
 };

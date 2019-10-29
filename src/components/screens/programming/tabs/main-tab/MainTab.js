@@ -15,7 +15,7 @@ import SpeedInput from '../../../../controls/SpeedInput';
 import {FAB} from 'react-native-paper';
 import React from 'react';
 import {
-    speeds,
+    instructions,
     add,
     addAt,
     updateLeftSpeed,
@@ -26,28 +26,28 @@ import {
     addProgramNameChangeListener,
     updateProgramName,
     loadSpeedProgramByName,
-    //storeSpeeds,
-    //retrieveSpeeds
-} from '../../../../../stores/SpeedsStore';
+    //storeInstructions,
+    //retrieveInstructions
+} from '../../../../../stores/InstructionsStore';
 import i18n from '../../../../../../resources/locales/i18n';
 import { Instruction } from '../../../../../model/DatabaseModels';
 
 export default class MainTab extends Component {
     state = {
-        speeds: speeds,
+        instructions: instructions,
         selected: -1, // id of currently selected row
         programName: ""
     };
 
     componentDidMount() {
-        //retrieveSpeeds;
-        //storeSpeeds;
+        //retrieveInstructions;
+        //storeInstructions;
     }
 
     constructor(props) {
         super(props);
-        addSpeedChangeListener((speeds) => {
-            this.setState({speeds: speeds});
+        addSpeedChangeListener((instructions) => {
+            this.setState({instructions: instructions});
         });
         addProgramNameChangeListener((name)=>{
             this.setState({programName: name});
@@ -74,7 +74,7 @@ export default class MainTab extends Component {
             select_controls =
                 <View>
                     <FAB
-                        disabled={speeds.length <= 1}
+                        disabled={instructions.length <= 1}
                         style={styles.delete}
                         icon="delete"
                         onPress={() => {
@@ -96,7 +96,7 @@ export default class MainTab extends Component {
                         }}
                     />
                     <FAB
-                        disabled={this.state.selected >= speeds.length - 1}
+                        disabled={this.state.selected >= instructions.length - 1}
                         style={styles.move_down}
                         icon="arrow-downward"
                         onPress={() => {
@@ -125,7 +125,7 @@ export default class MainTab extends Component {
                     resetScrollToCoords={{x: 0, y: 0}}
                     scrollEnabled={true}>
                     <FlatList
-                        data={this.state.speeds}
+                        data={this.state.instructions}
                         extraData={this.state}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item, index}) => (

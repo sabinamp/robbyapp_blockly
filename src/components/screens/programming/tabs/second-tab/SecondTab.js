@@ -84,6 +84,13 @@ export default class SecondTab extends Component {
         });
     }
 
+    clear(){
+        let curr = this.state.selected;
+        remove(curr);
+        this.setState({selected: curr - 1});
+        return;
+    }
+
     render() {
         let select_controls;
         let items = [<Picker.Item label='Select a program'/>];
@@ -97,12 +104,7 @@ export default class SecondTab extends Component {
                         disabled={blocks.length <= 1}
                         style={styles.delete}
                         icon="delete"
-                        onPress={() => {
-                            let curr = this.state.selected;
-                            remove(curr);
-                            this.setState({selected: curr - 1});
-                            return;
-                        }}
+                        onPress={this.clear}
                     />
                     <FAB
                         disabled={this.state.selected === 0}
