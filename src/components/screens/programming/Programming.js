@@ -34,10 +34,9 @@ export default class Programming extends Component {
         instructions: instructions,
         stop_btn_disabled: true,
         remaining_btns_disabled: true,
-
         blocks: blocks,
         currentRoute: "First",
-        save_and_new_btn_disabled: false
+        save_and_new_btn_disabled: false,
         ble_connection: {
             allowed: false,
             errormessage: '',
@@ -239,37 +238,47 @@ export default class Programming extends Component {
                                     subtitle={this.state.sub_title}
                                     size={32}/>
                     <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
-                    style={{position: 'absolute', right: 0}}
-                    size={32}
-                    onPress={() => {
-                        if (RobotProxy.isConnected) {
-                            RobotProxy.disconnect();
-                            setDeviceName({device: i18n.t('Programming.noConnection')});
-                            setInterval(0);
-                            setConnected(false);
-                            this.setState({
-                                device: undefined,
-                                remaining_btns_disabled: true,
-                                stop_btn_disabled: true,
-                            });
-                        } else {
-                            // init scanning for robots over ble
-                            this.setState({
-                                devices: [],
-                            });
-                            RobotProxy.scanningForRobots((error) => {
-                                console.log(error);
-                            }, (device) => {
-                                // collect all devices found and publish them in the Dialog
-                                let devices = this.state.devices;
-                                devices.push(device);
-                                this.setState({devices: devices.sort()});
-                            });
-                            setTimeout(() => {
-                                this.setState({visible: true});
-                            }, 500);
-                        }
-                    }}/>
+                                   style={{position: 'absolute', right: 0}}
+                                   size={32}
+                        // disabled={this.state.ble_connection.allowed}
+                                   onPress={() => {
+                                       if (RobotProxy.isConnected) {
+                                           RobotProxy.disconnect();
+                                           this.handleDisconnect();
+                                       } else {
+                                           // init scanning for robots over ble
+                                           this.setState({
+                                               devices: [],
+                                           });
+
+                                           RobotProxy.scanningForRobots((error) => {
+                                               console.log(error);
+                                               this.setState({
+                                                   ble_connection: {
+                                                       allowed: false,
+                                                       errormessage: error.message,
+                                                   },
+                                               });
+                                               this.openBLEErrorAlert();
+                                           }, (device) => {
+                                               this.setState({
+                                                   ble_connection: {
+                                                       allowed: true,
+                                                       errormessage: '',
+                                                   },
+                                               });
+                                               // collect all devices found and publish them in the Dialog
+                                               let devices = this.state.devices;
+                                               devices.push(device);
+                                               this.setState({devices: devices.sort()});
+                                           });
+                                           setTimeout(() => {
+                                               this.setState({visible: true});
+                                           }, 500);
+
+
+                                       }
+                                   }}/>
                 </Appbar>
                 <TabContainer
                     onNavigationStateChange={(prevState, currentState, action) => {
@@ -362,48 +371,6 @@ export default class Programming extends Component {
                                            console.log(2);
                                            this.handleDisconnect();
                                        });
-                                   }}/>
-                    <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
-                                   style={{position: 'absolute', right: 0}}
-                                   size={32}
-                        // disabled={this.state.ble_connection.allowed}
-                                   onPress={() => {
-                                       if (RobotProxy.isConnected) {
-                                           RobotProxy.disconnect();
-                                           this.handleDisconnect();
-                                       } else {
-                                           // init scanning for robots over ble
-                                           this.setState({
-                                               devices: [],
-                                           });
-
-                                           RobotProxy.scanningForRobots((error) => {
-                                               console.log(error);
-                                               this.setState({
-                                                   ble_connection: {
-                                                       allowed: false,
-                                                       errormessage: error.message,
-                                                   },
-                                               });
-                                               this.openBLEErrorAlert();
-                                           }, (device) => {
-                                               this.setState({
-                                                   ble_connection: {
-                                                       allowed: true,
-                                                       errormessage: '',
-                                                   },
-                                               });
-                                               // collect all devices found and publish them in the Dialog
-                                               let devices = this.state.devices;
-                                               devices.push(device);
-                                               this.setState({devices: devices.sort()});
-                                           });
-                                           setTimeout(() => {
-                                               this.setState({visible: true});
-                                           }, 500);
-
-
-                                       }
                                    }}/>
                     <Appbar.Action  icon="save"
                                     size={32}

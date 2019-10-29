@@ -220,7 +220,6 @@ class RobotProxy {
             let speed_r = read_instructions[1] / 2.55 + 0.5;
             if (speed_l < 0)
                 speed_l = 0;
-            }
             if (speed_r < 0) {
                 speed_r = 0;
             }
