@@ -1,6 +1,6 @@
 {
   "name": "Robotics",
-  "version": "0.6.5",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "start": "react-native start",
@@ -18,7 +18,7 @@
     "i18n-js": "^3.3.0",
     "jetifier": "^1.6.4",
     "native-base": "^2.13.8",
-    "prop-types": "^15.7.2",
+    "prop-types": "^15.7.2",70
     "react": "16.8.6",
     "react-art": "^16.10.2",
     "react-dom": "^16.10.2",
