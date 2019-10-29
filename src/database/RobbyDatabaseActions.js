@@ -1,7 +1,6 @@
 import Realm from 'realm';
-import {Block, Program, Speeds} from '../model/DatabaseModels';
+import {Block, Program} from '../model/DatabaseModels';
 import {ProgramSchema, InstructionSchema, BlockSchema, SCHEMA_VERSION, migration} from './RobbyDatabaseSchema';
-import {updateRightSpeed} from '../stores/SpeedsStore';
 import uuidv4 from 'uuid/v4';
 
 let repository = new Realm({
@@ -80,9 +79,13 @@ let RobbyDatabaseAction = {
             });
             return true;
         } catch (e) {
+            alert(e); // TODO: remove?
             return false;
         }
 
+    },
+    canBeDeleted : function (program_id): Boolean {
+        return false;
     },
     delete: function (program_id): String {
         if (!RobbyDatabaseAction.findAll().reduce((acc, p) => acc || isUsed(p, program_id), false)) {

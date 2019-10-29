@@ -3,17 +3,19 @@ import {
     StyleSheet,
     View,
     Text,
+    TextInput,
     KeyboardAvoidingView,
     FlatList,
     TouchableOpacity,
     Platform,
     ScrollView,
+    Button
 } from 'react-native';
-import SpeedInput from './SpeedInput';
+import SpeedInput from '../../../../controls/SpeedInput';
 import {FAB} from 'react-native-paper';
 import React from 'react';
 import {
-    speeds,
+    instructions,
     add,
     addAt,
     updateLeftSpeed,
@@ -21,27 +23,35 @@ import {
     swap,
     remove,
     addSpeedChangeListener,
-    //storeSpeeds,
-    //retrieveSpeeds
-} from '../../../../../stores/SpeedsStore';
+    addProgramNameChangeListener,
+    updateProgramName,
+    loadSpeedProgramByName,
+    //storeInstructions,
+    //retrieveInstructions
+} from '../../../../../stores/InstructionsStore';
 import i18n from '../../../../../../resources/locales/i18n';
+import { Instruction } from '../../../../../model/DatabaseModels';
 
 export default class MainTab extends Component {
     state = {
-        speeds: speeds,
+        instructions: instructions,
         selected: -1, // id of currently selected row
+        programName: ""
     };
 
     componentDidMount() {
-        //retrieveSpeeds;
-        //storeSpeeds;
+        //retrieveInstructions;
+        //storeInstructions;
     }
 
     constructor(props) {
         super(props);
-        addSpeedChangeListener((speeds) => {
-            this.setState({speeds: speeds});
+        addSpeedChangeListener((instructions) => {
+            this.setState({instructions: instructions});
         });
+        addProgramNameChangeListener((name)=>{
+            this.setState({programName: name});
+        })
     }
 
     onChangeLeft(index, text) {
@@ -64,7 +74,7 @@ export default class MainTab extends Component {
             select_controls =
                 <View>
                     <FAB
-                        disabled={speeds.length <= 1}
+                        disabled={instructions.length <= 1}
                         style={styles.delete}
                         icon="delete"
                         onPress={() => {
@@ -86,7 +96,7 @@ export default class MainTab extends Component {
                         }}
                     />
                     <FAB
-                        disabled={this.state.selected >= speeds.length - 1}
+                        disabled={this.state.selected >= instructions.length - 1}
                         style={styles.move_down}
                         icon="arrow-downward"
                         onPress={() => {
@@ -102,6 +112,9 @@ export default class MainTab extends Component {
 
         return (
             <View style={[styles.view, {flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
+                <View style={{marginTop: 30, marginBottom:20, height: 40, width: '80%', flexDirection: 'row'}}>
+                    <TextInput placeholder='Program name...' style={{textAlign: 'center', flex: 2, height: 40, borderBottomColor: '#828282', borderBottomWidth: 1.0}}  value={this.state.programName} onChangeText = { text => {updateProgramName(text)}}/>
+                </View>
                 <View style={{marginTop: 30, height: 20, width: '100%', flexDirection: 'row'}}>
                     <Text style={{flex: 1, textAlign: 'center'}}>L</Text>
                     <Text style={{flex: 2, textAlign: 'center'}}>{i18n.t('MainTab.speed')}</Text>
@@ -112,7 +125,7 @@ export default class MainTab extends Component {
                     resetScrollToCoords={{x: 0, y: 0}}
                     scrollEnabled={true}>
                     <FlatList
-                        data={this.state.speeds}
+                        data={this.state.instructions}
                         extraData={this.state}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item, index}) => (
@@ -154,9 +167,9 @@ export default class MainTab extends Component {
                         onPress={() => {
                             let curr = this.state.selected;
                             if (curr == -1) {
-                                add({left: 0, right: 0});
+                                add(new Instruction(0,0));
                             } else {
-                                addAt(curr + 1, {left: 0, right: 0});
+                                addAt(curr + 1, new Instruction(0,0));
                             }
                         }}
                     />
@@ -165,13 +178,6 @@ export default class MainTab extends Component {
             </View>
         );
     }
-
-    _deleteItem(id) {
-        this.setState({
-            rowToDelete: id,
-        });
-    }
-
 }
 
 const styles = StyleSheet.create({

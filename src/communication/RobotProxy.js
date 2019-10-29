@@ -137,16 +137,16 @@ class RobotProxy {
 
 
     // Uploads speed entries from the app to the robot
-    upload(speeds) {
+    upload(instructions) {
         if (this.isConnected) {
             switch (this.version) {
                 case 1:
                     BleService.sendCommandToActDevice('F');
-                    BleService.sendCommandToActDevice('D' + speeds.length);
+                    BleService.sendCommandToActDevice('D' + instructions.length);
                     BleService.sendCommandToActDevice('I1');
                     BleService.sendCommandToActDevice('E');
-                    for (let i = 0; i < speeds.length; i++) {
-                        let item = speeds[i];
+                    for (let i = 0; i < instructions.length; i++) {
+                        let item = instructions[i];
                         let speed = this.speed_padding(item.left) + ',' + this.speed_padding(item.right) + 'xx';
                         BleService.sendCommandToActDevice(speed);
                     }
@@ -157,7 +157,7 @@ class RobotProxy {
                 case 3:
                     var promise = BleService.sendCommandToActDevice2('F')
                         .then((c) => {
-                            var hex = Number(speeds.length * 2 - 1).toString(16).toUpperCase();
+                            var hex = Number(instructions.length * 2 - 1).toString(16).toUpperCase();
                             while (hex.length < 4) {
                                 hex = '0' + hex;
                             }
@@ -167,8 +167,8 @@ class RobotProxy {
                             return BleService.sendCommandToActDevice2('E');
                         });
 
-                    for (let i = 0; i < speeds.length; i++) {
-                        let item = speeds[i];
+                    for (let i = 0; i < instructions.length; i++) {
+                        let item = instructions[i];
                         let speed = this.speed_padding(item.left) + ',' + this.speed_padding(item.right) + 'xx';
                         promise = promise.then((c) => {
                             return BleService.sendCommandToActDevice2(speed);
@@ -212,14 +212,14 @@ class RobotProxy {
             // Response to I?:  I=02
             console.log('Interval: ' + response);
             let value = parseInt(response.substring(2));
-            responseHandler({type: 'interval', value: value});
-        } else if (response.match('\\b[0-9]{3}\\b,\\b[0-9]{3}\\b')) {
-            let read_speeds = response.trim().split(',');
-            let speed_l = read_speeds[0] / 2.55 + 0.5;
-            let speed_r = read_speeds[1] / 2.55 + 0.5;
-            if (speed_l < 0) {
+
+            responseHandler({type: 'interval', value: value})
+        } else if (response.match("\\b[0-9]{3}\\b,\\b[0-9]{3}\\b")) {
+            let read_instructions = response.trim().split(',');
+            let speed_l = read_instructions[0] / 2.55 + 0.5;
+            let speed_r = read_instructions[1] / 2.55 + 0.5;
+            if (speed_l < 0)
                 speed_l = 0;
-            }
             if (speed_r < 0) {
                 speed_r = 0;
             }

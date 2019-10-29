@@ -1,5 +1,5 @@
 import RobbyDatabaseAction from '../database/RobbyDatabaseActions';
-import {Block, Program, ProgramType} from '../model/DatabaseModels';
+import {Block, Program, ProgramType, Instruction} from '../model/DatabaseModels';
 import uuidv4 from 'uuid/v4';
 
 export class DatabaseTest {
@@ -39,7 +39,7 @@ export class DatabaseTest {
         let amount = 10;
         let i;
         for (i = 0; i < this.amount; i++) {
-            RobbyDatabaseAction.add(new Program(this.basename + i, ProgramType.BLOCKS, [], [new Block(firstProgram.id, 1)]));
+            var result = RobbyDatabaseAction.add(new Program(this.basename + i, ProgramType.BLOCKS, [], [new Block(firstProgram.id, 17)]));
         }
         let l = RobbyDatabaseAction.findAll().length;
         console.log('Database has this amount of entries: ' + l);
@@ -78,17 +78,16 @@ export class DatabaseTest {
     recurive() {
         this.creatingDatabaseEntriesWithDependencies();
         let a = RobbyDatabaseAction.findOne(this.basename + 64);
-        RobbyDatabaseAction.add(new Program('you can use me', ProgramType.STEPS));
+        RobbyDatabaseAction.add(new Program('you can use me', ProgramType.STEPS, [new Instruction(50,50), new Instruction(20,90)]));
         console.log('Ready');
         console.log(a);
-        console.log(RobbyDatabaseAction.findAllNotCircular(a));
+        console.log(RobbyDatabaseAction.findAllWhichCanBeAddedTo(a));
     }
 
     findOneByPK() {
         this.creatingDatabaseEntriesWithDependencies();
-
         let pk = RobbyDatabaseAction.findAll()[0].id;
-        console.log(pk);
-        console.log(RobbyDatabaseAction.findOneByPK(pk));
+        //console.log(pk);
+        //console.log(RobbyDatabaseAction.findOneByPK(pk));
     }
 }

@@ -4,9 +4,10 @@ import {Appbar} from 'react-native-paper';
 import {createAppContainer} from 'react-navigation';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {MainTab, MixedViewTab} from './tabs/index';
+import {MainTab, MixedViewTab, SecondTab} from './tabs/index';
 import RobotProxy from '../../../communication/RobotProxy';
-import {speeds, add, removeAll, addSpeedChangeListener} from '../../../stores/SpeedsStore';
+import {instructions, add, removeAll, addSpeedChangeListener, clearInstructions, storeInstructions} from '../../../stores/InstructionsStore';
+import {blocks, addBlocksChangeListener} from '../../../stores/BlocksStore'
 import {
     addDeviceNameChangeListener,
     getDeviceName,
@@ -20,6 +21,7 @@ import {
 import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import i18n from '../../../../resources/locales/i18n';
+import {storeBlocks, clearBlocksProgram} from '../../../stores/BlocksStore';
 
 
 export default class Programming extends Component {
@@ -29,8 +31,11 @@ export default class Programming extends Component {
         visible: false,
         device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
         devices: [],
-        speeds: speeds,
+        instructions: instructions,
         stop_btn_disabled: true,
+        blocks: blocks,
+        currentRoute: "First",
+        save_and_new_btn_disabled: false,
         remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
         ble_connection: {
             allowed: false,
@@ -63,9 +68,12 @@ export default class Programming extends Component {
         addDeviceNameChangeListener((name) => {
             this.setState({device_name: name});
         });
-        addSpeedChangeListener((speeds) => {
-            this.setState({speeds: speeds});
+        addSpeedChangeListener((instructions) => {
+            this.setState({instructions: instructions});
         });
+        addBlocksChangeListener((blocks) => {
+            this.setState({blocks: blocks});
+        })
     }
 
 
@@ -156,6 +164,12 @@ export default class Programming extends Component {
         }
     }
 
+    save = ()=> {
+        storeInstructions();
+    }
+    clear = () => {
+        clearInstructions();
+    }
     render() {
         return (
             <View style={[styles.container]}>
@@ -217,15 +231,83 @@ export default class Programming extends Component {
                 <Appbar>
                     <Appbar.Action icon="menu" size={32} onPress={() => this.props.navigation.openDrawer()}/>
                     <Appbar.Content style={{position: 'absolute', left: 40}} title="Explore-it" size={32}/>
-                    <Appbar.Content style={{position: 'absolute', right: 0}}
+                    <Appbar.Content style={{position: 'absolute', right: 40}}
                                     title={this.state.device_name}
                                     subtitle={this.state.sub_title}
                                     size={32}/>
+                    <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
+                                   style={{position: 'absolute', right: 0}}
+                                   size={32}
+                        // disabled={this.state.ble_connection.allowed}
+                                   onPress={() => {
+                                       if (RobotProxy.isConnected) {
+                                           RobotProxy.disconnect();
+                                           this.handleDisconnect();
+                                       } else {
+                                           // init scanning for robots over ble
+                                           this.setState({
+                                               devices: [],
+                                           });
+
+                                           RobotProxy.scanningForRobots((error) => {
+                                               console.log(error);
+                                               this.setState({
+                                                   ble_connection: {
+                                                       allowed: false,
+                                                       errormessage: error.message,
+                                                   },
+                                               });
+                                               this.openBLEErrorAlert();
+                                           }, (device) => {
+                                               this.setState({
+                                                   ble_connection: {
+                                                       allowed: true,
+                                                       errormessage: '',
+                                                   },
+                                               });
+                                               // collect all devices found and publish them in the Dialog
+                                               let devices = this.state.devices;
+                                               devices.push(device);
+                                               this.setState({devices: devices.sort()});
+                                           });
+                                           setTimeout(() => {
+                                               this.setState({visible: true});
+                                           }, 500);
+
+
+                                       }
+                                   }}/>
                 </Appbar>
                 <TabContainer
                     onNavigationStateChange={(prevState, currentState, action) => {
                         const currentScreen = this.getActiveRouteName(currentState);
                         const prevScreen = this.getActiveRouteName(prevState);
+                        this.setState({currentRoute: currentScreen});
+                        switch(currentScreen){
+                            case "First":
+                                this.setState({save_and_new_btn_disabled: false});
+                                this.save = () => {
+                                    storeInstructions();
+                                }
+                                this.clear = () => {
+                                    clearInstructions();
+                                }
+                                break;
+                            case "Second":
+                                    this.setState({save_and_new_btn_disabled: false});
+                                    this.save = () => {
+                                        storeBlocks();
+                                    }
+                                    this.clear = () => {
+                                        clearBlocksProgram();
+                                    }
+                                    break;
+                            default:
+                                    this.setState({save_and_new_btn_disabled: true});
+                                    this.clear = undefined;
+                                    this.save = undefined;
+                                    break;
+                        }
                     }}
                 />
                 <Appbar style={styles.bottom}>
@@ -288,48 +370,18 @@ export default class Programming extends Component {
                                            this.handleDisconnect();
                                        });
                                    }}/>
-                    <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
-                                   style={{position: 'absolute', right: 0}}
-                                   size={32}
-                        // disabled={this.state.ble_connection.allowed}
-                                   onPress={() => {
-                                       if (RobotProxy.isConnected) {
-                                           RobotProxy.disconnect();
-                                           this.handleDisconnect();
-                                       } else {
-                                           // init scanning for robots over ble
-                                           this.setState({
-                                               devices: [],
-                                           });
-
-                                           RobotProxy.scanningForRobots((error) => {
-                                               console.log(error);
-                                               this.setState({
-                                                   ble_connection: {
-                                                       allowed: false,
-                                                       errormessage: error.message,
-                                                   },
-                                               });
-                                               this.openBLEErrorAlert();
-                                           }, (device) => {
-                                               this.setState({
-                                                   ble_connection: {
-                                                       allowed: true,
-                                                       errormessage: '',
-                                                   },
-                                               });
-                                               // collect all devices found and publish them in the Dialog
-                                               let devices = this.state.devices;
-                                               devices.push(device);
-                                               this.setState({devices: devices.sort()});
-                                           });
-                                           setTimeout(() => {
-                                               this.setState({visible: true});
-                                           }, 500);
-
-
-                                       }
-                                   }}/>
+                    <Appbar.Action  icon="save"
+                                    size={32}
+                                    disabled={this.state.save_and_new_btn_disabled}
+                                    onPress={() =>{
+                                        this.save();
+                                    }} />
+                    <Appbar.Action  icon="delete"
+                                    size={32}
+                                    disabled={this.state.save_and_new_btn_disabled}
+                                    onPress={() => {
+                                        this.clear();
+                                    }} />
                 </Appbar>
             </View>
         );
@@ -345,11 +397,19 @@ const TabNavigator = createMaterialTopTabNavigator({
             ),
         },
     },
-    Second: {
-        screen: MixedViewTab,
+    Second:{
+        screen: SecondTab,
         navigationOptions: {
             tabBarIcon: ({tintColor}) => (
                 <MaterialCommunityIcon name="page-layout-body" size={24} color={tintColor}/>
+            ),
+        }
+    },
+    Third: {
+        screen: MixedViewTab,
+        navigationOptions: {
+            tabBarIcon: ({tintColor}) => (
+                <MaterialCommunityIcon name="content-copy" size={24} color={tintColor}/>
             ),
         },
     },

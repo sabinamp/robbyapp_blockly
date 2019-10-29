@@ -1,13 +1,13 @@
 import uuidv4 from 'uuid/v4';
-import {RobbyDatabaseAction} from '../database/RobbyDatabaseActions';
+var RobbyDatabaseAction = require('../database/RobbyDatabaseActions');
 
 export class Program {
-    constructor(name, primitive, steps = [], blocks = [], id = uuidv4(), date = new Date(Date.now())) {
+    constructor(name, programType, steps = [], blocks = [], id = uuidv4(), date = new Date(Date.now())) {
 
         this.id = id;
         this.name = name;
         this.date = date;
-        this.primitive = primitive;
+        this.programType = programType;
         if (steps instanceof Array) {
             this.steps = steps;
         } else {
@@ -25,7 +25,7 @@ export class Program {
     }
 
     length() {
-        switch (this.primitive === ProgramType.STEPS) {
+        switch (this.programType === ProgramType.STEPS) {
             case false:
                 return this.steps.length;
             case true:
@@ -33,11 +33,38 @@ export class Program {
         }
     }
 
+    delete(){
+        return RobbyDatabaseAction.delete(this.id);
+    }
+
+    duplicate(){
+        return RobbyDatabaseAction.duplicate(this);
+    }
+
+    flatten(rep = 1){
+        var result = [];
+        if(this.programType === ProgramType.BLOCKS){
+            this.blocks.forEach((block) => {
+                var prg = RobbyDatabaseAction.findOneByPK(block.ref);
+                if(rep){
+                    for(var i = 0; i < rep; i++){
+                        result.push(...prg.flatten(block.rep));
+                    }
+                }
+            });
+        }else{        
+            for(i = 0; i < rep; i++){
+                result.push(...this.steps);
+            }
+        }
+        return result;
+    }
+
     static fromDatabase(program) {
         if (program === undefined) {
             return undefined;
         }
-        return new Program(program.name, program.primitive, program.steps, program.blocks, program.id, program.date);
+        return new Program(program.name, program.programType, program.steps, program.blocks, program.id, program.date);
     }
 }
 

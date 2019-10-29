@@ -148,6 +148,7 @@ android {
     buildTypes {
         debug {
 
+
         }
         release {
             // release build get signed by appcenter !!
