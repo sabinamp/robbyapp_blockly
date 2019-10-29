@@ -1,7 +1,22 @@
-# App to control the robot from explore-it
+# React Native Robotics Programing UI
+
+| Build        | Status           |  
+| ------------- |:---| 
+| [Release]()      | [![Build status](https://build.appcenter.ms/v0.1/apps/16514b80-c28d-43e3-87a8-cea2c095cbe9/branches/master/badge)](https://appcenter.ms)| 
+| [Beta](https://play.google.com/apps/testing/org.exploreit.robotics)   | [![Build status](https://build.appcenter.ms/v0.1/apps/16514b80-c28d-43e3-87a8-cea2c095cbe9/branches/develop/badge)](https://appcenter.ms)      | 
 
 
-To build the app run
+## Development:
+
+This app is based on React Native 0.60.xx. 
+
+### Requirements:
+
+* Node.js  >= 10.0 && < 11.0
+* Npm >= 6.0.0
+* React Native CLI == 0.60.5
+
+### Install:
 
 ```
 $ npm install
@@ -12,8 +27,6 @@ or
 ```
 $ yarn install
 ```
-
-This will download and install all dependencies into directory ``node_modules``.
 
 # Versioning
 
