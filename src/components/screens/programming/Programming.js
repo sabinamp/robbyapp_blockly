@@ -27,11 +27,11 @@ export default class Programming extends Component {
         device_name: getDeviceName(),
         sub_title: i18n.t('Programming.device'),
         visible: false,
-        device: undefined,
+        device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
         devices: [],
         speeds: speeds,
         stop_btn_disabled: true,
-        remaining_btns_disabled: true,
+        remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
         ble_connection: {
             allowed: false,
             errormessage: '',
@@ -67,6 +67,7 @@ export default class Programming extends Component {
             this.setState({speeds: speeds});
         });
     }
+
 
     openBLEErrorAlert() {
         Alert.alert('BLE Error', this.state.ble_connection.errormessage);
@@ -110,7 +111,7 @@ export default class Programming extends Component {
 
 
     componentDidMount(): void {
-
+        console.log(this.state);
     }
 
     handleResponse(res) {
