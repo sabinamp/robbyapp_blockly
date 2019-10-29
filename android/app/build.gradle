@@ -76,8 +76,8 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js",
-    enableHermes: false,  // clean and rebuild if changing
+        entryFile   : "index.js",
+        enableHermes: false,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -157,11 +157,9 @@ android {
             // signingConfig signingConfigs.release
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://facebook.github.io/react-native/docs/signed-apk-android.
-            //  signingConfig signingConfigs.debug
-            // minifyEnabled enableProguardInReleaseBuilds
-            // proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            // release build get signed by appcenter !!
+           // signingConfig signingConfigs.release
+           // minifyEnabled enableProguardInReleaseBuilds
         }
     }
     // applicationVariants are e.g. debug, release
@@ -195,11 +193,11 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     if (enableHermes) {
-      def hermesPath = "../../node_modules/hermesvm/android/";
-      debugImplementation files(hermesPath + "hermes-debug.aar")
-      releaseImplementation files(hermesPath + "hermes-release.aar")
+        def hermesPath = "../../node_modules/hermesvm/android/";
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {
-      implementation jscFlavor
+        implementation jscFlavor
     }
 }
 
