@@ -106,6 +106,7 @@ class RobotProxy {
                     break;
                 case 2:
                 case 3:
+                case 4:
                     return BleService.sendCommandToActDevice2('F')
                         .then((c) => {
                             var hex = Number(interval * duration * 2 - 1).toString(16).toUpperCase();
@@ -155,6 +156,7 @@ class RobotProxy {
 
                 case 2:
                 case 3:
+                case 4:
                     var promise = BleService.sendCommandToActDevice2('F')
                         .then((c) => {
                             var hex = Number(instructions.length * 2 - 1).toString(16).toUpperCase();

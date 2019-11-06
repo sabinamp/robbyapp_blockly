@@ -365,7 +365,7 @@ export default class Programming extends Component {
                                            stop_btn_disabled: true,
                                            remaining_btns_disabled: true,
                                        });
-                                       RobotProxy.upload(this.state.speeds).catch(e => {
+                                       RobotProxy.upload(this.state.instructions).catch(e => {
                                            console.log(2);
                                            this.handleDisconnect();
                                        });
