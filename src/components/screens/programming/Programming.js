@@ -1,12 +1,10 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Alert} from 'react-native';
-import {Appbar} from 'react-native-paper';
-import {createAppContainer} from 'react-navigation';
-import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
+import React, { Component } from 'react';
+import { StyleSheet, View, Alert } from 'react-native';
+import { Appbar } from 'react-native-paper';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {MainTab, MixedViewTab} from './tabs/index';
+import { MainTab } from './tabs/index';
 import RobotProxy from '../../../communication/RobotProxy';
-import {speeds, add, removeAll, addSpeedChangeListener} from '../../../stores/SpeedsStore';
+import { speeds, add, removeAll, addSpeedChangeListener } from '../../../stores/SpeedsStore';
 import {
     addDeviceNameChangeListener,
     getDeviceName,
@@ -17,12 +15,19 @@ import {
     getInterval,
     setInterval,
 } from '../../../stores/SettingsStore';
-import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
+import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import i18n from '../../../../resources/locales/i18n';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
 export default class Programming extends Component {
+    static navigationOptions = {
+        drawerIcon: () => (
+            <Icon style={styles.icon} name="view-compact" size={25} color="#9C27B0" />
+        )
+    }
+
     state = {
         device_name: getDeviceName(),
         sub_title: i18n.t('Programming.device'),
@@ -41,15 +46,15 @@ export default class Programming extends Component {
     constructor(props) {
         super(props);
         RobotProxy.testScan(err => {
-                this.setState({
-                    ble_connection: {
-                        allowed: false,
-                        errormessage: err.message,
-                    },
-                });
-                this.openBLEErrorAlert();
-                console.log('error state is set to ' + this.state.ble_connection.allowed);
-            },
+            this.setState({
+                ble_connection: {
+                    allowed: false,
+                    errormessage: err.message,
+                },
+            });
+            this.openBLEErrorAlert();
+            console.log('error state is set to ' + this.state.ble_connection.allowed);
+        },
             dh => {
                 this.setState({
                     ble_connection: {
@@ -61,10 +66,10 @@ export default class Programming extends Component {
                 console.log('state is set to ' + this.state.ble_connection.allowed);
             });
         addDeviceNameChangeListener((name) => {
-            this.setState({device_name: name});
+            this.setState({ device_name: name });
         });
         addSpeedChangeListener((speeds) => {
-            this.setState({speeds: speeds});
+            this.setState({ speeds: speeds });
         });
     }
 
@@ -87,7 +92,7 @@ export default class Programming extends Component {
     }
 
     handleDisconnect() {
-        setDeviceName({device: i18n.t('Programming.noConnection')});
+        setDeviceName({ device: i18n.t('Programming.noConnection') });
         setInterval(0);
         setConnected(false);
         this.setState({
@@ -99,7 +104,7 @@ export default class Programming extends Component {
 
     // handles messages from the communcation system
     handleCommunicationMessages(name) {
-        setDeviceName({device: name.substr(name.length - 5)});
+        setDeviceName({ device: name.substr(name.length - 5) });
         setConnected(true);
         this.setState({
             visible: false,
@@ -115,7 +120,7 @@ export default class Programming extends Component {
                 setInterval(res.value);
                 break;
             case 'speedLine':
-                add({left: res.left, right: res.right});
+                add({ left: res.left, right: res.right });
                 break;
             case 'finishedDownload':
                 this.setState({
@@ -183,7 +188,7 @@ export default class Programming extends Component {
                             RobotProxy.stopScanning();
 
                             if (result.selectedLabel) {
-                                setDeviceName({device: i18n.t('Programming.connecting')});
+                                setDeviceName({ device: i18n.t('Programming.connecting') });
                                 let deviceName = result.selectedLabel;
                                 RobotProxy.setRobot(deviceName);
                                 RobotProxy.connect(
@@ -198,7 +203,7 @@ export default class Programming extends Component {
                                     // handle all errors
                                     (error) => {
                                         console.log('Error: ' + error);
-                                        setDeviceName({device: i18n.t('Programming.noConnection')});
+                                        setDeviceName({ device: i18n.t('Programming.noConnection') });
                                         setInterval(0);
                                         setConnected(false);
                                         this.setState({
@@ -215,141 +220,137 @@ export default class Programming extends Component {
                     colorAccent="#9c27b0"
                 />
                 <Appbar>
-                    <Appbar.Action icon="menu" size={32} onPress={() => this.props.navigation.openDrawer()}/>
-                    <Appbar.Content style={{position: 'absolute', left: 40}} title="Explore-it" size={32}/>
-                    <Appbar.Content style={{position: 'absolute', right: 0}}
-                                    title={this.state.device_name}
-                                    subtitle={this.state.sub_title}
-                                    size={32}/>
+                    <Appbar.Action icon="menu" size={32} onPress={() => this.props.navigation.openDrawer()} />
+                    <Appbar.Content style={{ position: 'absolute', left: 40 }} title="Explore-it" size={32} />
+                    <Appbar.Content style={{ position: 'absolute', right: 0 }}
+                        title={this.state.device_name}
+                        subtitle={this.state.sub_title}
+                        size={32} />
                 </Appbar>
-                <TabContainer
-                    onNavigationStateChange={(prevState, currentState, action) => {
-                        const currentScreen = this.getActiveRouteName(currentState);
-                        const prevScreen = this.getActiveRouteName(prevState);
-                    }}
-                />
+
                 <Appbar style={styles.bottom}>
                     <Appbar.Action icon="stop" size={32}
-                                   disabled={this.state.stop_btn_disabled}
-                                   onPress={() => {
-                                       RobotProxy.stop().catch(e => this.handleDisconnect());
-                                   }}/>
+                        disabled={this.state.stop_btn_disabled}
+                        onPress={() => {
+                            RobotProxy.stop().catch(e => this.handleDisconnect());
+                        }} />
                     <Appbar.Action icon="play-arrow"
-                                   size={32}
-                                   disabled={this.state.remaining_btns_disabled}
-                                   onPress={() => {
-                                       this.setState({
-                                           stop_btn_disabled: false,
-                                           remaining_btns_disabled: true,
-                                       });
-                                       RobotProxy.run().catch(e => this.handleDisconnect());
-                                   }}/>
+                        size={32}
+                        disabled={this.state.remaining_btns_disabled}
+                        onPress={() => {
+                            this.setState({
+                                stop_btn_disabled: false,
+                                remaining_btns_disabled: true,
+                            });
+                            RobotProxy.run().catch(e => this.handleDisconnect());
+                        }} />
                     <Appbar.Action icon="fiber-manual-record"
-                                   size={32}
-                                   disabled={this.state.remaining_btns_disabled}
-                                   onPress={() => {
-                                       this.setState({
-                                           stop_btn_disabled: false,
-                                           remaining_btns_disabled: true,
-                                       });
-                                       RobotProxy.record(getDuration(), getInterval()).catch(e => this.handleDisconnect());
-                                   }}/>
+                        size={32}
+                        disabled={this.state.remaining_btns_disabled}
+                        onPress={() => {
+                            this.setState({
+                                stop_btn_disabled: false,
+                                remaining_btns_disabled: true,
+                            });
+                            RobotProxy.record(getDuration(), getInterval()).catch(e => this.handleDisconnect());
+                        }} />
                     <Appbar.Action icon="fast-forward"
-                                   size={32}
-                                   disabled={this.state.remaining_btns_disabled}
-                                   onPress={() => {
-                                       this.setState({
-                                           stop_btn_disabled: false,
-                                           remaining_btns_disabled: true,
-                                       });
-                                       RobotProxy.go(getLoopCounter()).catch(e => this.handleDisconnect());
-                                   }}/>
+                        size={32}
+                        disabled={this.state.remaining_btns_disabled}
+                        onPress={() => {
+                            this.setState({
+                                stop_btn_disabled: false,
+                                remaining_btns_disabled: true,
+                            });
+                            RobotProxy.go(getLoopCounter()).catch(e => this.handleDisconnect());
+                        }} />
                     <Appbar.Action icon="file-download"
-                                   size={32}
-                                   disabled={this.state.remaining_btns_disabled}
-                                   onPress={() => {
-                                       this.setState({
-                                           stop_btn_disabled: true,
-                                           remaining_btns_disabled: true,
-                                       });
-                                       removeAll();
-                                       RobotProxy.download().catch(e => this.handleDisconnect());
-                                   }}/>
+                        size={32}
+                        disabled={this.state.remaining_btns_disabled}
+                        onPress={() => {
+                            this.setState({
+                                stop_btn_disabled: true,
+                                remaining_btns_disabled: true,
+                            });
+                            removeAll();
+                            RobotProxy.download().catch(e => this.handleDisconnect());
+                        }} />
                     <Appbar.Action icon="file-upload"
-                                   size={32}
-                                   disabled={this.state.remaining_btns_disabled}
-                                   onPress={() => {
-                                       this.setState({
-                                           stop_btn_disabled: true,
-                                           remaining_btns_disabled: true,
-                                       });
-                                       RobotProxy.upload(this.state.speeds).catch(e => {
-                                           console.log(2);
-                                           this.handleDisconnect();
-                                       });
-                                   }}/>
+                        size={32}
+                        disabled={this.state.remaining_btns_disabled}
+                        onPress={() => {
+                            this.setState({
+                                stop_btn_disabled: true,
+                                remaining_btns_disabled: true,
+                            });
+                            RobotProxy.upload(this.state.speeds).catch(e => {
+                                console.log(2);
+                                this.handleDisconnect();
+                            });
+                        }} />
                     <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
-                                   style={{position: 'absolute', right: 0}}
-                                   size={32}
+                        style={{ position: 'absolute', right: 0 }}
+                        size={32}
                         // disabled={this.state.ble_connection.allowed}
-                                   onPress={() => {
-                                       if (RobotProxy.isConnected) {
-                                           RobotProxy.disconnect();
-                                           this.handleDisconnect();
-                                       } else {
-                                           // init scanning for robots over ble
-                                           this.setState({
-                                               devices: [],
-                                           });
+                        onPress={() => {
+                            if (RobotProxy.isConnected) {
+                                RobotProxy.disconnect();
+                                this.handleDisconnect();
+                            } else {
+                                // init scanning for robots over ble
+                                this.setState({
+                                    devices: [],
+                                });
 
-                                           RobotProxy.scanningForRobots((error) => {
-                                               console.log(error);
-                                               this.setState({
-                                                   ble_connection: {
-                                                       allowed: false,
-                                                       errormessage: error.message,
-                                                   },
-                                               });
-                                               this.openBLEErrorAlert();
-                                           }, (device) => {
-                                               this.setState({
-                                                   ble_connection: {
-                                                       allowed: true,
-                                                       errormessage: '',
-                                                   },
-                                               });
-                                               // collect all devices found and publish them in the Dialog
-                                               let devices = this.state.devices;
-                                               devices.push(device);
-                                               this.setState({devices: devices.sort()});
-                                           });
-                                           setTimeout(() => {
-                                               this.setState({visible: true});
-                                           }, 500);
+                                RobotProxy.scanningForRobots((error) => {
+                                    console.log(error);
+                                    this.setState({
+                                        ble_connection: {
+                                            allowed: false,
+                                            errormessage: error.message,
+                                        },
+                                    });
+                                    this.openBLEErrorAlert();
+                                }, (device) => {
+                                    this.setState({
+                                        ble_connection: {
+                                            allowed: true,
+                                            errormessage: '',
+                                        },
+                                    });
+                                    // collect all devices found and publish them in the Dialog
+                                    let devices = this.state.devices;
+                                    devices.push(device);
+                                    this.setState({ devices: devices.sort() });
+                                });
+                                setTimeout(() => {
+                                    this.setState({ visible: true });
+                                }, 500);
 
 
-                                       }
-                                   }}/>
+                            }
+                        }} />
                 </Appbar>
+                <MainTab />
             </View>
         );
     }
 }
 
-const TabNavigator = createMaterialTopTabNavigator({
+/* const TabNavigator = createMaterialTopTabNavigator({
     First: {
         screen: MainTab,
         navigationOptions: {
-            tabBarIcon: ({tintColor}) => (
-                <MaterialCommunityIcon name="menu" size={24} color={tintColor}/>
+            tabBarIcon: ({ tintColor }) => (
+                <MaterialCommunityIcon name="menu" size={24} color={tintColor} />
             ),
         },
     },
     Second: {
         screen: MixedViewTab,
         navigationOptions: {
-            tabBarIcon: ({tintColor}) => (
-                <MaterialCommunityIcon name="page-layout-body" size={24} color={tintColor}/>
+            tabBarIcon: ({ tintColor }) => (
+                <MaterialCommunityIcon name="page-layout-body" size={24} color={tintColor} />
             ),
         },
     },
@@ -368,7 +369,7 @@ const TabNavigator = createMaterialTopTabNavigator({
     },
 });
 
-const TabContainer = createAppContainer(TabNavigator);
+const TabContainer = createAppContainer(TabNavigator); */
 
 const styles = StyleSheet.create({
     container: {
@@ -402,4 +403,8 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
+    icon: {
+        padding: 0,
+    },
+
 });

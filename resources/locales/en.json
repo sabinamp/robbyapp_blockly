@@ -34,9 +34,10 @@
   },
   "App": {
     "programming": "Programming",
-    "settings": "Settings"
+    "settings": "Settings",
+    "blockprogramming": "Block Programming"
   },
-  "SettingsStore" : {
+  "SettingsStore": {
     "noConnection": "No Connection"
   }
 }

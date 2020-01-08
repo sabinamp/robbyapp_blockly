@@ -1,15 +1,16 @@
-import React, {Component} from 'react';
-import {createAppContainer} from 'react-navigation';
-import {DrawerNavigatorItems, createDrawerNavigator} from 'react-navigation-drawer';
+import React, { Component } from 'react';
+import { createAppContainer } from 'react-navigation';
+import { DrawerNavigatorItems, createDrawerNavigator } from 'react-navigation-drawer';
 import Programming from './src/components/screens/programming/Programming';
 import Settings from './src/components/screens/settings/Settings';
+import BlockProgramming from './src/components/screens/blockpr/BlockProgramming';
 import BleService from './src/communication/BleService';
 import {
     addDeviceNameChangeListener,
     getDeviceName,
 } from './src/stores/SettingsStore';
-import {View, Text, StyleSheet} from 'react-native';
-import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
+import { View, Text, StyleSheet } from 'react-native';
+import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 // import {version} from './package.json';
 import i18n from './resources/locales/i18n';
 import GLOBAL from './src/utility/Global';
@@ -18,14 +19,14 @@ import GLOBAL from './src/utility/Global';
 import * as ut from './src/utility/AppSettings';
 
 export default class App extends Component {
-    state = {device: undefined};
+    state = { device: undefined };
 
     componentDidMount() {
         BleService.requestLocationPermission();
     }
 
     render() {
-        return <DrawerContainer/>;
+        return <DrawerContainer />;
     }
 }
 
@@ -39,7 +40,7 @@ class DrawerContent extends Component {
         console.log('Welcome to ' + GLOBAL.SHORT_APP_NAME);
 
         addDeviceNameChangeListener(name => {
-            this.setState({device_name: name});
+            this.setState({ device_name: name });
         });
     }
 
@@ -47,7 +48,7 @@ class DrawerContent extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.deviceName}>
-                    <Text style={{color: 'white', fontSize: 30}}>
+                    <Text style={{ color: 'white', fontSize: 30 }}>
                         {this.state.device_name}
                     </Text>
                 </View>
@@ -82,8 +83,9 @@ class DrawerContent extends Component {
 
 const DrawerNavigator = createDrawerNavigator(
     {
-        [i18n.t('App.programming')]: {screen: Programming},
-        [i18n.t('App.settings')]: {screen: Settings},
+        [i18n.t('App.programming')]: { screen: Programming },
+        [i18n.t('App.settings')]: { screen: Settings },
+        [i18n.t('App.blockprogramming')]: { screen: BlockProgramming },
     },
     {
         contentComponent: DrawerContent,

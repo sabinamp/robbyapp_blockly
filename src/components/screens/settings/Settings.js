@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text, TextInput, Button} from 'react-native';
-import {Appbar} from 'react-native-paper';
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { Appbar } from 'react-native-paper';
 
 import {
     getDeviceName,
@@ -10,8 +10,8 @@ import {
     getInterval,
     addIntervalChangeListener,
 } from '../../../stores/SettingsStore';
-import {getLoopCounter, setLoopCounter} from '../../../stores/SettingsStore';
-import {getDuration, setDuration} from '../../../stores/SettingsStore';
+import { getLoopCounter, setLoopCounter } from '../../../stores/SettingsStore';
+import { getDuration, setDuration } from '../../../stores/SettingsStore';
 import {
     isConnected,
     addConnectedChangeListener,
@@ -19,12 +19,18 @@ import {
 
 //import { Icon } from 'react-native-elements';
 //import CalibrationInput from './CalibrationInput';
-import {getStatusBarHeight, ifIphoneX} from 'react-native-iphone-x-helper';
+import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 //import i18n from '../../../locales/i18n';
 import i18n from '../../../../resources/locales/i18n';
 import RobotProxy from '../../../communication/RobotProxy';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default class Settings extends Component {
+    static navigationOptions = {
+        drawerIcon: () => (
+            <Icon style={styles.icon} name="settings" size={25} color="#9C27B0" />
+        )
+    }
     state = {
         device_name: getDeviceName(),
         sub_title: i18n.t('Settings.device'),
@@ -37,15 +43,16 @@ export default class Settings extends Component {
     constructor() {
         super();
         addDeviceNameChangeListener(name => {
-            this.setState({device_name: name});
+            this.setState({ device_name: name });
         });
         addIntervalChangeListener(value => {
-            this.setState({interval: value == 0 ? '' : value.toString()});
+            this.setState({ interval: value == 0 ? '' : value.toString() });
         });
         addConnectedChangeListener(value => {
-            this.setState({connected: isConnected()});
+            this.setState({ connected: isConnected() });
         });
     }
+
 
     render() {
         return (
@@ -57,24 +64,24 @@ export default class Settings extends Component {
                         onPress={() => this.props.navigation.openDrawer()}
                     />
                     <Appbar.Content
-                        style={{position: 'absolute', left: 40}}
+                        style={{ position: 'absolute', left: 40 }}
                         title="Explore-it"
                         size={32}
                     />
                     <Appbar.Content
-                        style={{position: 'absolute', right: 0}}
+                        style={{ position: 'absolute', right: 0 }}
                         title={this.state.device_name}
                         subtitle={this.state.sub_title}
                         size={32}
                     />
                 </Appbar>
 
-                <View style={{flex: 1, padding: 40}}>
-                    <Text style={{fontSize: 16, fontWeight: 'bold', paddingBottom: 15}}>
+                <View style={{ flex: 1, padding: 40 }}>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', paddingBottom: 15 }}>
                         {i18n.t('Settings.settings')}
                     </Text>
-                    <View style={{flexDirection: 'row', marginBottom: 10}}>
-                        <Text style={{height: 50, width: '20%', marginLeft: 40}}>
+                    <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                        <Text style={{ height: 50, width: '20%', marginLeft: 40 }}>
                             {i18n.t('Settings.interval')}
                         </Text>
                         <TextInput
@@ -102,16 +109,16 @@ export default class Settings extends Component {
                             }}
                             value={this.state.interval}
                         />
-                        <Text style={{height: 50, marginLeft: 20}}>
+                        <Text style={{ height: 50, marginLeft: 20 }}>
                             {i18n.t('Settings.interval-unit')}
                         </Text>
                     </View>
 
-                    <Text style={{fontSize: 16, fontWeight: 'bold', paddingBottom: 15}}>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', paddingBottom: 15 }}>
                         {i18n.t('Settings.learn')}
                     </Text>
-                    <View style={{flexDirection: 'row', marginBottom: 10}}>
-                        <Text style={{height: 50, width: '20%', marginLeft: 40}}>
+                    <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                        <Text style={{ height: 50, width: '20%', marginLeft: 40 }}>
                             {i18n.t('Settings.duration')}
                         </Text>
                         <TextInput
@@ -136,16 +143,16 @@ export default class Settings extends Component {
                             }}
                             value={this.state.duration}
                         />
-                        <Text style={{height: 50, marginLeft: 20}}>
+                        <Text style={{ height: 50, marginLeft: 20 }}>
                             {i18n.t('Settings.duration-unit')}
                         </Text>
                     </View>
 
-                    <Text style={{fontSize: 16, fontWeight: 'bold', paddingBottom: 15}}>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', paddingBottom: 15 }}>
                         {i18n.t('Settings.play')}
                     </Text>
-                    <View style={{flexDirection: 'row', marginBottom: 10}}>
-                        <Text style={{height: 50, width: '20%', marginLeft: 40}}>
+                    <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                        <Text style={{ height: 50, width: '20%', marginLeft: 40 }}>
                             {i18n.t('Settings.loops')}
                         </Text>
                         <TextInput
@@ -204,4 +211,8 @@ const styles = StyleSheet.create({
             {},
         ),
     },
+    icon: {
+        padding: 0,
+    },
+
 });
