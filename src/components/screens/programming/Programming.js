@@ -20,7 +20,6 @@ import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMateria
 import i18n from '../../../../resources/locales/i18n';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-
 export default class Programming extends Component {
     static navigationOptions = {
         drawerIcon: () => (
@@ -337,39 +336,7 @@ export default class Programming extends Component {
     }
 }
 
-/* const TabNavigator = createMaterialTopTabNavigator({
-    First: {
-        screen: MainTab,
-        navigationOptions: {
-            tabBarIcon: ({ tintColor }) => (
-                <MaterialCommunityIcon name="menu" size={24} color={tintColor} />
-            ),
-        },
-    },
-    Second: {
-        screen: MixedViewTab,
-        navigationOptions: {
-            tabBarIcon: ({ tintColor }) => (
-                <MaterialCommunityIcon name="page-layout-body" size={24} color={tintColor} />
-            ),
-        },
-    },
-}, {
-    tabBarOptions: {
-        activeTintColor: '#9c27b0',
-        inactiveTintColor: 'gray',
-        showLabel: false,
-        indicatorStyle: {
-            backgroundColor: '#9c27b0',
-        },
-        style: {
-            backgroundColor: 'white',
-        },
-        showIcon: true,
-    },
-});
 
-const TabContainer = createAppContainer(TabNavigator); */
 
 const styles = StyleSheet.create({
     container: {
