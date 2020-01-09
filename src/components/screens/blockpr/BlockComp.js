@@ -38,6 +38,7 @@ export default class BlockComp extends React.Component {
 
   receiveStringData(str) {
     this.setState({ steps_as_string: str });
+    updateBlock();
   }
 
   setBlockName(name) {
@@ -51,6 +52,7 @@ export default class BlockComp extends React.Component {
     colorval = "#" + colorstring.substring(1, colorstring.length);
     setColor(colorv);
     setBlockName(name);
+    console.log("name and color: " + this.state);
 
   }
   addStepLeftSpeed(index, text) {
@@ -62,7 +64,7 @@ export default class BlockComp extends React.Component {
   addOneStep(textL, textR) {
     add({ left: parseInt(text), right: parseInt(text) });
   }
-  getGeneratedSteps = (received_string) => {
+  updateBlock = () => {
 
     //result should be a string containing an array such as: "Array [ Object { left: 13, right: 14 }, Object { left: 12, right: 13 }, Object { left: 13, right: 14 }, Object { left: 12, right: 13 }]"
     /*     let words2 = received_string;
@@ -75,10 +77,11 @@ export default class BlockComp extends React.Component {
           console.log("right speed: " + elem.substring(20, 22));
           this.addOneStep(elem.substring(9, 11), elem.substring(20, 22))
         }); */
-    let qsteps = [{ left: 0, right: 0 }];
-    const addStep = (step) => qsteps.push(step);
+
     try {
-      let queue = (new Function('return ' + received_string))();
+      let qsteps = [{ left: 0, right: 0 }];
+      const addStep = (step) => qsteps.push(step);
+      let queue = (new Function('return ' + this.state.steps_as_string))();
 
       if (Array.isArray(qsteps)) {
         console.log(qsteps);
