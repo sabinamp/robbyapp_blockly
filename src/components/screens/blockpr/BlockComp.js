@@ -93,8 +93,8 @@ export default class BlockComp extends React.Component {
     }
 
   }
-  return() {
-    this.render(
+  render() {
+    return (
       <BlocklyWebview
         receiveStringData={() => this.receiveStringData} />
 
