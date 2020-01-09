@@ -59,17 +59,16 @@ export default class BlockComp extends React.Component {
   getGeneratedSteps = (received_string) => {
 
     //result should be a string containing an array such as: "Array [ Object { left: 13, right: 14 }, Object { left: 12, right: 13 }, Object { left: 13, right: 14 }, Object { left: 12, right: 13 }]"
-    let words2 = received_string;
-    let result2 = words2.substring(6, words2.length);
-    let result3 = result2.split('Object');
-
-    result3 = result3.splice(1);
-    result3.forEach(elem => {
-      elem.trim();
-      console.log("left speed" + elem.substring(9, 11));
-      console.log("right speed: " + elem.substring(20, 22));
-      this.addStep(elem.substring(9, 11), elem.substring(20, 22))
-    });
+    /*     let words2 = received_string;
+        let result2 = words2.substring(6, words2.length);
+        let result3 = result2.split('Object');
+        result3 = result3.splice(1);
+        result3.forEach(elem => {
+          elem.trim();
+          console.log("left speed" + elem.substring(9, 11));
+          console.log("right speed: " + elem.substring(20, 22));
+          this.addStep(elem.substring(9, 11), elem.substring(20, 22))
+        }); */
 
     var myObject = (new Function('return ' + received_string))();
     if (Array.isArray(myObject)) {
