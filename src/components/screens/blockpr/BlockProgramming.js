@@ -67,6 +67,7 @@ export default class BlockProgramming extends Component {
         RobotProxy.stopScanning();
         console.log('state is set to ' + this.state.ble_connection.allowed);
       });
+
     addDeviceNameChangeListener((name) => {
       this.setState({ device_name: name });
     });

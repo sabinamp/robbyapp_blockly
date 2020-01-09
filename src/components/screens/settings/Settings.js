@@ -148,36 +148,8 @@ export default class Settings extends Component {
                         </Text>
                     </View>
 
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', paddingBottom: 15 }}>
-                        {i18n.t('Settings.play')}
-                    </Text>
-                    <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                        <Text style={{ height: 50, width: '20%', marginLeft: 40 }}>
-                            {i18n.t('Settings.loops')}
-                        </Text>
-                        <TextInput
-                            style={{
-                                padding: 5,
-                                width: 60,
-                                height: 50,
-                                borderWidth: 1,
-                                borderColor: 'grey',
-                                backgroundColor: 'white',
-                                justifyContent: 'center',
-                            }}
-                            keyboardType="numeric"
-                            textAlign={'center'}
-                            mode="outlined"
-                            onChangeText={text => {
-                                const nr = text.length === 0 ? 0 : parseInt(text);
-                                this.setState({
-                                    loops: text,
-                                });
-                                setLoopCounter(nr);
-                            }}
-                            value={this.state.loops}
-                        />
-                    </View>
+
+
                 </View>
             </View>
         );

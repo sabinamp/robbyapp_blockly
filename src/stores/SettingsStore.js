@@ -41,9 +41,9 @@ function getLoopCounter(): number {
     return loops;
 }
 
-function setLoopCounter(value) {
+/* function setLoopCounter(value) {
     loops = value;
-}
+} */
 
 let duration = 5; // 1-80
 
@@ -102,7 +102,7 @@ export {
     addIntervalChangeListener,
 
     getLoopCounter,
-    setLoopCounter,
+    // setLoopCounter,
 
     getDuration,
     setDuration,
