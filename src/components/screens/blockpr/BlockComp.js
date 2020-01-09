@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import BlocklyWebView from './BlocklyWebView';
-import { getInterval } from '../stores/SettingsStore';
-import { add } from '../../../stores/SpeedsStore';
+import BlocklyWebview from './BlocklyWebview';
+import { add, addSpeedChangeListener } from '../../../stores/SpeedsStore';
 
 export default class BlockComp extends React.Component {
   constructor() {
@@ -96,13 +95,13 @@ export default class BlockComp extends React.Component {
   }
   return() {
     this.render(
-      <BlocklyWebView
+      <BlocklyWebview
         receiveStringData={() => this.receiveStringData} />
 
     );
   }
 
 }
-export default BlockComp;
+
 
 

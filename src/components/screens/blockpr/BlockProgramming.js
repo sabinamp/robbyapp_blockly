@@ -36,6 +36,7 @@ export default class BlockProgramming extends Component {
     connected: isConnected(),
     device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
     devices: [],
+    speeds: [],
     visible: false,
     stop_btn_disabled: true,
     remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
@@ -73,7 +74,9 @@ export default class BlockProgramming extends Component {
     addConnectedChangeListener(value => {
       this.setState({ connected: isConnected() });
     });
-
+    addSpeedChangeListener((speeds) => {
+      this.setState({ speeds: speeds });
+    });
 
   }
 
