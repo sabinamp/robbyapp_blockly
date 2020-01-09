@@ -13,7 +13,7 @@ let workspacePlayground = Blockly.inject('blocklyDiv', {
     wheel: false,
     startScale: 0.9,
     maxScale: 3,
-    minScale: 0.25,
+    minScale: 0.28,
     scaleSpeed: 1.1
   },
   grid:
