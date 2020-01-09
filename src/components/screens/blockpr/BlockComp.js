@@ -37,7 +37,9 @@ export default class BlockComp extends React.Component {
 
   receiveStringData(str) {
     this.setState({ steps_as_string: str });
+    console.log("data received from the embedded web app");
     updateBlock();
+    console.log(this.state);
   }
 
   setBlockName(name) {
@@ -76,20 +78,22 @@ export default class BlockComp extends React.Component {
           console.log("right speed: " + elem.substring(20, 22));
           this.addOneStep(elem.substring(9, 11), elem.substring(20, 22))
         }); */
-
+    let qsteps = [{ left: 0, right: 0 }];
+    const addStep = (step) => qsteps.push(step);
     try {
-      let qsteps = [{ left: 0, right: 0 }];
-      const addStep = (step) => qsteps.push(step);
-      let queue = (new Function('return ' + this.state.steps_as_string))();
 
-      if (Array.isArray(qsteps)) {
-        console.log(qsteps);
-        queue.forEach(element => {
-          add(element);
-        });
-      }
+      //let queue = (new Function('return ' + this.state.steps_as_string))();
+      eval(this.state.steps_as_string);
+      console.log(qsteps);
+
     } catch (e) {
       console.error(e);
+    }
+    if (Array.isArray(qsteps) && qsteps.length > 0) {
+      qsteps.forEach(element => {
+        add(element);
+        console.log(element);
+      });
     }
 
   }

@@ -30,7 +30,6 @@ const BlocklyWebView = ({ receiveStringData }) => {
         javaScriptEnabledAndroid={true}
         onMessage={event => {
           const { data } = event.nativeEvent;
-          console.log(data);
           receiveStringData(data);
           console.log("code from the web app :" + data);
         }}
