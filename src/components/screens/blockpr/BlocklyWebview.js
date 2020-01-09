@@ -7,7 +7,7 @@ const window = Dimensions.get("window");
 
 const blocklywebapp = {
   link: isAndroid ? 'file:///android_asset/blocksv/index.html'
-    : './blocksv1/index.html'
+    : './blocksv/index.html'
 };
 
 

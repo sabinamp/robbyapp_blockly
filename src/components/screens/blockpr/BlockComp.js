@@ -9,7 +9,7 @@ export default class BlockComp extends React.Component {
     this.state = {
       steps_as_string: '',
       block_name: '',
-      steps: [],
+      color: '#000000',
       speeds: [],
     }
     this.receiveStringData = this.receiveStringData.bind(this);
@@ -46,14 +46,20 @@ export default class BlockComp extends React.Component {
   setColor(color) {
     this.setState({ color: color })
   }
+  setBlockNameAndColor(name, colorstring) {
+    //the color from Blockly web app has the format _33ccff
+    colorval = "#" + colorstring.substring(1, colorstring.length);
+    setColor(colorv);
+    setBlockName(name);
 
+  }
   addStepLeftSpeed(index, text) {
     updateLeftSpeed(index, parseInt(text));
   }
   addStepRightSpeed(index, text) {
     updateRightSpeed(index, parseInt(text));
   }
-  addStep(textL, textR) {
+  addOneStep(textL, textR) {
     add({ left: parseInt(text), right: parseInt(text) });
   }
   getGeneratedSteps = (received_string) => {
@@ -67,16 +73,23 @@ export default class BlockComp extends React.Component {
           elem.trim();
           console.log("left speed" + elem.substring(9, 11));
           console.log("right speed: " + elem.substring(20, 22));
-          this.addStep(elem.substring(9, 11), elem.substring(20, 22))
+          this.addOneStep(elem.substring(9, 11), elem.substring(20, 22))
         }); */
+    let qsteps = [{ left: 0, right: 0 }];
+    const addStep = (step) => qsteps.push(step);
+    try {
+      let queue = (new Function('return ' + received_string))();
 
-    var myObject = (new Function('return ' + received_string))();
-    if (Array.isArray(myObject)) {
-      myObject.forEach(element => {
-        add(element);
-        console.log(element);
-      });
+      if (Array.isArray(qsteps)) {
+        console.log(qsteps);
+        queue.forEach(element => {
+          add(element);
+        });
+      }
+    } catch (e) {
+      console.error(e);
     }
+
   }
   return() {
     this.render(
