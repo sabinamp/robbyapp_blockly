@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import RobotProxy from '../../../communication/RobotProxy';
 import { speeds, add, removeAll, addSpeedChangeListener } from '../../../stores/SpeedsStore';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
+import BlockComp from './BlockComp';
 export default class BlockProgramming extends Component {
   static navigationOptions = {
     drawerLabel: 'Code Blocks',
@@ -35,15 +36,13 @@ export default class BlockProgramming extends Component {
     connected: isConnected(),
     device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
     devices: [],
-    speeds: [],
     visible: false,
     stop_btn_disabled: true,
     remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
     ble_connection: {
       allowed: false,
       errormessage: '',
-    },
-
+    }
   };
   constructor(props) {
     super(props);
@@ -76,10 +75,8 @@ export default class BlockProgramming extends Component {
     });
 
 
-    addSpeedChangeListener((speeds) => {
-      this.setState({ speeds: speeds });
-    });
   }
+
 
   openBLEErrorAlert() {
     Alert.alert('BLE Error', this.state.ble_connection.errormessage);
@@ -243,7 +240,8 @@ export default class BlockProgramming extends Component {
           }
           colorAccent="#9c27b0"
         />
-        <View style={[styles.container]}>
+        <View style={styles.container}>
+          <BlockComp />
         </View>
         <Appbar style={styles.bottom}>
           <Appbar.Action icon="stop" size={32}

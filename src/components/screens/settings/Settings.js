@@ -81,7 +81,7 @@ export default class Settings extends Component {
                         {i18n.t('Settings.settings')}
                     </Text>
                     <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                        <Text style={{ height: 50, width: '20%', marginLeft: 40 }}>
+                        <Text style={{ height: 50, width: '20%', marginLeft: 40, marginRight: 5 }}>
                             {i18n.t('Settings.interval')}
                         </Text>
                         <TextInput
@@ -109,7 +109,7 @@ export default class Settings extends Component {
                             }}
                             value={this.state.interval}
                         />
-                        <Text style={{ height: 50, marginLeft: 20 }}>
+                        <Text style={{ height: 50, marginLeft: 15 }}>
                             {i18n.t('Settings.interval-unit')}
                         </Text>
                     </View>
@@ -118,7 +118,7 @@ export default class Settings extends Component {
                         {i18n.t('Settings.learn')}
                     </Text>
                     <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                        <Text style={{ height: 50, width: '20%', marginLeft: 40 }}>
+                        <Text style={{ height: 50, width: '20%', marginLeft: 40, marginRight: 5 }}>
                             {i18n.t('Settings.duration')}
                         </Text>
                         <TextInput
@@ -143,7 +143,7 @@ export default class Settings extends Component {
                             }}
                             value={this.state.duration}
                         />
-                        <Text style={{ height: 50, marginLeft: 20 }}>
+                        <Text style={{ height: 50, marginLeft: 15 }}>
                             {i18n.t('Settings.duration-unit')}
                         </Text>
                     </View>

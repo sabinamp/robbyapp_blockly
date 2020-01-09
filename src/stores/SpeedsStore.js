@@ -1,17 +1,17 @@
-import {AsyncStorage} from 'react-native';
+import { AsyncStorage } from 'react-native';
 
-let speeds = [{left: 0, right: 0}]; // containing pairs of speed instructions of left and right wheel in 1-100%
+let speeds = [{ left: 0, right: 0 }]; // containing pairs of speed instructions of left and right wheel in 1-100%
 let callbacks = [];
 
 function add(value) {
     speeds.push(value);
-    nofitySpeedChangeListeners();
+    notifySpeedChangeListeners();
     return speeds;
 }
 
 function addAt(index, value) {
     speeds.splice(index, 0, value);
-    nofitySpeedChangeListeners();
+    notifySpeedChangeListeners();
 }
 
 function swap(old_index, new_index) {
@@ -21,34 +21,34 @@ function swap(old_index, new_index) {
     speeds[old_index].right = speeds[new_index].right;
     speeds[new_index].left = sl;
     speeds[new_index].right = sr;
-    nofitySpeedChangeListeners();
+    notifySpeedChangeListeners();
 }
 
 function remove(index) {
     speeds.splice(index, 1);
-    nofitySpeedChangeListeners();
+    notifySpeedChangeListeners();
 }
 
 function removeAll() {
     speeds = [];
-    nofitySpeedChangeListeners();
+    notifySpeedChangeListeners();
 }
 
 function updateLeftSpeed(index, new_speed) {
     speeds[index].left = new_speed;
-    nofitySpeedChangeListeners();
+    notifySpeedChangeListeners();
 }
 
 function updateRightSpeed(index, new_speed) {
     speeds[index].right = new_speed;
-    nofitySpeedChangeListeners();
+    notifySpeedChangeListeners();
 }
 
 function addSpeedChangeListener(fn) {
     callbacks.push(fn);
 }
 
-function nofitySpeedChangeListeners() {
+function notifySpeedChangeListeners() {
     callbacks.forEach(listener => {
         listener(speeds);
     });
