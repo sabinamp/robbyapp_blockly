@@ -12,7 +12,7 @@ export default class BlockComp extends React.Component {
       speeds: [],
     }
     this.receiveStringData = this.receiveStringData.bind(this);
-
+    this.updateBlock = this.updateBlock.bind(this);
 
     addSpeedChangeListener((speeds) => {
       this.setState({ speeds: speeds });
@@ -35,12 +35,7 @@ export default class BlockComp extends React.Component {
     
     } */
 
-  receiveStringData(str) {
-    this.setState({ steps_as_string: str });
-    console.log("data received from the embedded web app");
-    updateBlock();
-    console.log(this.state);
-  }
+
 
   setBlockName(name) {
     this.setState({ block_name: name });
@@ -48,14 +43,15 @@ export default class BlockComp extends React.Component {
   setColor(color) {
     this.setState({ color: color })
   }
-  setBlockNameAndColor(name, colorstring) {
+
+  setBlockNameColor(name, colorstring) {
     //the color from Blockly web app has the format _33ccff
     colorval = "#" + colorstring.substring(1, colorstring.length);
     setColor(colorv);
     setBlockName(name);
     console.log("name and color: " + this.state);
-
   }
+
   addStepLeftSpeed(index, text) {
     updateLeftSpeed(index, parseInt(text));
   }
@@ -65,8 +61,7 @@ export default class BlockComp extends React.Component {
   addOneStep(textL, textR) {
     add({ left: parseInt(text), right: parseInt(text) });
   }
-  updateBlock = () => {
-
+  updateBlock() {
     //result should be a string containing an array such as: "Array [ Object { left: 13, right: 14 }, Object { left: 12, right: 13 }, Object { left: 13, right: 14 }, Object { left: 12, right: 13 }]"
     /*     let words2 = received_string;
         let result2 = words2.substring(6, words2.length);
@@ -80,23 +75,30 @@ export default class BlockComp extends React.Component {
         }); */
     let qsteps = [{ left: 0, right: 0 }];
     const addStep = (step) => qsteps.push(step);
+    const setBlockNameAndColor = (n, c) => this.setBlockNameColor(n, c);
     try {
 
       //let queue = (new Function('return ' + this.state.steps_as_string))();
       eval(this.state.steps_as_string);
       console.log(qsteps);
-
     } catch (e) {
       console.error(e);
     }
     if (Array.isArray(qsteps) && qsteps.length > 0) {
       qsteps.forEach(element => {
         add(element);
-        console.log(element);
+        console.log("step:" + element);
       });
     }
-
   }
+
+  receiveStringData(str) {
+    this.setState({ steps_as_string: str });
+    console.log("data received from the embedded web app");
+    this.updateBlock();
+    console.log("block updated" + this.state);
+  }
+
   render() {
     return (
       <BlocklyWebview
