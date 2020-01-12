@@ -6,6 +6,7 @@ import {
     isConnected,
     addConnectedChangeListener,
     addDeviceNameChangeListener,
+    addIntervalChangeListener,
     getDeviceName,
     setDeviceName,
     setConnected,
