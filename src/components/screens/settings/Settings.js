@@ -1,26 +1,22 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Alert } from 'react-native';
 import { Appbar } from 'react-native-paper';
 
 import {
-    getDeviceName,
-    addDeviceNameChangeListener,
-} from '../../../stores/SettingsStore';
-import {
-    getInterval,
-    addIntervalChangeListener,
-} from '../../../stores/SettingsStore';
-import { getLoopCounter, setLoopCounter } from '../../../stores/SettingsStore';
-import { getDuration, setDuration } from '../../../stores/SettingsStore';
-import {
     isConnected,
     addConnectedChangeListener,
+    addDeviceNameChangeListener,
+    getDeviceName,
+    setDeviceName,
+    setConnected,
+    getLoopCounter,
+    getDuration,
+    getInterval,
+    setInterval,
 } from '../../../stores/SettingsStore';
 
-//import { Icon } from 'react-native-elements';
 //import CalibrationInput from './CalibrationInput';
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
-//import i18n from '../../../locales/i18n';
 import i18n from '../../../../resources/locales/i18n';
 import RobotProxy from '../../../communication/RobotProxy';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -151,6 +147,22 @@ export default class Settings extends Component {
 
 
                 </View>
+                <Appbar style={styles.bottom}>
+
+                    <Appbar.Action icon="play-arrow"
+                        size={32}
+                        onPress={() => {
+                            RobotProxy.run().catch(e => this.handleDisconnect());
+                        }} />
+                    <Appbar.Action icon="fiber-manual-record"
+                        size={32}
+                        onPress={() => {
+                            RobotProxy.record(getDuration(), getInterval()).catch(e => this.handleDisconnect());
+                        }} />
+
+
+
+                </Appbar>
             </View>
         );
     }

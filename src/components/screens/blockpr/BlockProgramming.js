@@ -262,16 +262,7 @@ export default class BlockProgramming extends Component {
               });
               RobotProxy.run().catch(e => this.handleDisconnect());
             }} />
-          <Appbar.Action icon="fiber-manual-record"
-            size={32}
-            disabled={this.state.remaining_btns_disabled}
-            onPress={() => {
-              this.setState({
-                stop_btn_disabled: false,
-                remaining_btns_disabled: true,
-              });
-              RobotProxy.record(getDuration(), getInterval()).catch(e => this.handleDisconnect());
-            }} />
+
           <Appbar.Action icon="fast-forward"
             size={32}
             disabled={this.state.remaining_btns_disabled}
