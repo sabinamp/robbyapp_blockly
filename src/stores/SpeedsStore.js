@@ -30,7 +30,8 @@ function remove(index) {
 }
 
 function removeAll() {
-    speeds = [];
+    //speeds = [];
+    speeds.splice(0, speeds.length);
     notifySpeedChangeListeners();
 }
 

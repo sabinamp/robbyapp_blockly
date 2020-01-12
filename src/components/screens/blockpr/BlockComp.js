@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import BlocklyWebview from './BlocklyWebview';
-import { add, addSpeedChangeListener } from '../../../stores/SpeedsStore';
+import { add, removeAll, addSpeedChangeListener } from '../../../stores/SpeedsStore';
 
 export default class BlockComp extends React.Component {
   constructor() {
@@ -85,6 +85,7 @@ export default class BlockComp extends React.Component {
       console.error(e);
     }
     if (Array.isArray(qsteps) && qsteps.length > 0) {
+      removeAll();
       qsteps.forEach(element => {
         add(element);
         console.log("step:" + element);
