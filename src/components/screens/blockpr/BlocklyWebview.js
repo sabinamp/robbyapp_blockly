@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Dimensions, ActivityIndicator, StyleSheet } from 'react-native';
-import { WebView, LOAD_NO_CACHE } from 'react-native-webview';
+import { WebView, LOAD_NO_CACHE, LOAD_CACHE_ONLY } from 'react-native-webview';
 
 const isAndroid = Platform.OS === 'android'
 const window = Dimensions.get("window");
@@ -27,7 +27,7 @@ const BlocklyWebView = ({ receiveStringData }) => {
         scalesPageToFit={true}
         renderLoading={LoadingIndicatorView}
         startInLoadingState={true}
-        cacheMode={LOAD_NO_CACHE}
+        cacheMode={LOAD_CACHE_ONLY}
         javaScriptEnabledAndroid={true}
         onMessage={event => {
           const { data } = event.nativeEvent;
