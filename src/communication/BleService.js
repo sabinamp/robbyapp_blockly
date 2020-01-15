@@ -1,6 +1,6 @@
-import {Platform, PermissionsAndroid} from 'react-native';
-import {BleManager} from 'react-native-ble-plx';
-import {Buffer} from 'buffer';
+import { Platform, PermissionsAndroid } from 'react-native';
+import { BleManager } from 'react-native-ble-plx';
+import { Buffer } from 'buffer';
 
 // These values are unique to explore-it devices.
 const serviceUUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
@@ -166,8 +166,9 @@ class BleService {
             );
         }
     }
+    // Promise<Characteristic> types can only be used in a ts file
 
-    sendCommandToActDevice2(command): Promise<Characteristic> {
+    sendCommandToActDevice2(command) {
         console.log('sendCommandToActDevice2: ' + command);
         return this.actDevice.writeCharacteristicWithResponseForService(
             serviceUUID,
@@ -176,6 +177,7 @@ class BleService {
             null,
         ).catch(reason => {
             console.log(0);
+            console.log("sendCommandToActDevice2 exception." + reason);
             throw reason;
         });
     }
