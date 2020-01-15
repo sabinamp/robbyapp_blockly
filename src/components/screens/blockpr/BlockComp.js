@@ -86,10 +86,17 @@ export default class BlockComp extends React.Component {
     }
     if (Array.isArray(qsteps) && qsteps.length > 0) {
       removeAll();
-      qsteps.forEach(element => {
-        add(element);
-        console.log("step:" + element);
-      });
+      let tosend = [];
+      let chunklength = 40;
+      while (qsteps.length > chunklength) {
+        tosend = this.chunk(qsteps, chunklength);
+        tosend.forEach(element => {
+          add(element);
+          console.log("step:" + element);
+        });
+        qsteps.slice(chunklength);
+      }
+
     }
   }
 
@@ -99,7 +106,15 @@ export default class BlockComp extends React.Component {
     this.updateBlock();
     console.log("block updated" + this.state);
   }
-
+  chunk(array, size) {
+    const chunked_arr = [];
+    let copied = [...array]; // ES6 destructuring
+    const numOfChild = Math.ceil(copied.length / size); // Round up to the nearest integer
+    for (let i = 0; i < numOfChild; i++) {
+      chunked_arr.push(copied.splice(0, size));
+    }
+    return chunked_arr;
+  }
   render() {
     return (
       <BlocklyWebview
