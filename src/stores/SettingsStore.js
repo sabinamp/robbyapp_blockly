@@ -37,7 +37,7 @@ function setDeviceName(new_name) {
 
 let loops = 1;
 
-function getLoopCounter(): number {
+function getLoopCounter() {
     return loops;
 }
 
@@ -47,7 +47,7 @@ function getLoopCounter(): number {
 
 let duration = 5; // 1-80
 
-function getDuration(): number {
+function getDuration() {
     return duration;
 }
 
@@ -58,7 +58,7 @@ function setDuration(value) {
 let interval = 0; // 1-50, 0 means disconnected
 let intervalChangeListeners = [];
 
-function getInterval(): number {
+function getInterval() {
     return interval;
 }
 

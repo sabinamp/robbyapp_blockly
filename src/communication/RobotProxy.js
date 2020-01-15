@@ -3,8 +3,8 @@ import BleService from './BleService';
 // import { throwStatement } from '@babel/types';
 
 class RobotProxy {
-    isLearning: boolean;
-    loops: number;
+    isLearning;
+    loops;
 
     constructor() {
         isConnected = false;
@@ -212,7 +212,7 @@ class RobotProxy {
             // Response to I?:  I=02
             console.log('Interval: ' + response);
             let value = parseInt(response.substring(2));
-            responseHandler({type: 'interval', value: value});
+            responseHandler({ type: 'interval', value: value });
         } else if (response.match('\\b[0-9]{3}\\b,\\b[0-9]{3}\\b')) {
             let read_speeds = response.trim().split(',');
             let speed_l = read_speeds[0] / 2.55 + 0.5;
@@ -223,28 +223,28 @@ class RobotProxy {
             if (speed_r < 0) {
                 speed_r = 0;
             }
-            var res = {type: 'speedLine', left: Math.trunc(speed_l), right: Math.trunc(speed_r)};
+            var res = { type: 'speedLine', left: Math.trunc(speed_l), right: Math.trunc(speed_r) };
             responseHandler(res);
         } else {
             response = response.trim().toLowerCase();
             switch (response) {
                 case (',,,,'):
                     // finished download (beam)
-                    responseHandler({type: 'finishedDownload'});
+                    responseHandler({ type: 'finishedDownload' });
                     break;
                 case ('_sr_'):
                     // stop
                     this.isLearning = false;
-                    responseHandler({type: 'stop'});
+                    responseHandler({ type: 'stop' });
                     break;
                 case ('full'):
                     // finished learning or uploading
-                    var res = {type: this.isLearning ? 'finishedLearning' : 'finishedUpload'};
+                    var res = { type: this.isLearning ? 'finishedLearning' : 'finishedUpload' };
                     responseHandler(res);
                     break;
                 case ('_end'):
                     // done driving
-                    var res = {type: 'finishedDriving'};
+                    var res = { type: 'finishedDriving' };
                     this.loops--;
                     if (this.loops > 0) {
                         BleService.sendCommandToActDevice2('G');
