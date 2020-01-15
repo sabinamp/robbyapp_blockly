@@ -10,6 +10,7 @@ export default class BlockComp extends React.Component {
       block_name: '',
       color: '#000000',
       speeds: [],
+      workspace_xml: '',
     }
     this.receiveStringData = this.receiveStringData.bind(this);
     this.updateBlock = this.updateBlock.bind(this);

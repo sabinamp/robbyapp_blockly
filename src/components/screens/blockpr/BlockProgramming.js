@@ -36,7 +36,7 @@ export default class BlockProgramming extends Component {
     connected: isConnected(),
     device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
     devices: [],
-    speeds: [],
+    speeds: [{ left: 0, right: 0 }],
     visible: false,
     stop_btn_disabled: true,
     remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
