@@ -15,7 +15,7 @@ import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 import i18n from './resources/locales/i18n';
 import GLOBAL from './src/utility/Global';
 
-
+import * as ut from './src/utility/AppSettings';
 
 
 export default class App extends Component {
