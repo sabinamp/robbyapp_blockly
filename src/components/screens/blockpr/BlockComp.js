@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import BlocklyWebview from './BlocklyWebview';
-import { add, removeAll, addSpeedChangeListener } from '../../../stores/SpeedsStore';
+import { add, removeAll, addSpeedChangeListener, updateAll } from '../../../stores/SpeedsStore';
 
 export default class BlockComp extends React.Component {
   constructor() {
@@ -86,16 +86,17 @@ export default class BlockComp extends React.Component {
     }
     if (Array.isArray(qsteps) && qsteps.length > 0) {
       removeAll();
-      let tosend = [];
-      let chunklength = 40;
-      while (qsteps.length > chunklength) {
-        tosend = this.chunk(qsteps, chunklength);
-        tosend.forEach(element => {
-          add(element);
-          console.log("step:" + element);
-        });
-        qsteps.slice(chunklength);
-      }
+      /*let tosend = [{ left: 0, right: 0 }];
+        let chunklength = 50;
+       while (qsteps.length > chunklength) {
+         tosend = this.chunk(qsteps, chunklength);
+         //updateAll(tosend); 
+         qsteps.slice(chunklength);
+       } */
+      qsteps.forEach(element => {
+        add(element);
+        console.log("step:" + element);
+      });
 
     }
   }
@@ -115,6 +116,7 @@ export default class BlockComp extends React.Component {
     }
     return chunked_arr;
   }
+
   render() {
     return (
       <BlocklyWebview

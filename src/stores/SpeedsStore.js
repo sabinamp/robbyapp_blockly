@@ -34,6 +34,10 @@ function removeAll() {
     speeds.splice(0, speeds.length);
     notifySpeedChangeListeners();
 }
+function updateAll(array2) {
+    Object.assign(speeds, array2);
+    notifySpeedChangeListeners();
+}
 
 function updateLeftSpeed(index, new_speed) {
     speeds[index].left = new_speed;
@@ -84,6 +88,7 @@ export {
     updateRightSpeed,
     addSpeedChangeListener,
     speeds,
+    updateAll
     //storeSpeeds,
     //retrieveSpeeds
 };
