@@ -76,7 +76,7 @@ function setInterval(value) {
 let connected = false;
 let connectedChangeListeners = [];
 
-function isConnected(): boolean {
+function isConnected() {
     return connected;
 }
 
