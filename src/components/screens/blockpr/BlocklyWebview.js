@@ -10,8 +10,40 @@ const blocklywebapp = {
     : './blocksv/index.html'
 };
 
+/* const injectedJavaScript = this.state.xml.length
+? `
+${blocklyStart}
+${blocklySetStates}
+${blocklyGetStates}
+window.onload = function() {
+var xml_text = '${this.state.xml.replace(/\'/g, `\'`)}';
+var xml = Blockly.Xml.textToDom(xml_text);
+demoWorkspace.clear();
+Blockly.Xml.domToWorkspace(xml, demoWorkspace);
+}
+`
+: `
+${blocklyStart}
+${blocklySetStates}
+${blocklyGetStates}
+window.onload = function() {
+demoWorkspace.clear();
+var startBlock = Blockly.Block.obtain(demoWorkspace, 'start');
+startBlock.initSvg();
+startBlock.render();
+}`; */
 
-const BlocklyWebView = ({ receiveStringData }) => {
+// restore workspace
+/* const injectedJavaScript = '
+window.onload = function restoreWorkspace(block_xml) {
+  
+  Blockly.mainWorkspace.clear();
+  let textToDom = Blockly.Xml.textToDom(block_xml);
+  Blockly.Xml.domToWorkspace(textToDom, Blockly.mainWorkspace);
+
+} */
+
+const BlocklyWebView = ({ receiveCodeAsString }) => {
   const LoadingIndicatorView = () => (
     <ActivityIndicator
       color="#009b88"
@@ -31,7 +63,7 @@ const BlocklyWebView = ({ receiveStringData }) => {
         javaScriptEnabledAndroid={true}
         onMessage={event => {
           const { data } = event.nativeEvent;
-          { receiveStringData(data) };
+          { receiveCodeAsString(data) };
           console.log("code from the web app :" + data);
         }}
       />

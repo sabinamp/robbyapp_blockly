@@ -6,70 +6,56 @@ export default class BlockComp extends React.Component {
   constructor() {
     super()
     this.state = {
-      steps_as_string: '',
+      block_code: '',
       block_name: '',
-      workspace_xml: '',
+      block_xml: '',
     }
-    this.receiveStringData = this.receiveStringData.bind(this);
-    this.updateBlock = this.updateBlock.bind(this);
+    this.receiveCodeAsString = this.receiveCodeAsString.bind(this);
+    this.handleBlockCodeReceived = this.handleBlockCodeReceived.bind(this);
 
   }
   /*   static propTypes = {
       block_name: React.PropTypes.string.isRequired,
-      data_as_string: React.PropTypes.string.isRequired,
-      steps: React.PropTypes.array,
+      block_code: React.PropTypes.string.isRequired,
+      block_xml: React.PropTypes.string.isRequired,
       color: React.PropTypes.color,
       
     };
   
   
     state = {
-      data_as_string: this.props.received_string,
+      block_code: this.props.block_code,
       block_name: this.props.block_name,
-      steps: this.props.steps,
+      block_xml: this.props.block_xml,
       color: this.props.color,
     
     } */
 
   shouldComponentUpdate() {
     //to do
-    //if block name didn't change,no update
+    //if block name didn't change,no update   
     return true;
 
   }
 
-  setBlockName(name) {
-    this.setState({ block_name: name });
-  }
 
-  addStepLeftSpeed(index, text) {
-    updateLeftSpeed(index, parseInt(text));
-  }
-  addStepRightSpeed(index, text) {
-    updateRightSpeed(index, parseInt(text));
-  }
-  addOneStep(textL, textR) {
-    add({ left: parseInt(text), right: parseInt(text) });
-  }
-  updateBlock() {
-    //result should be a string containing an array such as: "Array [ Object { left: 13, right: 14 }, Object { left: 12, right: 13 }, Object { left: 13, right: 14 }, Object { left: 12, right: 13 }]"
-    /*     let words2 = received_string;
-        let result2 = words2.substring(6, words2.length);
-        let result3 = result2.split('Object');
-        result3 = result3.splice(1);
-        result3.forEach(elem => {
-          elem.trim();
-          console.log("left speed" + elem.substring(9, 11));
-          console.log("right speed: " + elem.substring(20, 22));
-          this.addOneStep(elem.substring(9, 11), elem.substring(20, 22))
-        }); */
+  /*   addStepLeftSpeed(index, text) {
+      updateLeftSpeed(index, parseInt(text));
+    }
+    addStepRightSpeed(index, text) {
+      updateRightSpeed(index, parseInt(text));
+    }
+    addOneStep(textL, textR) {
+      add({ left: parseInt(text), right: parseInt(text) });
+    } */
+
+  handleBlockCodeReceived(str) {
+    this.setState({ block_code: str });
     let qsteps = [{ left: 0, right: 0 }];
     const addStep = (step) => qsteps.push(step);
-    const setBlockNameAndColor = (n, c) => this.setBlockNameColor(n, c);
     try {
-
-      //let queue = (new Function('return ' + this.state.steps_as_string))();
-      eval(this.state.steps_as_string);
+      //let queue = (new Function('return ' + this.state.block_code))();    
+      eval(this.state.block_code);
       console.log(qsteps);
     } catch (e) {
       console.error(e);
@@ -90,14 +76,25 @@ export default class BlockComp extends React.Component {
       });
 
     }
+    console.log("speeds in the store-updated");
   }
 
-  receiveStringData(str) {
-    this.setState({ steps_as_string: str });
-    console.log("data received from the embedded web app");
-    this.updateBlock();
-    console.log("block updated" + this.state);
+  receiveCodeAsString(str) {
+    console.log("data received from the embedded Blockly web app");
+    if (str.slice(0, 4).includes('<xml')) {
+      this.handleBlockXMLReceived(str);
+
+    } else {
+      this.handleBlockCodeReceived(str);
+    }
   }
+  handleBlockXMLReceived(workspace) {
+    this.setState({ block_xml: workspace });
+    //save;
+    console.log("handleBlockXMLReceived called");
+  }
+
+
   chunk(array, size) {
     const chunked_arr = [];
     let copied = [...array]; // ES6 destructuring
@@ -111,7 +108,7 @@ export default class BlockComp extends React.Component {
   render() {
     return (
       <BlocklyWebview
-        receiveStringData={this.receiveStringData} />
+        receiveCodeAsString={this.receiveCodeAsString} />
 
     );
   }

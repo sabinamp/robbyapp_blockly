@@ -47,29 +47,15 @@ function sendGeneratedCode() {
 
 workspacePlayground.addChangeListener(myUpdateFunction);
 document.getElementById('done').addEventListener('click', sendGeneratedCode);
+document.getElementById('save').addEventListener('click', sendWorkspacetoRN);
 
-// save workspace
-function saveWorkspace() {
+// send workspace xml
+function sendWorkspacetoRN() {
   let xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
   let domToPretty = Blockly.Xml.domToPrettyText(xml);
-  window.localStorage.setItem("myBlock1", domToPretty);
+  //window.localStorage.setItem("myBlock1", domToPretty);
   console.log(domToPretty);
-}
-
-// restore workspace
-function restoreWorkspace() {
-
-  let program = window.localStorage.getItem("myBlock1");
-  Blockly.mainWorkspace.clear();
-
-  let textToDom = Blockly.Xml.textToDom(program);
-  Blockly.Xml.domToWorkspace(textToDom, Blockly.mainWorkspace);
-
-}
-
-// delete workspace
-function deleteWorkspace() {
-  window.localStorage.clear();
+  window.ReactNativeWebView.postMessage(domToPretty);
 }
 
 
