@@ -36,7 +36,7 @@ export default class BlockProgramming extends Component {
     connected: isConnected(),
     device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
     devices: [],
-    speeds: [{ left: 0, right: 0 }],
+    // speeds: [{ left: 0, right: 0 }],
     visible: false,
     stop_btn_disabled: true,
     remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
@@ -76,14 +76,15 @@ export default class BlockProgramming extends Component {
     this.deviceConnectedListener = addConnectedChangeListener(value => {
       this.setState({ connected: isConnected() });
     });
-    this.speedChangedListener = addSpeedChangeListener((speeds) => {
-      this.setState({ speeds: speeds });
-    });
+    /*  this.speedChangedListener = addSpeedChangeListener((speeds) => {
+       this.setState({ speeds: speeds });
+     }); */
   }
+
   componentWillUnmount() {
     this.deviceNameChangedListener.remove();
     this.deviceConnectedListener.remove();
-    this.speedChangedListener.remove();
+    // this.speedChangedListener.remove();
   }
 
 
@@ -299,7 +300,7 @@ export default class BlockProgramming extends Component {
                 stop_btn_disabled: true,
                 remaining_btns_disabled: true,
               });
-              RobotProxy.upload(this.state.speeds).catch(e => {
+              RobotProxy.upload(speeds).catch(e => {
                 console.log(2);
                 this.handleDisconnect();
               });
