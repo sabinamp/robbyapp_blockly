@@ -64,12 +64,19 @@ export default class Programming extends Component {
                 RobotProxy.stopScanning();
                 console.log('state is set to ' + this.state.ble_connection.allowed);
             });
-        addDeviceNameChangeListener((name) => {
+
+    }
+    componentDidMount() {
+        this.deviceNameDidChangeListener = addDeviceNameChangeListener((name) => {
             this.setState({ device_name: name });
         });
-        addSpeedChangeListener((speeds) => {
+        this.speedDidChangeListener = addSpeedChangeListener((speeds) => {
             this.setState({ speeds: speeds });
         });
+    }
+    componentWillUnmount() {
+        this.deviceNameDidChangeListener.remove();
+        this.speedDidChangeListener.remove();
     }
 
 

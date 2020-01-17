@@ -68,17 +68,24 @@ export default class BlockProgramming extends Component {
         console.log('state is set to ' + this.state.ble_connection.allowed);
       });
 
-    addDeviceNameChangeListener((name) => {
+  }
+  componentDidMount() {
+    this.deviceNameChangedListener = addDeviceNameChangeListener((name) => {
       this.setState({ device_name: name });
     });
-    addConnectedChangeListener(value => {
+    this.deviceConnectedListener = addConnectedChangeListener(value => {
       this.setState({ connected: isConnected() });
     });
-    addSpeedChangeListener((speeds) => {
+    this.speedChangedListener = addSpeedChangeListener((speeds) => {
       this.setState({ speeds: speeds });
     });
-
   }
+  componentWillUnmount() {
+    this.deviceNameChangedListener.remove();
+    this.deviceConnectedListener.remove();
+    this.speedChangedListener.remove();
+  }
+
 
 
   openBLEErrorAlert() {
