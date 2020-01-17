@@ -35,7 +35,8 @@
   "App": {
     "programming": "Programming",
     "settings": "Settings",
-    "blockprogramming": "Block Programming"
+    "blockprogramming": "Block Programming",
+    "savedblocks": "My Blocks"
   },
   "SettingsStore": {
     "noConnection": "No Connection"

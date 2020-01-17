@@ -16,6 +16,7 @@ import i18n from './resources/locales/i18n';
 import GLOBAL from './src/utility/Global';
 
 import * as ut from './src/utility/AppSettings';
+import SavedBlocks from './src/components/screens/savedblockpr/SavedBlocks';
 
 
 export default class App extends Component {
@@ -86,6 +87,7 @@ const DrawerNavigator = createDrawerNavigator(
         [i18n.t('App.programming')]: { screen: Programming },
         [i18n.t('App.settings')]: { screen: Settings },
         [i18n.t('App.blockprogramming')]: { screen: BlockProgramming },
+        [i18n.t('App.savedblocks')]: { screen: SavedBlocks },
     },
     {
         contentComponent: DrawerContent,
