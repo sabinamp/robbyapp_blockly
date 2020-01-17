@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
     StyleSheet, View, Text, TextInput, Alert,
-    View,
     FlatList,
     ActivityIndicator,
     Image,
@@ -52,7 +51,7 @@ export default class SavedBlocks extends Component {
         this.connectionListener = addConnectedChangeListener(value => {
             this.setState({ connected: isConnected() });
         });
-        let items = Array.apply(null, Array(60)).map((v, i) => {
+        let items = Array.apply(null, Array(15)).map((v, i) => {
             return { id: i, src: 'http://placehold.it/200x200?text=' + (i + 1) };
         });
         this.setState({ dataSource: items });
