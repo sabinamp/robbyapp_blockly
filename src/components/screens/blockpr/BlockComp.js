@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import BlocklyWebview from './BlocklyWebview';
-import { add, removeAll, addSpeedChangeListener, updateAll } from '../../../stores/SpeedsStore';
+import { add, removeAll, updateAll } from '../../../stores/SpeedsStore';
 
 export default class BlockComp extends React.Component {
   constructor() {
@@ -8,16 +8,11 @@ export default class BlockComp extends React.Component {
     this.state = {
       steps_as_string: '',
       block_name: '',
-      color: '#000000',
-      speeds: [],
       workspace_xml: '',
     }
     this.receiveStringData = this.receiveStringData.bind(this);
     this.updateBlock = this.updateBlock.bind(this);
 
-    addSpeedChangeListener((speeds) => {
-      this.setState({ speeds: speeds });
-    });
   }
   /*   static propTypes = {
       block_name: React.PropTypes.string.isRequired,
@@ -36,21 +31,15 @@ export default class BlockComp extends React.Component {
     
     } */
 
+  componentShouldUpdate() {
+    //to do
+    //if block name didn't change,no update
+    return true;
 
+  }
 
   setBlockName(name) {
     this.setState({ block_name: name });
-  }
-  setColor(color) {
-    this.setState({ color: color })
-  }
-
-  setBlockNameColor(name, colorstring) {
-    //the color from Blockly web app has the format _33ccff
-    colorval = "#" + colorstring.substring(1, colorstring.length);
-    setColor(colorv);
-    setBlockName(name);
-    console.log("name and color: " + this.state);
   }
 
   addStepLeftSpeed(index, text) {
@@ -94,6 +83,7 @@ export default class BlockComp extends React.Component {
          //updateAll(tosend); 
          qsteps.slice(chunklength);
        } */
+
       qsteps.forEach(element => {
         add(element);
         console.log("step:" + element);
