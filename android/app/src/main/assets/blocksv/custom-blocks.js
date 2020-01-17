@@ -12,7 +12,15 @@ Blockly.Blocks['defineblock'] = {
     this.setColour(285);
     this.setTooltip("Define My Block");
     this.setHelpUrl("");
+  },
+  onchange: function () {
+    if ((this.getFieldValue('BlockName') === 'Block_Name') || (this.getFieldValue('BlockName') === '')) {
+      this.setWarningText('please enter a block name');
+    } else {
+      this.setWarningText(null);
+    }
   }
+
 };
 
 Blockly.JavaScript['defineblock'] = function (block) {

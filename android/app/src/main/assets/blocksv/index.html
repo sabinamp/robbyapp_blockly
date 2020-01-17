@@ -30,11 +30,8 @@
         <p id="code"></p> -->
       </div>
       <div class="col-sm">
-
         <button type="button" class="btn btn-teal" onclick="restoreWorkspace();">Restore</button>
         <button type="button" class="btn btn-danger" id="delete" onclick="deleteWorkspace();">Delete</button>
-
-
         <button type="button" class="btn btn-teal" id="save" onclick="saveWorkspace();">Save</button>
         <button type="button" class="btn btn-success" id="done" onclick="sendGeneratedCode();">Done</button>
       </div>
@@ -51,9 +48,6 @@
       </block> -->
 
       <block type="set_speeds">
-        <data>{
-          "id": "steps",
-        </data>
       </block>
 
     </category>
@@ -62,9 +56,9 @@
       <block type="defineblock"></block>
     </category>
 
-    <category name="Saved" colour="250">
+    <!--     <category name="Saved" colour="250">
       <block type="insertblock"></block>
-    </category>
+    </category> -->
   </xml>
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
