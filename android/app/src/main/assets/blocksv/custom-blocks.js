@@ -1,4 +1,4 @@
-Blockly.Blocks['defineblock'] = {
+/* Blockly.Blocks['defineblock'] = {
   init: function () {
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_CENTRE)
@@ -31,7 +31,7 @@ Blockly.JavaScript['defineblock'] = function (block) {
   let color = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('BlockColor'), Blockly.Variables.COLOR_TYPE);
   let code = 'setBlockNameAndColor( ' + name + ',' + color + ');\n';
   return code;
-};
+}; */
 
 
 
@@ -144,3 +144,39 @@ Blockly.JavaScript['repeat'] = function (block) {
     branch + '}\n';
   return code;
 }
+
+Blockly.Blocks['set_speeds2'] = {
+  init: function () {
+    this.appendDummyInput()
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(new Blockly.FieldLabelSerializable(" left"), "leftSpeed");
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldNumber(0, 50, 100), "leftWheelSpeed2");
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldLabelSerializable("right"), "rightSpeed");
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldNumber(0, 25, 100), "rightWheelSpeed2");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(255);
+    this.setTooltip("Rotate");
+    this.setHelpUrl("");
+  },
+  onchange: function () {
+    if ((this.getFieldValue('leftWheelSpeed2') > '100') || (this.getFieldValue('rightWheelSpeed2') > '100')) {
+      this.setWarningText('100 is the maximum allowed speed.');
+    } else {
+      this.setWarningText(null);
+    }
+
+  }
+};
+
+Blockly.JavaScript['set_speeds2'] = function (block) {
+  var number_leftspeed2 = block.getFieldValue('leftWheelSpeed2');
+  var number_rightspeed2 = block.getFieldValue('rightWheelSpeed2');
+
+  let code = 'addStep({left:' + number_leftspeed2 + ', right:' + number_rightspeed2 + '});\n';
+  return code;
+};

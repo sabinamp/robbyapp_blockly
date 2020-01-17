@@ -26,11 +26,9 @@
 
     <div class="row ">
       <div class="col-md-8">
-        <!--  <h5>Code Output</h5>
-        <p id="code"></p> -->
       </div>
       <div class="col-sm">
-        <button type="button" class="btn btn-teal" onclick="restoreWorkspace();">Restore</button>
+        <button type="button" class="btn btn-info" onclick="restoreWorkspace();">Restore</button>
         <button type="button" class="btn btn-danger" id="delete" onclick="deleteWorkspace();">Delete</button>
         <button type="button" class="btn btn-teal" id="save" onclick="saveWorkspace();">Save</button>
         <button type="button" class="btn btn-success" id="done" onclick="sendGeneratedCode();">Done</button>
@@ -39,24 +37,18 @@
 
   </div>
 
-  <xml id="toolbox" style="display: none">
-    <category name="Drive" colour="125">
-      <!-- <block type="controls_for"></block> -->
+  <xml id="toolbox">
+    <category name="Loops" colour="125">
       <block type="repeat"></block>
-      <!--       <block type="controls_flow_statements">
-        <field name="FLOW">BREAK</field>
-      </block> -->
-
-      <block type="set_speeds">
-      </block>
-
     </category>
-
-    <category name="Blocks" colour="215">
+    <category name="Speeds" colour="215">
+      <block type="set_speeds"></block>
+      <block type="set_speeds2"></block>
+    </category>
+    <!--      <category name="Blocks" colour="215">
       <block type="defineblock"></block>
-    </category>
-
-    <!--     <category name="Saved" colour="250">
+    </category> 
+    <category name="Saved" colour="250">
       <block type="insertblock"></block>
     </category> -->
   </xml>

@@ -1,6 +1,5 @@
 let workspacePlayground = Blockly.inject('blocklyDiv', {
   toolbox: document.getElementById('toolbox'),
-
   media: './blockly-master/media/',
   comments: true,
   scrollbars: false,
@@ -29,8 +28,7 @@ let workspacePlayground = Blockly.inject('blocklyDiv', {
 function myUpdateFunction(event) {
 
   let code = Blockly.JavaScript.workspaceToCode(workspacePlayground);
-  // document.getElementById('code').innerHTML = code;
-
+  console.log(code);
 }
 
 function sendGeneratedCode() {
@@ -56,6 +54,7 @@ function saveWorkspace() {
   let xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
   let domToPretty = Blockly.Xml.domToPrettyText(xml);
   window.localStorage.setItem("myBlock1", domToPretty);
+  console.log(domToPretty);
 }
 
 // restore workspace
