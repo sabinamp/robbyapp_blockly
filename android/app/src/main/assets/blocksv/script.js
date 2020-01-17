@@ -50,7 +50,6 @@ document.getElementById('done').addEventListener('click', sendGeneratedCode);
 
 // save workspace
 function saveWorkspace() {
-
   let xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
   let domToPretty = Blockly.Xml.domToPrettyText(xml);
   window.localStorage.setItem("myBlock1", domToPretty);

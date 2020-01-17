@@ -105,7 +105,7 @@ Blockly.Blocks['repeat'] = {
       .setCheck(null)
       .setAlign(Blockly.ALIGN_LEFT)
       .appendField(new Blockly.FieldLabelSerializable("Loop"), "Loop")
-      .appendField(new Blockly.FieldNumber(0, 2, 100), "i")
+      .appendField(new Blockly.FieldNumber(0, 2, 50), "i")
       /* .appendField(new Blockly.FieldLabelSerializable("times"), "times") */;
 
     this.setInputsInline(true);

@@ -31,7 +31,7 @@ export default class BlockComp extends React.Component {
     
     } */
 
-  componentShouldUpdate() {
+  shouldComponentUpdate() {
     //to do
     //if block name didn't change,no update
     return true;
