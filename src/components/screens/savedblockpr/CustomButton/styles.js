@@ -9,6 +9,7 @@ const Base = StyleSheet.create({
     borderColor: 'rgba(0,0,0,.1)',
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   label: {
     color: '#f3f5f3',
@@ -18,9 +19,18 @@ const Base = StyleSheet.create({
     borderRadius: 20,
   },
 });
-const Danger = StyleSheet.create({
+const Default = StyleSheet.create({
   main: {
     backgroundColor: '#e74c3c',
+  },
+  label: {
+    color: '#333',
+  },
+});
+
+const Neutral = StyleSheet.create({
+  main: {
+    backgroundColor: '#4b516B',
   },
 });
 const Info = StyleSheet.create({
@@ -33,19 +43,12 @@ const Success = StyleSheet.create({
     backgroundColor: '#3498db',
   },
 });
-const Default = StyleSheet.create({
-  main: {
-    backgroundColor: 'rgba(0 ,0 ,0, 0)',
-  },
-  label: {
-    color: '#333',
-  },
-});
+;
 
 export {
   Base,
-  Danger,
+  Neutral,
   Info,
   Success,
   Default,
-};
+}; 

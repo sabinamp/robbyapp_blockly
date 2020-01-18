@@ -15,13 +15,12 @@ const Button = ({ openBlockly, blockname, colorHolder }) => (
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    alignItems: 'flex-end'
+    alignItems: 'stretch',
   },
   button: {
-    height: 130,
-    width: 130,
-    marginRight: 5,
-    marginTop: 5,
+    height: 150,
+    marginRight: 10,
+    marginTop: 10,
   },
 })
 

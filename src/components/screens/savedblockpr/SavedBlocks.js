@@ -25,7 +25,7 @@ import RobotProxy from '../../../communication/RobotProxy';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Button from './Button';
 const numberOfBlocks = 9;
-const items = ["Block1", "Block2", "Block3", "Block4", "Block5", "Block6", "block7", "Block8", "Block9"];
+const items = ["Block1", "Block2", "Block3", "Block4", "Block5", "Block6", "block7", "Block8"];
 export default class SavedBlocks extends Component {
     static navigationOptions = {
         drawerLabel: 'My Blockly Blocks',
@@ -58,9 +58,7 @@ export default class SavedBlocks extends Component {
         this.connectionListener = addConnectedChangeListener(value => {
             this.setState({ connected: isConnected() });
         });
-        /* let items = Array.apply(null, savedBlocks).map((v, i) => {
-            return { id: i, src: 'http://placehold.it/200x200?text=' + (i + 1) };
-        }); */
+
         this.setState({ dataSource: items });
     }
 
@@ -71,8 +69,9 @@ export default class SavedBlocks extends Component {
     }
 
     getRandomColor = () => {
+        let ColorCode = '#' + Math.random().toString(16).slice(-6);
 
-        var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+        /* var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')'; */
         Console.log(ColorCode);
         return ColorCode;
     }
@@ -103,7 +102,6 @@ export default class SavedBlocks extends Component {
                     <FlatList data={this.state.dataSource}
                         renderItem={({ item }) => (
                             <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-                                {/* <Image style={styles.imageThumbnail} source={{ uri: item.src }} /> */}
                                 <Button blockname={item} openBlockly={this.openBlockly} colorHolder={this.getRandomColor} />
                             </View>
                         )}
@@ -142,10 +140,6 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
-    imageThumbnail: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 100,
-    },
+
 
 });

@@ -17,8 +17,8 @@ export default class Button extends Component {
     if (success) {
       return Success;
     }
-    if (danger) {
-      return Danger;
+    if (neutral) {
+      return Neutral;
     }
     return Default;
   }
@@ -27,7 +27,7 @@ export default class Button extends Component {
     const theme = this.getTheme();
     const { children, onPress, style, rounded, } = this.props;
     return (<TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={0.6}
       style={[
         Base.main,
         theme.main,
