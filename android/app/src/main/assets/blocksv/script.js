@@ -26,12 +26,11 @@ let workspacePlayground = Blockly.inject('blocklyDiv', {
 });
 
 function myUpdateFunction(event) {
-
   let code = Blockly.JavaScript.workspaceToCode(workspacePlayground);
   console.log(code);
 }
 
-function sendGeneratedCode() {
+function sendGeneratedCodetoRN() {
   let res_code = Blockly.JavaScript.workspaceToCode(workspacePlayground);
   console.log(res_code);
   /*  let steps = [{ left: 0, right: 0 }];
@@ -46,8 +45,6 @@ function sendGeneratedCode() {
 }
 
 workspacePlayground.addChangeListener(myUpdateFunction);
-document.getElementById('done').addEventListener('click', sendGeneratedCode);
-document.getElementById('save').addEventListener('click', sendWorkspacetoRN);
 
 // send workspace xml
 function sendWorkspacetoRN() {
@@ -57,6 +54,8 @@ function sendWorkspacetoRN() {
   console.log(domToPretty);
   window.ReactNativeWebView.postMessage(domToPretty);
 }
+document.getElementById('done').addEventListener('click', sendGeneratedCodetoRN);
+document.getElementById('save').addEventListener('click', sendWorkspacetoRN);
 
 
 console.log(Blockly.JavaScript)

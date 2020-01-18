@@ -23,12 +23,12 @@ import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 import i18n from '../../../../resources/locales/i18n';
 import RobotProxy from '../../../communication/RobotProxy';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+const numberOfBlocks = 9;
 export default class SavedBlocks extends Component {
     static navigationOptions = {
         drawerLabel: 'My Blockly Blocks',
         drawerIcon: () => (
-            <Icon style={styles.icon} name="extension" size={25} color="#9C27B0" />
+            <Icon style={styles.icon} name="view-module" size={25} color="#9C27B0" />
         )
     }
     state = {
@@ -40,7 +40,6 @@ export default class SavedBlocks extends Component {
 
     constructor() {
         super();
-
     }
 
     componentDidMount() {
@@ -51,7 +50,7 @@ export default class SavedBlocks extends Component {
         this.connectionListener = addConnectedChangeListener(value => {
             this.setState({ connected: isConnected() });
         });
-        let items = Array.apply(null, Array(15)).map((v, i) => {
+        let items = Array.apply(null, Array(numberOfBlocks)).map((v, i) => {
             return { id: i, src: 'http://placehold.it/200x200?text=' + (i + 1) };
         });
         this.setState({ dataSource: items });

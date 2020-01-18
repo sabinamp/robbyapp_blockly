@@ -1,81 +1,59 @@
 import React, { Component } from 'react'
 import BlocklyWebview from './BlocklyWebview';
+import BlocklyWebview2 from './BlocklyWebview2';
 import { add, removeAll, updateAll } from '../../../stores/SpeedsStore';
+let isMounted = false;
 
 export default class BlockComp extends React.Component {
-  constructor() {
-    super()
+  /*   static propTypes = {
+      block_name: React.PropTypes.string.isRequired,
+      block_code: React.PropTypes.string.isRequired,
+      block_xml: React.PropTypes.string.isRequired,
+      updateSpeedsInStore: React.PropTypes.function.isRequired
+    }; */
+  _isMounted = false;
+
+  constructor(props) {
+    super(props);
     this.state = {
       block_code: '',
       block_name: '',
       block_xml: '',
+
     }
     this.receiveCodeAsString = this.receiveCodeAsString.bind(this);
     this.handleBlockCodeReceived = this.handleBlockCodeReceived.bind(this);
 
   }
-  /*   static propTypes = {
-      block_name: React.PropTypes.string.isRequired,
-      block_code: React.PropTypes.string.isRequired,
-      block_xml: React.PropTypes.string.isRequired,
-      color: React.PropTypes.color,
-      
-    };
-  
-  
-    state = {
+
+  componentDidMount() {
+    _isMounted = true;
+
+    this.setState({
       block_code: this.props.block_code,
       block_name: this.props.block_name,
-      block_xml: this.props.block_xml,
-      color: this.props.color,
-    
-    } */
-
-  shouldComponentUpdate() {
-    //to do
-    //if block name didn't change,no update   
-    return true;
-
+      block_xml: this.props.block_xml
+    });
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
-
-  /*   addStepLeftSpeed(index, text) {
-      updateLeftSpeed(index, parseInt(text));
-    }
-    addStepRightSpeed(index, text) {
-      updateRightSpeed(index, parseInt(text));
-    }
-    addOneStep(textL, textR) {
-      add({ left: parseInt(text), right: parseInt(text) });
-    } */
-
   handleBlockCodeReceived(str) {
-    this.setState({ block_code: str });
+    if (_isMounted) {
+      this.setState({ block_code: str });
+    } else { console.log("BlockComp unmounted.Can't update block_code"); }
+
     let qsteps = [{ left: 0, right: 0 }];
     const addStep = (step) => qsteps.push(step);
     try {
       //let queue = (new Function('return ' + this.state.block_code))();    
-      eval(this.state.block_code);
+      eval(str);
       console.log(qsteps);
     } catch (e) {
       console.error(e);
     }
-    if (Array.isArray(qsteps) && qsteps.length > 0) {
-      removeAll();
-      /*let tosend = [{ left: 0, right: 0 }];
-        let chunklength = 50;
-       while (qsteps.length > chunklength) {
-         tosend = this.chunk(qsteps, chunklength);
-         //updateAll(tosend); 
-         qsteps.slice(chunklength);
-       } */
-
-      qsteps.forEach(element => {
-        add(element);
-        console.log("step:" + element);
-      });
-
-    }
+    if (Array.isArray(qsteps) && qsteps.length > 1) { this.props.updateSpeedsInStore(qsteps) };
     console.log("speeds in the store-updated");
   }
 
@@ -88,9 +66,13 @@ export default class BlockComp extends React.Component {
       this.handleBlockCodeReceived(str);
     }
   }
+
   handleBlockXMLReceived(workspace) {
-    this.setState({ block_xml: workspace });
-    //save;
+    if (_isMounted) {
+      this.setState({ block_xml: workspace });
+      console.log("BlockComp state block_xml updated.");
+    } else { console.log("BlockComp unmounted.Can't update block_xml."); }
+    //TODO save block_xml;
     console.log("handleBlockXMLReceived called");
   }
 
@@ -108,9 +90,9 @@ export default class BlockComp extends React.Component {
   render() {
     return (
       <BlocklyWebview
-        receiveCodeAsString={this.receiveCodeAsString} />
-
+        receiveCodeAsString={this.receiveCodeAsString} block_xml={this.state.block_xml} />
     );
+
   }
 
 }

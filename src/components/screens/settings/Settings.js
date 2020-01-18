@@ -50,6 +50,56 @@ export default class Settings extends Component {
         });
     }
 
+    handleDisconnect() {
+        setDeviceName({ device: i18n.t('Programming.noConnection') });
+        setInterval(0);
+        setConnected(false);
+        this.setState({
+            device: undefined,
+            remaining_btns_disabled: true,
+            stop_btn_disabled: true,
+        });
+    }
+
+    handleResponse(res) {
+        switch (res.type) {
+            case 'interval':
+                setInterval(res.value);
+                break;
+            case 'speedLine':
+                add({ left: res.left, right: res.right });
+                break;
+            case 'finishedDownload':
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true,
+                });
+                Alert.alert(i18n.t('Programming.download'), i18n.t('Programming.downloadMessage'));
+                break;
+            case 'finishedDriving':
+                Alert.alert(i18n.t('Programming.drive'), i18n.t('Programming.driveMessage'));
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true,
+                });
+                break;
+            case 'stop':
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true,
+                });
+                break;
+            case 'finishedLearning':
+                Alert.alert(i18n.t('Programming.record'), i18n.t('Programming.recordMessage'));
+                this.setState({
+                    remaining_btns_disabled: false,
+                    stop_btn_disabled: true,
+                });
+                break;
+            default:
+                break;
+        }
+    }
 
     render() {
         return (
@@ -150,15 +200,36 @@ export default class Settings extends Component {
                 </View>
                 <Appbar style={styles.bottom}>
 
+                    <Appbar.Action icon="stop" size={32}
+                        disabled={this.state.stop_btn_disabled}
+                        onPress={() => {
+                            RobotProxy.stop().catch(e => this.handleDisconnect());
+                        }} />
                     <Appbar.Action icon="play-arrow"
                         size={32}
+                        disabled={this.state.remaining_btns_disabled}
                         onPress={() => {
+                            this.setState({
+                                stop_btn_disabled: false,
+                                remaining_btns_disabled: true,
+                            });
                             RobotProxy.run().catch(e => this.handleDisconnect());
                         }} />
                     <Appbar.Action icon="fiber-manual-record"
                         size={32}
                         onPress={() => {
                             RobotProxy.record(getDuration(), getInterval()).catch(e => this.handleDisconnect());
+                        }} />
+                    <Appbar.Action icon="file-download"
+                        size={32}
+                        disabled={this.state.remaining_btns_disabled}
+                        onPress={() => {
+                            this.setState({
+                                stop_btn_disabled: true,
+                                remaining_btns_disabled: true,
+                            });
+                            removeAll();
+                            RobotProxy.download().catch(e => this.handleDisconnect());
                         }} />
 
 

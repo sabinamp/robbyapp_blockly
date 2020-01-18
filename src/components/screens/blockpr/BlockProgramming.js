@@ -20,6 +20,21 @@ import RobotProxy from '../../../communication/RobotProxy';
 import { speeds, add, removeAll, addSpeedChangeListener } from '../../../stores/SpeedsStore';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import BlockComp from './BlockComp';
+
+const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
+<block type="repeat" x="30" y="50">
+  <field name="Loop">Loop</field>
+  <field name="i">15</field>
+  <statement name="DO">
+    <block type="set_speeds2" id="_$a:2lHW0)Nd{qXA4]b0">
+      <field name="leftSpeed"> left</field>
+      <field name="leftWheelSpeed2">50</field>
+      <field name="rightSpeed">right</field>
+      <field name="rightWheelSpeed2">25</field>
+    </block>
+  </statement>
+</block>
+</xml>`;
 export default class BlockProgramming extends Component {
   static navigationOptions = {
     drawerLabel: 'Blockly Blocks',
@@ -44,6 +59,7 @@ export default class BlockProgramming extends Component {
       errormessage: '',
     }
   };
+
   constructor(props) {
     super(props);
     RobotProxy.testScan(err => {
@@ -66,7 +82,7 @@ export default class BlockProgramming extends Component {
         RobotProxy.stopScanning();
         console.log('state is set to ' + this.state.ble_connection.allowed);
       });
-
+    this.updateSpeedsInStore = this.updateSpeedsInStore.bind(this);
   }
   componentDidMount() {
     this.deviceNameChangedListener = addDeviceNameChangeListener((name) => {
@@ -83,7 +99,21 @@ export default class BlockProgramming extends Component {
     this.deviceConnectedListener.remove();
   }
 
+  updateSpeedsInStore(qsteps) {
+    removeAll();
+    /*let tosend = [{ left: 0, right: 0 }];
+      let chunklength = 50;
+     while (qsteps.length > chunklength) {
+       tosend = this.chunk(qsteps, chunklength);
+       //updateAll(tosend); 
+       qsteps.slice(chunklength);
+     } */
 
+    qsteps.forEach(element => {
+      add(element);
+      console.log("step:" + element);
+    });
+  }
 
   openBLEErrorAlert() {
     Alert.alert('BLE Error', this.state.ble_connection.errormessage);
@@ -171,6 +201,10 @@ export default class BlockProgramming extends Component {
         break;
     }
   }
+  /*   saveComponent() {
+      //TODO
+    } */
+
   render() {
     return (
       <View style={[styles.container]}>
@@ -248,7 +282,7 @@ export default class BlockProgramming extends Component {
           colorAccent="#9c27b0"
         />
         <View style={styles.container}>
-          <BlockComp />
+          <BlockComp block_name="block1" block_code="" block_xml={block1} updateSpeedsInStore={this.updateSpeedsInStore} />
         </View>
         <Appbar style={styles.bottom}>
           <Appbar.Action icon="stop" size={32}
@@ -256,28 +290,7 @@ export default class BlockProgramming extends Component {
             onPress={() => {
               RobotProxy.stop().catch(e => this.handleDisconnect());
             }} />
-          <Appbar.Action icon="play-arrow"
-            size={32}
-            disabled={this.state.remaining_btns_disabled}
-            onPress={() => {
-              this.setState({
-                stop_btn_disabled: false,
-                remaining_btns_disabled: true,
-              });
-              RobotProxy.run().catch(e => this.handleDisconnect());
-            }} />
-
-          <Appbar.Action icon="fast-forward"
-            size={32}
-            disabled={this.state.remaining_btns_disabled}
-            onPress={() => {
-              this.setState({
-                stop_btn_disabled: false,
-                remaining_btns_disabled: true,
-              });
-              RobotProxy.go(getLoopCounter()).catch(e => this.handleDisconnect());
-            }} />
-          <Appbar.Action icon="file-download"
+          <Appbar.Action icon="save"
             size={32}
             disabled={this.state.remaining_btns_disabled}
             onPress={() => {
@@ -285,9 +298,21 @@ export default class BlockProgramming extends Component {
                 stop_btn_disabled: true,
                 remaining_btns_disabled: true,
               });
-              removeAll();
-              RobotProxy.download().catch(e => this.handleDisconnect());
+              //save block in store
             }} />
+
+          <Appbar.Action icon="done"
+            size={32}
+            disabled={this.state.remaining_btns_disabled}
+            onPress={() => {
+              this.setState({
+                stop_btn_disabled: true,
+                remaining_btns_disabled: false,
+              });
+              //update the speeds to be uploaded
+              { this.updateSpeedsInStore };
+            }} />
+
           <Appbar.Action icon="file-upload"
             size={32}
             disabled={this.state.remaining_btns_disabled}
@@ -300,6 +325,16 @@ export default class BlockProgramming extends Component {
                 console.log(2);
                 this.handleDisconnect();
               });
+            }} />
+          <Appbar.Action icon="fast-forward"
+            size={32}
+            disabled={this.state.remaining_btns_disabled}
+            onPress={() => {
+              this.setState({
+                stop_btn_disabled: false,
+                remaining_btns_disabled: true,
+              });
+              RobotProxy.go(getLoopCounter()).catch(e => this.handleDisconnect());
             }} />
           <Appbar.Action icon={(this.state.device) ? 'bluetooth-connected' : 'bluetooth'}
             style={{ position: 'absolute', right: 0 }}
@@ -339,7 +374,6 @@ export default class BlockProgramming extends Component {
                 setTimeout(() => {
                   this.setState({ visible: true });
                 }, 500);
-
 
               }
             }} />
