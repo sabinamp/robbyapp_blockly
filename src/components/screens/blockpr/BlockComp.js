@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import BlocklyWebview from './BlocklyWebview';
 import BlocklyWebview2 from './BlocklyWebview2';
-import { add, removeAll, updateAll } from '../../../stores/SpeedsStore';
+
 let isMounted = false;
 
 export default class BlockComp extends React.Component {

@@ -17,7 +17,7 @@ import {
 import i18n from '../../../../resources/locales/i18n';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RobotProxy from '../../../communication/RobotProxy';
-import { speeds, add, removeAll, addSpeedChangeListener } from '../../../stores/SpeedsStore';
+import { speeds, add, removeAll } from '../../../stores/BlocklySpeedsStore';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import BlockComp from './BlockComp';
 
