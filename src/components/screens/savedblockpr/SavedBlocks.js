@@ -23,7 +23,9 @@ import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 import i18n from '../../../../resources/locales/i18n';
 import RobotProxy from '../../../communication/RobotProxy';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Button from './Button';
 const numberOfBlocks = 9;
+const items = ["Block1", "Block2", "Block3", "Block4", "Block5", "Block6", "block7", "Block8", "Block9"];
 export default class SavedBlocks extends Component {
     static navigationOptions = {
         drawerLabel: 'My Blockly Blocks',
@@ -40,7 +42,13 @@ export default class SavedBlocks extends Component {
 
     constructor() {
         super();
+        this.openBlockly = this.openBlockly.bind(this);
     }
+
+    openBlockly(blockname) {
+        //TODO
+    }
+
 
     componentDidMount() {
         this.deviceNameListener = addDeviceNameChangeListener(name => {
@@ -50,9 +58,9 @@ export default class SavedBlocks extends Component {
         this.connectionListener = addConnectedChangeListener(value => {
             this.setState({ connected: isConnected() });
         });
-        let items = Array.apply(null, Array(numberOfBlocks)).map((v, i) => {
+        /* let items = Array.apply(null, savedBlocks).map((v, i) => {
             return { id: i, src: 'http://placehold.it/200x200?text=' + (i + 1) };
-        });
+        }); */
         this.setState({ dataSource: items });
     }
 
@@ -62,6 +70,12 @@ export default class SavedBlocks extends Component {
         this.connectionListener.remove();
     }
 
+    getRandomColor = () => {
+
+        var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+        Console.log(ColorCode);
+        return ColorCode;
+    }
 
     render() {
         return (
@@ -89,11 +103,12 @@ export default class SavedBlocks extends Component {
                     <FlatList data={this.state.dataSource}
                         renderItem={({ item }) => (
                             <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-                                <Image style={styles.imageThumbnail} source={{ uri: item.src }} />
+                                {/* <Image style={styles.imageThumbnail} source={{ uri: item.src }} /> */}
+                                <Button blockname={item} openBlockly={this.openBlockly} colorHolder={this.getRandomColor} />
                             </View>
                         )}
                         //Setting the number of column
-                        numColumns={3}
+                        numColumns={2}
                         keyExtractor={(item, index) => index}
                     />
 
@@ -105,7 +120,6 @@ export default class SavedBlocks extends Component {
         );
     }
 }
-
 
 
 const styles = StyleSheet.create({

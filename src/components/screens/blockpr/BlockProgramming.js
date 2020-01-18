@@ -282,7 +282,7 @@ export default class BlockProgramming extends Component {
           colorAccent="#9c27b0"
         />
         <View style={styles.container}>
-          <BlockComp block_name="block1" block_code="" block_xml={block1} updateSpeedsInStore={this.updateSpeedsInStore} />
+          <BlockComp block_name="" block_code="" block_xml="" updateSpeedsInStore={this.updateSpeedsInStore} />
         </View>
         <Appbar style={styles.bottom}>
           <Appbar.Action icon="stop" size={32}
