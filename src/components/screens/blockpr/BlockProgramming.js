@@ -35,6 +35,7 @@ const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
   </statement>
 </block>
 </xml>`;
+
 export default class BlockProgramming extends Component {
   static navigationOptions = {
     drawerLabel: 'Blockly Blocks',
@@ -282,7 +283,8 @@ export default class BlockProgramming extends Component {
           colorAccent="#9c27b0"
         />
         <View style={styles.container}>
-          <BlockComp block_name="" block_code="" block_xml="" updateSpeedsInStore={this.updateSpeedsInStore} />
+          <BlockComp block_name="" block_steps={[{ left: 0, right: 0 }]}
+            block_xml="" updateSpeedsInStore={this.updateSpeedsInStore} />
         </View>
         <Appbar style={styles.bottom}>
           <Appbar.Action icon="stop" size={32}

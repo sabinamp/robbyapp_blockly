@@ -7,7 +7,7 @@ let isMounted = false;
 export default class BlockComp extends React.Component {
   /*   static propTypes = {
       block_name: React.PropTypes.string.isRequired,
-      block_code: React.PropTypes.string.isRequired,
+      block_steps: React.PropTypes.array.isRequired,
       block_xml: React.PropTypes.string.isRequired,
       updateSpeedsInStore: React.PropTypes.function.isRequired
     }; */
@@ -16,7 +16,7 @@ export default class BlockComp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      block_code: '',
+      block_steps: [{ left: 0, right: 0 }],
       block_name: '',
       block_xml: '',
 
@@ -30,7 +30,7 @@ export default class BlockComp extends React.Component {
     _isMounted = true;
 
     this.setState({
-      block_code: this.props.block_code,
+      block_steps: this.props.block_steps,
       block_name: this.props.block_name,
       block_xml: this.props.block_xml
     });
@@ -40,9 +40,6 @@ export default class BlockComp extends React.Component {
   }
 
   handleBlockCodeReceived(str) {
-    if (_isMounted) {
-      this.setState({ block_code: str });
-    } else { console.log("BlockComp unmounted.Can't update block_code"); }
 
     let qsteps = [{ left: 0, right: 0 }];
     const addStep = (step) => qsteps.push(step);
@@ -53,8 +50,15 @@ export default class BlockComp extends React.Component {
     } catch (e) {
       console.error(e);
     }
-    if (Array.isArray(qsteps) && qsteps.length > 1) { this.props.updateSpeedsInStore(qsteps) };
-    console.log("speeds in the store-updated");
+    if (Array.isArray(qsteps) && qsteps.length > 1) {
+      if (_isMounted) {
+        Object.assign(this.state.block_steps, qsteps);
+        console.log("blockComp state updated.code_steps :" + this.state.block_steps);
+      } else { console.log("BlockComp unmounted.Can't update block_steps"); }
+
+      { this.props.updateSpeedsInStore(qsteps) };
+      console.log("speeds in the store-updated");
+    }
   }
 
   receiveCodeAsString(str) {
