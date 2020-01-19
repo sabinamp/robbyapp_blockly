@@ -1,4 +1,4 @@
-import { LOAD_BLOCKS, ADD_BLOCK, DELETE_BLOCK, UPDATE_BLOCK } from '../actionTypes';
+import { LOAD_BLOCKS, ADD_BLOCK, DELETE_BLOCK, UPDATE_BLOCK } from './actionTypes';
 
 const initialState = {
   blocks: [{ block_name: '', block_xml: '', block_steps: [{ left: 0, right: 0 }] }]

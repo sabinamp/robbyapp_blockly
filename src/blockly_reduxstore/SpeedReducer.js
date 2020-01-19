@@ -1,6 +1,6 @@
 import {
   ADD_STEP, REMOVE_ALL, UPDATE_ALL
-} from '../actionTypes'
+} from './actionTypes'
 
 const initialState = {
   speeds: [{ left: 0, right: 0 }]

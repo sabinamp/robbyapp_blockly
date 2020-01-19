@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import speedReducer from './speedReducer'
+import speedReducer from './SpeedReducer'
 import blockReducer from './blockReducer'
 import { persistStore, persistReducer } from 'redux-persist';
 import { createStore, applyMiddleware } from 'redux';
