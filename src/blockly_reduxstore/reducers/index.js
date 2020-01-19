@@ -7,8 +7,8 @@ import { createLogger } from 'redux-logger';
 import storage from 'redux-persist/lib/storage';
 
 const rootReducer = combineReducers({
-  Steps: speedReducer,
-  Block: blockReducer
+  Speeds: speedReducer,
+  Blocks: blockReducer
 })
 const persistConfig = {
   key: 'root',

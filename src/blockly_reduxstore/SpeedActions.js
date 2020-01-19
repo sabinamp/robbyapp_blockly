@@ -8,19 +8,8 @@ export function addStep(step) {
     step
   }
 }
-export function setBlockName(name) {
-  return {
-    type: 'NAME_BLOCK',
-    name
-  }
-}
-export function insertStep(id, step) {
-  return {
-    type: 'INSERT_STEP',
-    id,
-    step
-  }
-}
+
+
 
 
 export function removeAll() {
@@ -29,10 +18,4 @@ export function removeAll() {
   }
 }
 
-export function replaceStep(id, step) {
-  return {
-    type: 'REPLACE_STEP',
-    id,
-    step
-  }
-}
+
