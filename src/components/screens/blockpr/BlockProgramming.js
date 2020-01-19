@@ -36,7 +36,9 @@ const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
 </block>
 </xml>`;
 
+
 export default class BlockProgramming extends Component {
+
   static navigationOptions = {
     drawerLabel: 'Blockly Blocks',
     drawerIcon: () => (
@@ -84,7 +86,11 @@ export default class BlockProgramming extends Component {
         console.log('state is set to ' + this.state.ble_connection.allowed);
       });
     this.updateSpeedsInStore = this.updateSpeedsInStore.bind(this);
+    this.saveBlock = this.saveBlock.bind(this);
+    this.handleSaveClicked = this.handleSaveClicked.bind(this);
+
   }
+
   componentDidMount() {
     this.deviceNameChangedListener = addDeviceNameChangeListener((name) => {
       this.setState({ device_name: name });
@@ -100,16 +106,14 @@ export default class BlockProgramming extends Component {
     this.deviceConnectedListener.remove();
   }
 
+  handleSaveClicked() {
+    const get_workspacedata = `sendGeneratedCodetoRN(); `;
+    this.blocklycomp.webviewref.webref.injectJavaScript(get_workspacedata);
+    console.log("event sent to the web app");
+  }
+
   updateSpeedsInStore(qsteps) {
     removeAll();
-    /*let tosend = [{ left: 0, right: 0 }];
-      let chunklength = 50;
-     while (qsteps.length > chunklength) {
-       tosend = this.chunk(qsteps, chunklength);
-       //updateAll(tosend); 
-       qsteps.slice(chunklength);
-     } */
-
     qsteps.forEach(element => {
       add(element);
       console.log("step:" + element);
@@ -155,6 +159,15 @@ export default class BlockProgramming extends Component {
       stop_btn_disabled: true,
     });
   }
+
+  saveBlock(block) {
+
+    //save block in redux store with an automatically generated name
+  }
+
+
+
+
 
   handleResponse(res) {
     switch (res.type) {
@@ -202,9 +215,6 @@ export default class BlockProgramming extends Component {
         break;
     }
   }
-  /*   saveComponent() {
-      //TODO
-    } */
 
   render() {
     return (
@@ -282,28 +292,22 @@ export default class BlockProgramming extends Component {
           }
           colorAccent="#9c27b0"
         />
+
         <View style={styles.container}>
           <BlockComp block_name="" block_steps={[{ left: 0, right: 0 }]}
-            block_xml="" updateSpeedsInStore={this.updateSpeedsInStore} />
+            ref={r => (this.blocklycomp = r)}
+            block_xml="" updateSpeedsInStore={this.updateSpeedsInStore} saveBlock={this.saveBlock}
+          />
         </View>
+
         <Appbar style={styles.bottom}>
           <Appbar.Action icon="stop" size={32}
             disabled={this.state.stop_btn_disabled}
             onPress={() => {
               RobotProxy.stop().catch(e => this.handleDisconnect());
             }} />
-          <Appbar.Action icon="save"
-            size={32}
-            disabled={this.state.remaining_btns_disabled}
-            onPress={() => {
-              this.setState({
-                stop_btn_disabled: true,
-                remaining_btns_disabled: true,
-              });
-              //save block in store
-            }} />
 
-          <Appbar.Action icon="done"
+          <Appbar.Action icon="save"
             size={32}
             disabled={this.state.remaining_btns_disabled}
             onPress={() => {
@@ -311,9 +315,12 @@ export default class BlockProgramming extends Component {
                 stop_btn_disabled: true,
                 remaining_btns_disabled: false,
               });
-              //update the speeds to be uploaded
-              { this.updateSpeedsInStore };
-            }} />
+              this.handleSaveClicked();
+              console.log("event from RN to the web app sent ");
+            }}
+
+          />
+
 
           <Appbar.Action icon="file-upload"
             size={32}

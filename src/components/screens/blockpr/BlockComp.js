@@ -19,7 +19,7 @@ export default class BlockComp extends React.Component {
       block_steps: [{ left: 0, right: 0 }],
       block_name: '',
       block_xml: '',
-
+      webviewref: null
     }
     this.receiveCodeAsString = this.receiveCodeAsString.bind(this);
     this.handleBlockCodeReceived = this.handleBlockCodeReceived.bind(this);
@@ -34,10 +34,12 @@ export default class BlockComp extends React.Component {
       block_name: this.props.block_name,
       block_xml: this.props.block_xml
     });
+
   }
   componentWillUnmount() {
     this._isMounted = false;
   }
+
 
   handleBlockCodeReceived(str) {
 
@@ -62,6 +64,7 @@ export default class BlockComp extends React.Component {
   }
 
   receiveCodeAsString(str) {
+
     console.log("data received from the embedded Blockly web app");
     if (str.slice(0, 4).includes('<xml')) {
       this.handleBlockXMLReceived(str);
@@ -69,16 +72,22 @@ export default class BlockComp extends React.Component {
     } else {
       this.handleBlockCodeReceived(str);
     }
+    // save block;
+    { this.props.saveBlock(this.state); }
+    /*  if (this.props.sendEvent) { this.props.cancelSendEventToBlockly } ;
+    console.log("comp data should have been updated. sendEvent canceled");*/
   }
+
 
   handleBlockXMLReceived(workspace) {
     if (_isMounted) {
       this.setState({ block_xml: workspace });
       console.log("BlockComp state block_xml updated.");
     } else { console.log("BlockComp unmounted.Can't update block_xml."); }
-    //TODO save block_xml;
+
     console.log("handleBlockXMLReceived called");
   }
+
 
 
   chunk(array, size) {
@@ -93,7 +102,7 @@ export default class BlockComp extends React.Component {
 
   render() {
     return (
-      <BlocklyWebview
+      <BlocklyWebview ref={r => (this.webviewref = r)}
         receiveCodeAsString={this.receiveCodeAsString} block_xml={this.state.block_xml} />
     );
 

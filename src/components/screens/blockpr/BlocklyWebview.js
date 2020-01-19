@@ -4,27 +4,32 @@ import { WebView, LOAD_NO_CACHE, LOAD_CACHE_ONLY } from 'react-native-webview';
 
 const isAndroid = Platform.OS === 'android'
 const window = Dimensions.get("window");
-
+const LoadingIndicatorView = () => (
+  <ActivityIndicator
+    color="#009b88"
+    size="large"
+    style={styles.ActivityIndicatorStyle}
+  />
+);
 const blocklywebapp = {
   link: isAndroid ? 'file:///android_asset/blocksv/index.html'
     : './blocksv/index.html'
 };
 
-const BlocklyWebView = ({ receiveCodeAsString, block_xml }) => {
-  const LoadingIndicatorView = () => (
-    <ActivityIndicator
-      color="#009b88"
-      size="large"
-      style={styles.ActivityIndicatorStyle}
-    />
-  );
+export default class BlocklyWebView extends React.Component {
 
-  const runFirst = { block_xml } === ''
-    ?
-    `window.isNativeApp = true;
+  componentDidMount() {
+
+  }
+
+  render() {
+    const { block_xml, receiveCodeAsString } = this.props;
+    const runFirst = block_xml === ''
+      ?
+      `window.isNativeApp = true;
     `
-    :
-    `window.isNativeApp = true;   
+      :
+      `window.isNativeApp = true;   
     window.onload = function({block_xml}) {      
     Blockly.mainWorkspace.clear();
     let textToDom = Blockly.Xml.textToDom({block_xml});
@@ -32,24 +37,27 @@ const BlocklyWebView = ({ receiveCodeAsString, block_xml }) => {
   }
   `;
 
-  return (
-    <View style={styles.container}>
-      <WebView source={{ uri: blocklywebapp.link }} allowFileAccess={true}
-        style={{ marginBottom: 30 }} textZoom={100}
-        scalesPageToFit={true}
-        renderLoading={LoadingIndicatorView}
-        startInLoadingState={true}
-        cacheMode={LOAD_CACHE_ONLY}
-        javaScriptEnabledAndroid={true}
-        injectedJavaScript={runFirst}
-        onMessage={event => {
-          const { data } = event.nativeEvent;
-          { receiveCodeAsString(data) };
-          console.log("code from the web app :" + data);
-        }}
-      />
-    </View>
-  )
+
+    return (
+      <View style={styles.container}>
+        <WebView source={{ uri: blocklywebapp.link }} allowFileAccess={true}
+          ref={r => (this.webref = r)}
+          style={{ marginBottom: 30 }} textZoom={100}
+          scalesPageToFit={true}
+          renderLoading={LoadingIndicatorView}
+          startInLoadingState={true}
+          cacheMode={LOAD_CACHE_ONLY}
+          javaScriptEnabledAndroid={true}
+          injectedJavaScript={runFirst}
+          onMessage={event => {
+            const { data } = event.nativeEvent;
+            { receiveCodeAsString(data) };
+            console.log("code from the web app :" + data);
+          }}
+        />
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -72,7 +80,7 @@ const styles = StyleSheet.create({
   },
 
 });
-export default BlocklyWebView;
+
 
 
 

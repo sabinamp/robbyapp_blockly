@@ -12,7 +12,7 @@ let workspacePlayground = Blockly.inject('blocklyDiv', {
     wheel: false,
     startScale: 0.9,
     maxScale: 3,
-    minScale: 0.35,
+    minScale: 0.4,
     scaleSpeed: 1.1
   },
   grid:
@@ -42,6 +42,7 @@ function sendGeneratedCodetoRN() {
      console.error(e);
    } */
   window.ReactNativeWebView.postMessage(res_code);
+  sendWorkspacetoRN();
 }
 
 workspacePlayground.addChangeListener(myUpdateFunction);
@@ -54,8 +55,8 @@ function sendWorkspacetoRN() {
   console.log(domToPretty);
   window.ReactNativeWebView.postMessage(domToPretty);
 }
-document.getElementById('done').addEventListener('click', sendGeneratedCodetoRN);
-document.getElementById('save').addEventListener('click', sendWorkspacetoRN);
+document.getElementById('save').addEventListener('click', sendGeneratedCodetoRN);
+//document.getElementById('save').addEventListener('click', sendWorkspacetoRN);
 
 
 console.log(Blockly.JavaScript)
