@@ -21,20 +21,6 @@ import { speeds, add, removeAll } from '../../../stores/BlocklySpeedsStore';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import BlockComp from './BlockComp';
 
-const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
-<block type="repeat" x="30" y="50">
-  <field name="Loop">Loop</field>
-  <field name="i">15</field>
-  <statement name="DO">
-    <block type="set_speeds2" id="_$a:2lHW0)Nd{qXA4]b0">
-      <field name="leftSpeed"> left</field>
-      <field name="leftWheelSpeed2">50</field>
-      <field name="rightSpeed">right</field>
-      <field name="rightWheelSpeed2">25</field>
-    </block>
-  </statement>
-</block>
-</xml>`;
 
 
 export default class BlockProgramming extends Component {

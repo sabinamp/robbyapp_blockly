@@ -74,8 +74,7 @@ export default class BlockComp extends React.Component {
     }
     // save block;
     { this.props.saveBlock(this.state); }
-    /*  if (this.props.sendEvent) { this.props.cancelSendEventToBlockly } ;
-    console.log("comp data should have been updated. sendEvent canceled");*/
+
   }
 
 
@@ -90,15 +89,15 @@ export default class BlockComp extends React.Component {
 
 
 
-  chunk(array, size) {
-    const chunked_arr = [];
-    let copied = [...array]; // ES6 destructuring
-    const numOfChild = Math.ceil(copied.length / size); // Round up to the nearest integer
-    for (let i = 0; i < numOfChild; i++) {
-      chunked_arr.push(copied.splice(0, size));
-    }
-    return chunked_arr;
-  }
+  /*   chunk(array, size) {
+      const chunked_arr = [];
+      let copied = [...array]; // ES6 destructuring
+      const numOfChild = Math.ceil(copied.length / size); // Round up to the nearest integer
+      for (let i = 0; i < numOfChild; i++) {
+        chunked_arr.push(copied.splice(0, size));
+      }
+      return chunked_arr;
+    } */
 
   render() {
     return (
