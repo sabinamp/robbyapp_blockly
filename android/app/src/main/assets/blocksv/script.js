@@ -55,8 +55,8 @@ function sendWorkspacetoRN() {
   console.log(domToPretty);
   window.ReactNativeWebView.postMessage(domToPretty);
 }
-document.getElementById('save').addEventListener('click', sendGeneratedCodetoRN);
-//document.getElementById('save').addEventListener('click', sendWorkspacetoRN);
+//document.getElementById('save').addEventListener('click', sendGeneratedCodetoRN);
+
 
 
 console.log(Blockly.JavaScript)

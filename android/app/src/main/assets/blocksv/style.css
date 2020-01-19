@@ -15,7 +15,7 @@ body {
 #blocklyDiv {
   background: #D7BDE7;
   width: 100%;
-  height: 90vh; 
+  height: 98vh; 
 
 }
 toolbox{
@@ -40,13 +40,13 @@ toolbox{
   display: block;
   line-height: 1.3;
   padding:0;
-  padding-top: 2px;
+  padding-top: 5px;
   margin-bottom:0;
 }
 
 .blocklyToolboxDiv > div:first-child {
   background-color: #9C25B0;
-  padding: 2; 
+  padding: 5px; 
   margin-bottom:0;
 }
  
