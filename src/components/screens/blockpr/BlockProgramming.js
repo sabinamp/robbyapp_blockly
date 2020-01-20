@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { Appbar, Provider } from 'react-native-paper';
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 import {
   isConnected,
@@ -153,8 +153,6 @@ export default class BlockProgramming extends Component {
 
 
 
-
-
   handleResponse(res) {
     switch (res.type) {
       case 'interval':
@@ -280,6 +278,9 @@ export default class BlockProgramming extends Component {
         />
 
         <View style={styles.container}>
+          {/* <Provider store={store}>
+
+          </Provider> */}
           <BlockComp block_name="" block_steps={[{ left: 0, right: 0 }]}
             ref={r => (this.blocklycomp = r)}
             block_xml="" updateSpeedsInStore={this.updateSpeedsInStore} saveBlock={this.saveBlock}

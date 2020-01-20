@@ -9,3 +9,9 @@ export function setBlockName(name) {
     name
   }
 }
+export function addBlock(block) {
+  return {
+    type: 'ADD_BLOCK',
+    name
+  }
+}
