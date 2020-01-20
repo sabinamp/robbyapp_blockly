@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import BlocklyWebview from './BlocklyWebview';
-import BlocklyWebview2 from './BlocklyWebview2';
+
 
 let isMounted = false;
 
