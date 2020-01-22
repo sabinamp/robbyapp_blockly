@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
     padding: 0,
-    marginTop: 20
+    margin: 0
 
   },
   icon: {
