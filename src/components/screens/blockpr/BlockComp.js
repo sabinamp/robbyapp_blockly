@@ -92,7 +92,8 @@ export default class BlockComp extends React.Component {
       block_steps: this.state.block_steps,
       block_xml: this.state.block_xml
     });
-    if (this.state.block_xml.includes('<xml')) { this.props.addBlockToStore(blockToBeSaved) };
+    if (this.state.block_xml.includes('<xml')
+      && this.state.block_steps.length > 1) { this.props.addBlockToStore(blockToBeSaved) };
 
   }
 
