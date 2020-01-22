@@ -42,7 +42,7 @@ class BlockProgramming extends Component {
     devices: [],
     visible: false,
     stop_btn_disabled: true,
-    savebtn_disabled: true,
+    savebtn_disabled: false,
     persistbtn_disabled: true,
     speeds: [],
     remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
@@ -115,9 +115,10 @@ class BlockProgramming extends Component {
       savebtn_disabled: false,
       persistbtn_disabled: true
     });
-    const get_speeds = `sendWorkspacetoRN; `;
+    const get_speeds = `sendWorkspacetoRN(); `;
     this.blocklycomp.webviewref.webref.injectJavaScript(get_speeds);
     console.log("request workspace injected to the web app");
+    Alert.alert('Block Collection', "Adding a new block.");
   }
 
   updateCurrentSpeeds(steps) {
@@ -140,7 +141,7 @@ class BlockProgramming extends Component {
       remaining_btns_disabled: true,
       stop_btn_disabled: true,
       savebtn_disabled: false,
-      persistbtn_disabled: false
+      persistbtn_disabled: true
     });
   }
 
@@ -216,8 +217,8 @@ class BlockProgramming extends Component {
         this.setState({
           remaining_btns_disabled: false,
           stop_btn_disabled: true,
-          savebtn_disabled: false,
-          persistbtn_disabled: true
+          savebtn_disabled: true,
+          persistbtn_disabled: false
         });
         break;
       default:
