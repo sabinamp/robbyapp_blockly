@@ -8,7 +8,7 @@ import { store, persistor } from '../../../blockly_reduxstore/store';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 
-/* import {
+import {
   isConnected,
   addConnectedChangeListener,
   addDeviceNameChangeListener,
@@ -16,15 +16,15 @@ import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
   setDeviceName,
   setConnected,
   setInterval,
-} from '../../../stores/SettingsStore'; */
+} from '../../../stores/SettingsStore';
 import i18n from '../../../../resources/locales/i18n';
 
-/* import RobotProxy from '../../../communication/RobotProxy'; */
+import RobotProxy from '../../../communication/RobotProxy';
 
 export default class BlockPrMain extends Component {
   state = {
-    sub_title: i18n.t('Settings.device')
-    /* device_name: getDeviceName(),
+
+    device_name: getDeviceName(),
     sub_title: i18n.t('Settings.device'),
     connected: isConnected(),
     device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
@@ -33,7 +33,7 @@ export default class BlockPrMain extends Component {
     ble_connection: {
       allowed: false,
       errormessage: '',
-    } */
+    }
   };
 
   static navigationOptions = {
@@ -46,7 +46,7 @@ export default class BlockPrMain extends Component {
   };
   constructor(props) {
     super(props);
-    /* RobotProxy.testScan(err => {
+    RobotProxy.testScan(err => {
       this.setState({
         ble_connection: {
           allowed: false,
@@ -66,12 +66,12 @@ export default class BlockPrMain extends Component {
         RobotProxy.stopScanning();
         console.log('state is set to ' + this.state.ble_connection.allowed);
       });
- */
+
 
   }
-  /*  openBLEErrorAlert() {
-     Alert.alert('BLE Error', this.state.ble_connection.errormessage);
-   } */
+  openBLEErrorAlert() {
+    Alert.alert('BLE Error', this.state.ble_connection.errormessage);
+  }
   // gets the current screen from navigation state
   getActiveRouteName(navigationState) {
     if (!navigationState) {
@@ -84,39 +84,39 @@ export default class BlockPrMain extends Component {
     }
     return route.routeName;
   }
-  /*   componentDidMount() {
-      this.deviceNameChangedListener = addDeviceNameChangeListener((name) => {
-        this.setState({ device_name: name });
-      });
-      this.deviceConnectedListener = addConnectedChangeListener(value => {
-        this.setState({ connected: isConnected() });
-      });
-  
-    } */
-  /*   componentWillUnmount() {
-      this.deviceNameChangedListener.remove();
-      this.deviceConnectedListener.remove();
-    } */
+  componentDidMount() {
+    this.deviceNameChangedListener = addDeviceNameChangeListener((name) => {
+      this.setState({ device_name: name });
+    });
+    this.deviceConnectedListener = addConnectedChangeListener(value => {
+      this.setState({ connected: isConnected() });
+    });
 
-  /*   handleDisconnect() {
-      setDeviceName({ device: i18n.t('Programming.noConnection') });
-      setInterval(0);
-      setConnected(false);
-      this.setState({
-        device: undefined,
-  
-      });
-    } */
+  }
+  componentWillUnmount() {
+    this.deviceNameChangedListener.remove();
+    this.deviceConnectedListener.remove();
+  }
+
+  handleDisconnect() {
+    setDeviceName({ device: i18n.t('Programming.noConnection') });
+    setInterval(0);
+    setConnected(false);
+    this.setState({
+      device: undefined,
+
+    });
+  }
   // handles messages from the communcation system
-  /*  handleCommunicationMessages(name) {
-     setDeviceName({ device: name.substr(name.length - 5) });
-     setConnected(true);
-     this.setState({
-       visible: false,
-       device: name,
- 
-     });
-   } */
+  handleCommunicationMessages(name) {
+    setDeviceName({ device: name.substr(name.length - 5) });
+    setConnected(true);
+    this.setState({
+      visible: false,
+      device: name,
+
+    });
+  }
 
   render() {
     return (
@@ -132,7 +132,12 @@ export default class BlockPrMain extends Component {
             title="Explore-it"
             size={32}
           />
-
+          <Appbar.Content
+            style={{ position: 'absolute', right: 0 }}
+            title={this.state.device_name}
+            subtitle={this.state.sub_title}
+            size={32}
+          />
         </Appbar>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>

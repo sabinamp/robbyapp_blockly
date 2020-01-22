@@ -21,7 +21,7 @@ import { speeds, add, removeAll } from '../../../stores/BlocklySpeedsStore';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import BlockComp from './BlockComp';
 import { connect } from 'react-redux';
-import { addBlock, loadBlocks, removeBlock, updateBlock } from '../../../blockly_reduxstore/BlockActions';
+import { addBlock, loadBlocks, removeBlock, updateBlock, getBlock } from '../../../blockly_reduxstore/BlockActions';
 
 class BlockProgramming extends Component {
 
@@ -36,7 +36,7 @@ class BlockProgramming extends Component {
 
   state = {
     device_name: getDeviceName(),
-    sub_title: i18n.t('Settings.device'),
+    /*  sub_title: i18n.t('Settings.device'), */
     connected: isConnected(),
     device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
     devices: [],
@@ -74,8 +74,8 @@ class BlockProgramming extends Component {
         RobotProxy.stopScanning();
         console.log('state is set to ' + this.state.ble_connection.allowed);
       });
-    this.updateSpeedsInStore = this.updateSpeedsInStore.bind(this);
-    this.saveBlock = this.saveBlock.bind(this);
+    this.updateCurrentSpeeds = this.updateCurrentSpeeds.bind(this);
+    this.addBlockToStore = this.addBlockToStore.bind(this);
     this.handleSaveClicked = this.handleSaveClicked.bind(this);
     this.handleAddToCollectionClicked = this.handleAddToCollectionClicked.bind(this);
 
@@ -163,7 +163,7 @@ class BlockProgramming extends Component {
     (block) ?
       this.props.addBlock(block)
       : Alert.alert("Please save a block first.");
-    Alert.alert('Saving', "Successfully saved new block");
+    Alert.alert('Saving', "Successfully saved a new block.");
   }
 
 
@@ -228,24 +228,7 @@ class BlockProgramming extends Component {
   render() {
     return (
       <View style={[styles.container]}>
-        <Appbar>
-          {/*  <Appbar.Action
-            icon="menu"
-            size={32}
-            onPress={() => this.props.navigation.openDrawer()}
-          />
-          <Appbar.Content
-            style={{ position: 'absolute', left: 40 }}
-            title="Explore-it"
-            size={32}
-          /> */}
-          <Appbar.Content
-            style={{ position: 'absolute', right: 0 }}
-            title={this.state.device_name}
-            subtitle={this.state.sub_title}
-            size={32}
-          />
-        </Appbar>
+
         <SinglePickerMaterialDialog
           title={i18n.t('Programming.chooseDevice')}
           items={this.state.devices.map((row, index) => ({
@@ -328,7 +311,6 @@ class BlockProgramming extends Component {
                 persistbtn_disabled: false
               });
               this.handleSaveClicked();
-              console.log("event from RN to the web app sent ");
             }}
 
           />
@@ -467,7 +449,7 @@ const mapDispatchToProps = (dispatch) => {
     loadBlocks: () => dispatch(loadBlocks()),
     addBlock: (block) => dispatch(addBlock(block)),
     removeBlock: (block_name) => dispatch(removeBlock(block_name)),
-    updateBlock: (block_name) => dispatch(updateBlock(block_name)),
+    updateBlock: (block) => dispatch(updateBlock(block)),
     getBlock: (block_name) => dispatch(getBlock(block_name)),
 
   };
