@@ -122,7 +122,7 @@ class BlockProgramming extends Component {
   }
 
   updateCurrentSpeeds(steps) {
-    if (steps.length === 0) {
+    if (steps !== []) {
       Object.assign(this.state.speeds, steps);
       console.log("current speeds updated.Steps:" + steps);
       Alert.alert('Current Speeds', "current speeds updated");
