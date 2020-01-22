@@ -409,7 +409,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
     padding: 0,
-    margin: 0
 
   },
   icon: {

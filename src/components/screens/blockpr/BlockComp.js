@@ -64,7 +64,7 @@ export default class BlockComp extends React.Component {
     }
     if (Array.isArray(qsteps) && qsteps.length > 1) {
       if (_isMounted) {
-        Object.assign(this.state.block_steps, qsteps);
+        this.setState({ block_steps: qsteps });
         this.setState({ block_xml: '' });
         console.log("blockComp state updated.block_steps :" + this.state.block_steps);
       } else {
