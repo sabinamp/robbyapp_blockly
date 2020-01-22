@@ -42,7 +42,7 @@ function sendGeneratedCodetoRN() {
      console.error(e);
    } */
   window.ReactNativeWebView.postMessage(res_code);
-  sendWorkspacetoRN();
+
 }
 
 workspacePlayground.addChangeListener(myUpdateFunction);

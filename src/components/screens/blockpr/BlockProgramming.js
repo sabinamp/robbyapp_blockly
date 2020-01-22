@@ -20,8 +20,8 @@ import RobotProxy from '../../../communication/RobotProxy';
 import { speeds, add, removeAll } from '../../../stores/BlocklySpeedsStore';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import BlockComp from './BlockComp';
-
-
+import { connect } from 'react-redux';
+import { addBlock, loadBlocks, removeBlock, updateBlock } from '../../../blockly_reduxstore/BlockActions';
 
 export default class BlockProgramming extends Component {
 
@@ -42,6 +42,9 @@ export default class BlockProgramming extends Component {
     devices: [],
     visible: false,
     stop_btn_disabled: true,
+    savebtn_disabled: true,
+    persistbtn_disabled: true,
+    speeds: [],
     remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
     ble_connection: {
       allowed: false,
@@ -74,6 +77,7 @@ export default class BlockProgramming extends Component {
     this.updateSpeedsInStore = this.updateSpeedsInStore.bind(this);
     this.saveBlock = this.saveBlock.bind(this);
     this.handleSaveClicked = this.handleSaveClicked.bind(this);
+    this.handleAddToCollectionClicked = this.handleAddToCollectionClicked.bind(this);
 
   }
 
@@ -93,35 +97,39 @@ export default class BlockProgramming extends Component {
   }
 
   handleSaveClicked() {
+    this.setState({
+      remaining_btns_disabled: false,
+      stop_btn_disabled: true,
+      savebtn_disabled: true,
+      persistbtn_disabled: false
+    });
     const get_workspacedata = `sendGeneratedCodetoRN(); `;
     this.blocklycomp.webviewref.webref.injectJavaScript(get_workspacedata);
-    console.log("event sent to the web app");
+    console.log("request generated code sent to the web app");
   }
 
-  updateSpeedsInStore(qsteps) {
-    removeAll();
-    qsteps.forEach(element => {
-      add(element);
-      console.log("step:" + element);
+  handleAddToCollectionClicked() {
+    this.setState({
+      remaining_btns_disabled: false,
+      stop_btn_disabled: true,
+      savebtn_disabled: false,
+      persistbtn_disabled: true
     });
+    const get_speeds = `sendWorkspacetoRN; `;
+    this.blocklycomp.webviewref.webref.injectJavaScript(get_speeds);
+    console.log("request workspace injected to the web app");
+  }
+
+  updateCurrentSpeeds(steps) {
+    Object.assign(this.state.speeds, steps);
+    console.log("current speeds updated.Steps:" + steps);
+    Alert.alert('Current Speeds', "current speeds updated");
   }
 
   openBLEErrorAlert() {
     Alert.alert('BLE Error', this.state.ble_connection.errormessage);
   }
 
-  // gets the current screen from navigation state
-  getActiveRouteName(navigationState) {
-    if (!navigationState) {
-      return null;
-    }
-    const route = navigationState.routes[navigationState.index];
-    // dive into nested navigators
-    if (route.routes) {
-      return this.getActiveRouteName(route);
-    }
-    return route.routeName;
-  }
 
   handleDisconnect() {
     setDeviceName({ device: i18n.t('Programming.noConnection') });
@@ -131,10 +139,12 @@ export default class BlockProgramming extends Component {
       device: undefined,
       remaining_btns_disabled: true,
       stop_btn_disabled: true,
+      savebtn_disabled: false,
+      persistbtn_disabled: false
     });
   }
 
-  // handles messages from the communcation system
+  // handles messages from the communication system
   handleCommunicationMessages(name) {
     setDeviceName({ device: name.substr(name.length - 5) });
     setConnected(true);
@@ -143,12 +153,17 @@ export default class BlockProgramming extends Component {
       device: name,
       remaining_btns_disabled: false,
       stop_btn_disabled: true,
+      savebtn_disabled: false,
+      persistbtn_disabled: true
     });
   }
 
-  saveBlock(block) {
-
-    //save block in redux store with an automatically generated name
+  addBlockToStore(block) {
+    //save block in redux store with an automatically generated name    
+    (block) ?
+      this.props.addBlock(block)
+      : Alert.alert("Please save a block first.");
+    Alert.alert('Saving', "Successfully saved new block");
   }
 
 
@@ -165,6 +180,8 @@ export default class BlockProgramming extends Component {
         this.setState({
           remaining_btns_disabled: false,
           stop_btn_disabled: true,
+          savebtn_disabled: true,
+          persistbtn_disabled: true
         });
         Alert.alert(i18n.t('Programming.download'), i18n.t('Programming.downloadMessage'));
         break;
@@ -173,12 +190,16 @@ export default class BlockProgramming extends Component {
         this.setState({
           remaining_btns_disabled: false,
           stop_btn_disabled: true,
+          savebtn_disabled: false,
+          persistbtn_disabled: true
         });
         break;
       case 'stop':
         this.setState({
           remaining_btns_disabled: false,
           stop_btn_disabled: true,
+          savebtn_disabled: false,
+          persistbtn_disabled: true
         });
         break;
       case 'finishedLearning':
@@ -186,6 +207,8 @@ export default class BlockProgramming extends Component {
         this.setState({
           remaining_btns_disabled: false,
           stop_btn_disabled: true,
+          savebtn_disabled: true,
+          persistbtn_disabled: true
         });
         break;
       case 'finishedUpload':
@@ -193,6 +216,8 @@ export default class BlockProgramming extends Component {
         this.setState({
           remaining_btns_disabled: false,
           stop_btn_disabled: true,
+          savebtn_disabled: false,
+          persistbtn_disabled: true
         });
         break;
       default:
@@ -204,7 +229,7 @@ export default class BlockProgramming extends Component {
     return (
       <View style={[styles.container]}>
         <Appbar>
-          <Appbar.Action
+          {/*  <Appbar.Action
             icon="menu"
             size={32}
             onPress={() => this.props.navigation.openDrawer()}
@@ -213,7 +238,7 @@ export default class BlockProgramming extends Component {
             style={{ position: 'absolute', left: 40 }}
             title="Explore-it"
             size={32}
-          />
+          /> */}
           <Appbar.Content
             style={{ position: 'absolute', right: 0 }}
             title={this.state.device_name}
@@ -278,12 +303,10 @@ export default class BlockProgramming extends Component {
         />
 
         <View style={styles.container}>
-          {/* <Provider store={store}>
-
-          </Provider> */}
           <BlockComp block_name="" block_steps={[{ left: 0, right: 0 }]}
             ref={r => (this.blocklycomp = r)}
-            block_xml="" updateSpeedsInStore={this.updateSpeedsInStore} saveBlock={this.saveBlock}
+            block_xml="" updateCurrentSpeeds={this.updateCurrentSpeeds} addBlockToStore={this.addBlockToStore}
+
           />
         </View>
 
@@ -301,6 +324,8 @@ export default class BlockProgramming extends Component {
               this.setState({
                 stop_btn_disabled: true,
                 remaining_btns_disabled: false,
+                savebtn_disabled: false,
+                persistbtn_disabled: false
               });
               this.handleSaveClicked();
               console.log("event from RN to the web app sent ");
@@ -308,7 +333,20 @@ export default class BlockProgramming extends Component {
 
           />
 
+          <Appbar.Action icon="library-add"
+            size={32}
+            disabled={this.state.persistbtn_disabled}
+            onPress={() => {
+              this.setState({
+                stop_btn_disabled: true,
+                remaining_btns_disabled: false,
+                savebtn_disabled: true,
+                persistbtn_disabled: true
+              });
+              this.handleAddToCollectionClicked();
+            }}
 
+          />
           <Appbar.Action icon="file-upload"
             size={32}
             disabled={this.state.remaining_btns_disabled}
@@ -383,12 +421,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAFAFA',
-    ...ifIphoneX(
-      {
-        paddingTop: getStatusBarHeight() + 10,
-      },
-      {},
-    ),
+    padding: 0,
+
   },
   icon: {
     padding: 0,
@@ -420,3 +454,23 @@ const styles = StyleSheet.create({
   },
 
 });
+
+// Map State To Props (Redux Store Passes State To Component)
+const mapStateToProps = (state) => {
+  return {
+    blocks: state.blocksReducer
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadBlocks: () => dispatch(loadBlocks()),
+    addBlock: (block) => dispatch(addBlock(block)),
+    removeBlock: (block_name) => dispatch(removeBlock(block_name)),
+    updateBlock: (block_name) => dispatch(updateBlock(block_name)),
+    getBlock: (block_name) => dispatch(getBlock(block_name)),
+
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BlockProgramming);

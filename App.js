@@ -3,7 +3,7 @@ import { createAppContainer } from 'react-navigation';
 import { DrawerNavigatorItems, createDrawerNavigator } from 'react-navigation-drawer';
 import Programming from './src/components/screens/programming/Programming';
 import Settings from './src/components/screens/settings/Settings';
-import BlockProgramming from './src/components/screens/blockpr/BlockProgramming';
+import BlockPrMain from './src/components/screens/blockpr/BlockPrMain';
 import BleService from './src/communication/BleService';
 import {
     addDeviceNameChangeListener,
@@ -86,7 +86,7 @@ const DrawerNavigator = createDrawerNavigator(
     {
         [i18n.t('App.programming')]: { screen: Programming },
         [i18n.t('App.settings')]: { screen: Settings },
-        [i18n.t('App.blockprogramming')]: { screen: BlockProgramming },
+        [i18n.t('App.blockprogramming')]: { screen: BlockPrMain },
         [i18n.t('App.savedblocks')]: { screen: SavedBlocks },
     },
     {

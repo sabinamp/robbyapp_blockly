@@ -1,4 +1,4 @@
-iimport {
+import {
   UPDATE_BLOCK, REMOVE_BLOCK, ADD_BLOCK, GET_BLOCK, LOAD_BLOCKS
 } from './actionTypes';
 

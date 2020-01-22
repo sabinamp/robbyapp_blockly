@@ -42,8 +42,7 @@ export default class BlockComp extends React.Component {
 
 
   handleBlockCodeReceived(str) {
-
-    let qsteps = [{ left: 0, right: 0 }];
+    let qsteps = [];
     const addStep = (step) => qsteps.push(step);
     try {
       //let queue = (new Function('return ' + this.state.block_code))();    
@@ -55,11 +54,11 @@ export default class BlockComp extends React.Component {
     if (Array.isArray(qsteps) && qsteps.length > 1) {
       if (_isMounted) {
         Object.assign(this.state.block_steps, qsteps);
-        console.log("blockComp state updated.code_steps :" + this.state.block_steps);
+        console.log("blockComp state updated.block_steps :" + this.state.block_steps);
       } else { console.log("BlockComp unmounted.Can't update block_steps"); }
 
-      { this.props.updateSpeedsInStore(qsteps) };
-      console.log("speeds in the store-updated");
+      { this.props.updateCurrentSpeeds(qsteps) };
+      console.log("speeds to be uploaded-updated");
     }
   }
 
@@ -72,32 +71,31 @@ export default class BlockComp extends React.Component {
     } else {
       this.handleBlockCodeReceived(str);
     }
-    // save block;
-    { this.props.saveBlock(this.state); }
 
   }
 
 
   handleBlockXMLReceived(workspace) {
+    console.log("handleBlockXMLReceived called");
     if (_isMounted) {
       this.setState({ block_xml: workspace });
       console.log("BlockComp state block_xml updated.");
+      // add new block to Reduxstore
+      this.addNewBlock_fromCurrentState();
     } else { console.log("BlockComp unmounted.Can't update block_xml."); }
 
-    console.log("handleBlockXMLReceived called");
   }
 
+  addNewBlock_fromCurrentState() {
+    // save block;    
+    let blockToBeSaved = Object.assign({}, {
+      block_steps: this.state.block_steps,
+      block_xml: this.state.block_xml
+    });
+    if (this.state.block_xml.includes('<xml')) { this.props.addBlockToStore(blockToBeSaved) };
 
+  }
 
-  /*   chunk(array, size) {
-      const chunked_arr = [];
-      let copied = [...array]; // ES6 destructuring
-      const numOfChild = Math.ceil(copied.length / size); // Round up to the nearest integer
-      for (let i = 0; i < numOfChild; i++) {
-        chunked_arr.push(copied.splice(0, size));
-      }
-      return chunked_arr;
-    } */
 
   render() {
     return (
