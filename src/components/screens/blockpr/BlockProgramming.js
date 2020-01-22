@@ -23,7 +23,7 @@ import BlockComp from './BlockComp';
 import { connect } from 'react-redux';
 import { addBlock, loadBlocks, removeBlock, updateBlock } from '../../../blockly_reduxstore/BlockActions';
 
-export default class BlockProgramming extends Component {
+class BlockProgramming extends Component {
 
   static navigationOptions = {
     drawerLabel: 'Blockly Blocks',
