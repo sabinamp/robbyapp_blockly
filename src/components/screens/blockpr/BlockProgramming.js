@@ -122,9 +122,14 @@ class BlockProgramming extends Component {
   }
 
   updateCurrentSpeeds(steps) {
-    Object.assign(this.state.speeds, steps);
-    console.log("current speeds updated.Steps:" + steps);
-    Alert.alert('Current Speeds', "current speeds updated");
+    if (steps > 0) {
+      Object.assign(this.state.speeds, steps);
+      console.log("current speeds updated.Steps:" + steps);
+      Alert.alert('Current Speeds', "current speeds updated");
+    } else {
+      Alert.alert('Empty workspace', " Please build a program first!")
+    }
+
   }
 
   openBLEErrorAlert() {
