@@ -51,5 +51,4 @@ export {
     addSpeedChangeListener,
     speeds,
     updateAll
-
 };

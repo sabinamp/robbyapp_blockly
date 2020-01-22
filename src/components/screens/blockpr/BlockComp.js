@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import BlocklyWebview from './BlocklyWebview';
 
 
-let isMounted = false;
+let _isMounted = false;
+
 
 export default class BlockComp extends React.Component {
   /*   static propTypes = {
@@ -40,6 +41,16 @@ export default class BlockComp extends React.Component {
     this._isMounted = false;
   }
 
+  receiveCodeAsString(str) {
+    console.log("data received from the embedded Blockly web app");
+    if (str.slice(0, 4).includes('<xml')) {
+      this.handleBlockXMLReceived(str);
+
+    } else {
+      this.handleBlockCodeReceived(str);
+    }
+  }
+
 
   handleBlockCodeReceived(str) {
     let qsteps = [];
@@ -54,24 +65,15 @@ export default class BlockComp extends React.Component {
     if (Array.isArray(qsteps) && qsteps.length > 1) {
       if (_isMounted) {
         Object.assign(this.state.block_steps, qsteps);
+        this.setState({ block_xml: '' });
         console.log("blockComp state updated.block_steps :" + this.state.block_steps);
-      } else { console.log("BlockComp unmounted.Can't update block_steps"); }
+      } else {
+        console.log("BlockComp unmounted.Can't update block_steps");
+      }
 
-      { this.props.updateCurrentSpeeds(qsteps) };
+      { this.props.updateCurrentSpeeds(this.state.block_steps) };
       console.log("speeds to be uploaded-updated");
     }
-  }
-
-  receiveCodeAsString(str) {
-
-    console.log("data received from the embedded Blockly web app");
-    if (str.slice(0, 4).includes('<xml')) {
-      this.handleBlockXMLReceived(str);
-
-    } else {
-      this.handleBlockCodeReceived(str);
-    }
-
   }
 
 
@@ -80,24 +82,23 @@ export default class BlockComp extends React.Component {
     if (_isMounted) {
       this.setState({ block_xml: workspace });
       console.log("BlockComp state block_xml updated.");
-      // add new block to Reduxstore
-      this.addNewBlock_fromCurrentState();
+      let currentBlock = Object.assign({}, {
+        block_steps: this.state.block_steps,
+        block_xml: workspace
+      });
+      // add new block to Reduxstore    
+      this.addNewBlock_fromCurrentState(currentBlock);
     } else { console.log("BlockComp unmounted.Can't update block_xml."); }
 
   }
 
-  addNewBlock_fromCurrentState() {
-    // save block;    
-    let blockToBeSaved = Object.assign({}, {
-      block_steps: this.state.block_steps,
-      block_xml: this.state.block_xml
-    });
-    if (this.state.block_xml.includes('<xml')
-      && this.state.block_steps.length > 1) {
-      { this.props.addBlockToStore(blockToBeSaved) };
-      console.log("block state has not been updated. addBlockToStore -not called");
+  addNewBlock_fromCurrentState(currentBlock) {
+    if (currentBlock.block_xml.length > 25
+      && currentBlock.block_steps.length > 1) {
+      { this.props.addBlockToStore(currentBlock) };
+    } else {
+      console.log("addBlockToStore -not called.");
     }
-
 
   }
 
