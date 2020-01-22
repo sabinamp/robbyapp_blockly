@@ -355,7 +355,7 @@ class BlockProgramming extends Component {
                 stop_btn_disabled: true,
                 remaining_btns_disabled: true,
               });
-              RobotProxy.upload(speeds).catch(e => {
+              RobotProxy.upload(this.state.speeds).catch(e => {
                 console.log(2);
                 this.handleDisconnect();
               });
