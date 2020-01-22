@@ -1,7 +1,7 @@
 // Imports: Redux
 import rootReducer from './reducers';
 
-import blocksReducer from './reducers/BlocksReducer'
+import blocksReducer from './reducers/blocksReducer'
 import { persistStore, persistReducer } from 'redux-persist';
 import { createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';

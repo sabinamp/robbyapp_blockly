@@ -6,8 +6,8 @@ let nextBlockId = 0;
 export const addBlock = (block) => ({
   type: ADD_BLOCK,
   block: {
-    blockid: nextBlockId++,
-    block_name: block.block_name,
+    blockid: ++nextBlockId,
+    block_name: "My Block" + nextBlockId,
     block_steps: block.block_steps,
     block_xml: block.block_xml
   }
