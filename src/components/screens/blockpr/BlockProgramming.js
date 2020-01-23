@@ -22,7 +22,7 @@ import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMateria
 import BlockComp from './BlockComp';
 import { connect } from 'react-redux';
 import { addBlock, loadBlocks, removeBlock, updateBlock, getBlock } from '../../../blockly_reduxstore/BlockActions';
-let speeds = [];
+
 class BlockProgramming extends Component {
 
   static navigationOptions = {
@@ -41,6 +41,7 @@ class BlockProgramming extends Component {
     device: getDeviceName() === i18n.t('SettingsStore.noConnection') ? undefined : getDeviceName(),
     devices: [],
     visible: false,
+    speeds: [],
     stop_btn_disabled: true,
     savebtn_disabled: false,
     persistbtn_disabled: true,
@@ -117,14 +118,14 @@ class BlockProgramming extends Component {
     const get_speeds = `sendWorkspacetoRN(); `;
     this.blocklycomp.webviewref.webref.injectJavaScript(get_speeds);
     console.log("request workspace injected to the web app");
-    Alert.alert('Block Collection', "Adding a new block.");
+    //Alert.alert('Block Collection', "Adding a new block.");
   }
 
   updateCurrentSpeeds(steps) {
-    (steps.length === 0) ?
+    (steps.length == 0) ?
       (Alert.alert('Empty workspace', " Please build a program first!"))
       :
-      Object.assign(speeds, steps);
+      this.setState({ speeds: steps });
     console.log("current speeds updated.Steps:" + steps);
     Alert.alert('Current Speeds', "current speeds updated");
 
@@ -164,7 +165,7 @@ class BlockProgramming extends Component {
 
   addBlockToStore(block) {
     //save block in redux store with an automatically generated name    
-    (block) ?
+    (block.block_steps.length > 0) ?
       this.props.addBlock(block)
       : Alert.alert("Please save a block first.");
     Alert.alert('Saving', "Successfully saved a new block.");
@@ -341,7 +342,7 @@ class BlockProgramming extends Component {
                 stop_btn_disabled: true,
                 remaining_btns_disabled: true,
               });
-              RobotProxy.upload({ speeds }).catch(e => {
+              RobotProxy.upload(this.state.speeds).catch(e => {
                 console.log(2);
                 this.handleDisconnect();
               });

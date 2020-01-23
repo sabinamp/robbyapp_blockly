@@ -66,12 +66,12 @@ export default class BlockComp extends React.Component {
       if (_isMounted) {
         this.setState({ block_steps: qsteps });
         this.setState({ block_xml: '' });
-        console.log("blockComp state updated.block_steps :" + this.state.block_steps);
+        console.log("blockComp state update called");
       } else {
         console.log("BlockComp unmounted.Can't update block_steps");
       }
 
-      { this.props.updateCurrentSpeeds(this.state.block_steps) };
+      { this.props.updateCurrentSpeeds(qsteps) };
       console.log("speeds to be uploaded-updated");
     }
   }
