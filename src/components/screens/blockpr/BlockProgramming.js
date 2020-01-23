@@ -127,7 +127,7 @@ class BlockProgramming extends Component {
       :
       this.setState({ speeds: steps });
     console.log("current speeds updated.Steps:" + steps);
-    Alert.alert('Current Speeds', "current speeds updated");
+    Alert.alert('Current Speeds', "The current speeds-updated");
 
   }
 

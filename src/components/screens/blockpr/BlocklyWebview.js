@@ -24,7 +24,7 @@ export default class BlocklyWebView extends React.Component {
 
   render() {
     const { block_xml, receiveCodeAsString } = this.props;
-    const runFirst = ({ block_xml }.length > 1) ?
+    const runFirst = ({ block_xml }.length < 1) ?
       `window.isNativeApp = true;
     `
       :
