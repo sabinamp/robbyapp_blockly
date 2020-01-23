@@ -17,12 +17,12 @@ import {
 import i18n from '../../../../resources/locales/i18n';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RobotProxy from '../../../communication/RobotProxy';
-import { speeds, add, removeAll } from '../../../stores/BlocklySpeedsStore';
+//import { speeds, add, removeAll } from '../../../stores/BlocklySpeedsStore';
 import SinglePickerMaterialDialog from '../../materialdialog/SinglePickerMaterialDialog';
 import BlockComp from './BlockComp';
 import { connect } from 'react-redux';
 import { addBlock, loadBlocks, removeBlock, updateBlock, getBlock } from '../../../blockly_reduxstore/BlockActions';
-
+let speeds = [];
 class BlockProgramming extends Component {
 
   static navigationOptions = {
@@ -44,7 +44,6 @@ class BlockProgramming extends Component {
     stop_btn_disabled: true,
     savebtn_disabled: false,
     persistbtn_disabled: true,
-    speeds: [],
     remaining_btns_disabled: getDeviceName() === i18n.t('SettingsStore.noConnection'),
     ble_connection: {
       allowed: false,
@@ -125,7 +124,7 @@ class BlockProgramming extends Component {
     (steps.length === 0) ?
       (Alert.alert('Empty workspace', " Please build a program first!"))
       :
-      this.setState({ speeds: steps });
+      Object.assign(speeds, steps);
     console.log("current speeds updated.Steps:" + steps);
     Alert.alert('Current Speeds', "current speeds updated");
 
@@ -342,7 +341,7 @@ class BlockProgramming extends Component {
                 stop_btn_disabled: true,
                 remaining_btns_disabled: true,
               });
-              RobotProxy.upload(this.state.speeds).catch(e => {
+              RobotProxy.upload({ speeds }).catch(e => {
                 console.log(2);
                 this.handleDisconnect();
               });

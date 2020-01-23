@@ -6,8 +6,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
 import AsyncStorage from '@react-native-community/async-storage';
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
-
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 // Redux Persist Config
 const persistConfig = {
   // Root?
@@ -21,7 +20,7 @@ const persistConfig = {
   /*  blacklist: [
      'speedReducer',
    ], */
-  /* stateReconciler: hardSet */
+  /* stateReconciler: autoMergeLevel2 */
 }
 // Redux Persist Persisted Reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
