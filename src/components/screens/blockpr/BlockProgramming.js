@@ -347,7 +347,15 @@ class BlockProgramming extends Component {
                   console.log(2);
                   this.handleDisconnect();
                 });
-              } else { Alert.alert("Warning", "There is nothing to upload."); }
+              } else {
+                Alert.alert("Warning", "There is nothing to upload.");
+                this.setState({
+                  stop_btn_disabled: true,
+                  remaining_btns_disabled: true,
+                  savebtn_disabled: false,
+                  persistbtn_disabled: true,
+                });
+              }
             }} />
           <Appbar.Action icon="fast-forward"
             size={32}
