@@ -2,39 +2,27 @@ import React, { Component } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import {
   Base,
-  Default,
+  /* Default,
   Danger,
   Info,
-  Success
+  Success */
 } from './styles';
 
 export default class Button extends Component {
-  getTheme() {
-    const { danger, info, success } = this.props;
-    if (info) {
-      return Info;
-    }
-    if (success) {
-      return Success;
-    }
-    if (neutral) {
-      return Neutral;
-    }
-    return Default;
-  }
+
 
   render() {
-    const theme = this.getTheme();
+
     const { children, onPress, style, rounded, } = this.props;
     return (<TouchableOpacity
       activeOpacity={0.6}
       style={[
         Base.main,
-        theme.main,
         rounded ? Base.rounded : null,
-        style,]}
+        style,
+      ]}
       onPress={onPress} >
-      <Text style={[Base.label, theme.label]}>{children}</Text>
+      <Text style={[Base.label]}>{children}</Text>
     </TouchableOpacity>
     );
 

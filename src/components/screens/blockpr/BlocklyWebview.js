@@ -70,9 +70,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: '#fff',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    padding: 0
+    /*  alignItems: 'stretch',
+     justifyContent: 'center',
+     padding: 0 */
   },
   text: {
     color: '#fff',

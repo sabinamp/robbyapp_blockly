@@ -107,19 +107,6 @@ export default class SavedBlocks extends Component {
                     </PersistGate>
                 </Provider>
 
-                {/*  <View style={{ flex: 1, padding: 40, justifyContent: 'center' }}>
-                    <FlatList data={this.state.dataSource}
-                        renderItem={({ item }) => (
-                            <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-                                <Button blockname={item} openBlockly={this.openBlockly} colorHolder={this.getRandomColor} />
-                            </View>
-                        )}
-                        //Setting the number of column
-                        numColumns={2}
-                        keyExtractor={(item, index) => index}
-                    />
-
-                </View> */}
                 <Appbar style={styles.bottom}>
 
                 </Appbar>

@@ -34,15 +34,28 @@ class BlockAlbum extends Component {
     return ColorCode;
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      let currentBlocks = this.props.loadBlocks();
-      //let currentBlocks = ["Block2", "Block2", "Block3", "Block4"];
+  /*   componentDidMount() {
+      let currentBlocks = [];
+      setTimeout(() => {
+        currentBlocks = this.props.loadBlocks();
+      }, 5000);
       if (currentBlocks.length > 0)
         this.setState({ dataSource: currentBlocks });
-    }, 5000);
+  
+    } */
 
+  componentDidMount() {
+    this.onLoad();
   }
+  onLoad = () => {
+    try {
+      let currentBlocks = this.props.loadBlocks();
+      if (currentBlocks.length > 0) this.setState({ dataSource: currentBlocks });
+    } catch (error) {
+      Alert.alert('Error', 'There was an error while loading thedata.');
+    }
+  }
+
   /*  componentWillUnmount() {
      clearInterval(this.interval);
    } */
@@ -58,15 +71,15 @@ class BlockAlbum extends Component {
         <FlatList data={this.state.dataSource}
           renderItem={({ item }) => (
             <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-              <Button blockname={item.block_name} openBlockly={this.openBlockly} colorHolder={this.getRandomColor}
+              <Button blockname={item.block_name} openBlockly={this.openBlockly} colorHolder={this.getRandomColor()}
+
               />
             </View>
           )}
           //Setting the number of column
-          numColumns={1}
+          numColumns={2}
           keyExtractor={(item, index) => index}
         />
-
       </View>
     );
   }
