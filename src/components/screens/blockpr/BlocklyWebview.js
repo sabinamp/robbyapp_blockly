@@ -24,7 +24,7 @@ export default class BlocklyWebView extends React.Component {
 
   render() {
     const { block_xml, receiveCodeAsString } = this.props;
-    const runFirst = ({ block_xml }.length < 1) ?
+    const runFirst = ({ block_xml }.length == 0) ?
       `window.isNativeApp = true;
     `
       :
@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'stretch',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    padding: 0
   },
   text: {
     color: '#fff',
