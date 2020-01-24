@@ -7,7 +7,7 @@ const initialState = [{ blockid: 0, block_name: '', block_xml: '', block_steps: 
 const blocksReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_BLOCK:
-      return Object.assign([], [state, action.block]);
+      return Object.assign([], state.concat(action.block));
     case GET_BLOCK:
       return state.blocks.filter(block => {
         return block.block_name === action.block.block_name
@@ -27,7 +27,7 @@ const blocksReducer = (state = initialState, action) => {
       /*    //delete the previous block with the same name and add a new one with different name
          return Object.assign([], state,[state.slice(0, idToUpdate),
          state.slice(idToUpdate + 1, state.length), block]); */
-      return Object.assign([], [state.splice(idToUpdate, 1, action.block)]);
+      return Object.assign([], state.splice(idToUpdate, 1, action.block));
     }
     default: return state;
   }

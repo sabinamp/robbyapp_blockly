@@ -51,7 +51,7 @@ export default class BlocklyWebView extends React.Component {
           onMessage={event => {
             const { data } = event.nativeEvent;
             { receiveCodeAsString(data) };
-            console.log("code from the web app :" + data);
+            console.log("the generated code from the web app :" + data);
           }}
         />
       </View>
