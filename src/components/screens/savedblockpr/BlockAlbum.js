@@ -59,7 +59,7 @@ class BlockAlbum extends Component {
 
     let currentBlocks = [];
     setTimeout(() => {
-      currentBlocks = this.props.loadBlocks();
+      currentBlocks = this.props.loadBlocks().blocksReducer;
       if (currentBlocks.length > 0) { this.setState({ dataSource: currentBlocks }); }
       console.log("There are " + this.state.dataSource.length + " blocks.");
     }, 5000);
