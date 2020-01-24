@@ -81,18 +81,16 @@ export default class BlockComp extends React.Component {
   handleBlockXMLReceived(workspace) {
     console.log("handleBlockXMLReceived called");
     if (_isMounted) {
-      if (this.state.block_xml !== workspace) {
-        this.setState({ block_xml: workspace });
-        console.log("BlockComp state block_xml updated.");
-        let currentBlock = Object.assign({}, {
-          block_steps: this.state.block_steps,
-          block_xml: workspace
-        });
-        // add new block to Reduxstore    
-        this.addNewBlock_fromCurrentState(currentBlock);
-      } else {
-        Alert.alert("Warning", "This block is already in your collection.");
-      }
+      this.setState({ block_xml: workspace });
+      console.log("BlockComp state block_xml updated.");
+
+
+      let currentBlock = Object.assign({}, {
+        block_steps: this.state.block_steps,
+        block_xml: workspace
+      });
+      // add new block to Reduxstore    
+      this.addNewBlock_fromCurrentState(currentBlock);
     } else {
       console.log("BlockComp unmounted.Can't update block_xml.");
     }
