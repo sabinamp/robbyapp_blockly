@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, View, Text, TextInput, Alert,
-  FlatList,
+  FlatList, SafeAreaView,
   ActivityIndicator,
   TouchableOpacity
 } from 'react-native';
@@ -30,7 +30,7 @@ class BlockAlbum extends Component {
     let ColorCode = '#' + Math.random().toString(16).slice(-6);
 
     /* var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')'; */
-    Console.log(ColorCode);
+    console.log(ColorCode);
     return ColorCode;
   }
 
@@ -47,12 +47,13 @@ class BlockAlbum extends Component {
   componentDidMount() {
     this.onLoad();
   }
+
   onLoad = () => {
     try {
-      let currentBlocks = this.props.loadBlocks();
-      if (currentBlocks.length > 0) this.setState({ dataSource: currentBlocks });
+      this.setState({ dataSource: this.props.loadBlocks() });
+      console.log("There are " + this.state.dataSource.length + " blocks.");
     } catch (error) {
-      Alert.alert('Error', 'There was an error while loading thedata.');
+      Alert.alert('Error', 'There was an error while loading the data.');
     }
   }
 
@@ -64,34 +65,32 @@ class BlockAlbum extends Component {
     this.props.removeBlock(name);
   }
 
+
   render() {
     return (
-      <View style={styles.container}>
-        <ScrollView
-          keyboardShouldPersistTaps='always'
-          style={styles.content}>
-          <FlatList data={this.state.dataSource}
-            renderItem={({ item }) => (
-              <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-                <Button blockname={item.block_name} openBlockly={this.openBlockly} colorHolder={this.getRandomColor()}
 
-                />
-              </View>
-            )}
-            //Setting the number of column
-            numColumns={2}
-            keyExtractor={(item, index) => index}
-          />
-        </ScrollView>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <FlatList data={this.state.dataSource}
+          renderItem={({ item }) => (
+            <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
+              <Button blockname={item.block_name} openBlockly={this.openBlockly} colorHolder={this.getRandomColor()}
+              />
+            </View>
+          )}
+          //Setting the number of column
+          numColumns={2}
+          keyExtractor={item => item.blockid}
+        />
+      </SafeAreaView>
+
     );
   }
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    paddingTop: 10,
   },
   container: {
     flex: 1,
@@ -106,8 +105,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    blocks: state.blockReducer,
-    speeds: state.speedReducer
+    blocks: state.blocksReducer,
+
   };
 };
 

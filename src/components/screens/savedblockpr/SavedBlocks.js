@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import {
     StyleSheet, View, Text, TextInput, Alert,
-    FlatList,
-    ActivityIndicator,
-    Image,
-    TouchableOpacity
+
 } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { Provider } from 'react-redux';
@@ -25,11 +22,9 @@ import BlockAlbum from './BlockAlbum';
 //import CalibrationInput from './CalibrationInput';
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 import i18n from '../../../../resources/locales/i18n';
-import RobotProxy from '../../../communication/RobotProxy';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Button from './Button';
-const numberOfBlocks = 9;
-const items = ["Block1", "Block2", "Block3", "Block4", "Block5", "Block6", "block7", "Block8"];
+
+
 export default class SavedBlocks extends Component {
     static navigationOptions = {
         drawerLabel: 'My Blockly Blocks',
@@ -72,13 +67,7 @@ export default class SavedBlocks extends Component {
         this.connectionListener.remove();
     }
 
-    getRandomColor = () => {
-        let ColorCode = '#' + Math.random().toString(16).slice(-6);
 
-        /* var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')'; */
-        Console.log(ColorCode);
-        return ColorCode;
-    }
 
     render() {
         return (
@@ -102,13 +91,12 @@ export default class SavedBlocks extends Component {
                     />
                 </Appbar>
                 <Provider store={store}>
-                    <PersistGate loading={true} persistor={persistor}>
+                    <PersistGate loading={null} persistor={persistor}>
                         <BlockAlbum />
                     </PersistGate>
                 </Provider>
 
                 <Appbar style={styles.bottom}>
-
                 </Appbar>
             </View>
         );
