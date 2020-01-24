@@ -60,9 +60,10 @@ class BlockAlbum extends Component {
     let currentBlocks = [];
     setTimeout(() => {
       currentBlocks = this.props.loadBlocks();
+      if (currentBlocks.length > 0) { this.setState({ dataSource: currentBlocks }); }
+      console.log("There are " + this.state.dataSource.length + " blocks.");
     }, 5000);
-    if (currentBlocks.length > 0) { this.setState({ dataSource: currentBlocks }); }
-    console.log("There are " + this.state.dataSource.length + " blocks.");
+
 
   }
 
@@ -79,7 +80,7 @@ class BlockAlbum extends Component {
     return (
 
       <SafeAreaView style={styles.container}>
-        <FlatList data={this.state.dataSource}
+        <FlatList data={this.state.dataSource} extraData={selected}
           renderItem={({ item }) => <Item title={item.block_name} />}
 
           //Setting the number of column
