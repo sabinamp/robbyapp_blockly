@@ -51,7 +51,7 @@ class BlockAlbum extends Component {
   
     } */
 
-  getDerivedStateFromProps() {
+  componentDidMount() {
     this.onLoad();
   }
 
