@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 const Base = StyleSheet.create({
   main: {
-    padding: 10,,
+    padding: 10,
     borderRadius: 3,
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,.1)',

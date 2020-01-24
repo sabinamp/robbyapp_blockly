@@ -66,30 +66,51 @@ class BlockAlbum extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, padding: 40, justifyContent: 'center' }}>
+      <View style={styles.container}>
+        <ScrollView
+          keyboardShouldPersistTaps='always'
+          style={styles.content}>
+          <FlatList data={this.state.dataSource}
+            renderItem={({ item }) => (
+              <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
+                <Button blockname={item.block_name} openBlockly={this.openBlockly} colorHolder={this.getRandomColor()}
 
-        <FlatList data={this.state.dataSource}
-          renderItem={({ item }) => (
-            <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-              <Button blockname={item.block_name} openBlockly={this.openBlockly} colorHolder={this.getRandomColor()}
-
-              />
-            </View>
-          )}
-          //Setting the number of column
-          numColumns={2}
-          keyExtractor={(item, index) => index}
-        />
+                />
+              </View>
+            )}
+            //Setting the number of column
+            numColumns={2}
+            keyExtractor={(item, index) => index}
+          />
+        </ScrollView>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center'
+  },
+  content: {
+    flex: 1
+  },
+
+});
+
 const mapStateToProps = (state) => {
   return {
     blocks: state.blockReducer,
     speeds: state.speedReducer
   };
 };
+
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = (dispatch) => {
   return {
