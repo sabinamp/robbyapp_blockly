@@ -4,7 +4,7 @@ import CustomButton from './CustomButton';
 
 const Button = ({ openBlockly, blockname, colorHolder }) => (
   <View style={styles.buttonContainer}>
-    <CustomButton backgroundColor={colorHolder} underlayColor={colorHolder} style={styles.button} onPress={openBlockly}>
+    <CustomButton underlayColor={colorHolder} style={styles.button} onPress={openBlockly}>
       <Text>
         {blockname}
       </Text>

@@ -342,10 +342,12 @@ class BlockProgramming extends Component {
                 stop_btn_disabled: true,
                 remaining_btns_disabled: true,
               });
-              RobotProxy.upload(this.state.speeds).catch(e => {
-                console.log(2);
-                this.handleDisconnect();
-              });
+              if (this.state.speeds.length !== 0) {
+                RobotProxy.upload(this.state.speeds).catch(e => {
+                  console.log(2);
+                  this.handleDisconnect();
+                });
+              } else { Alert.alert("Warning", "There is nothing to upload."); }
             }} />
           <Appbar.Action icon="fast-forward"
             size={32}

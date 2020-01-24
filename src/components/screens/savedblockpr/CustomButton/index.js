@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import {
   Base,
-  /* Default,
-  Danger,
-  Info,
-  Success */
 } from './styles';
 
 export default class Button extends Component {

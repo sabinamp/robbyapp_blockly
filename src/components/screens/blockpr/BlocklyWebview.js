@@ -51,7 +51,7 @@ export default class BlocklyWebView extends React.Component {
           onMessage={event => {
             const { data } = event.nativeEvent;
             { receiveCodeAsString(data) };
-            console.log("the generated code from the web app :" + data);
+            console.log("the code from the web app :" + data);
           }}
         />
       </View>
@@ -70,9 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: '#fff',
-    /*  alignItems: 'stretch',
-     justifyContent: 'center',
-     padding: 0 */
+
   },
   text: {
     color: '#fff',

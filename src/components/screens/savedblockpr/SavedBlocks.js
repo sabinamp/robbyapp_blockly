@@ -1,29 +1,21 @@
 import React, { Component } from 'react';
-import {
-    StyleSheet, View, Text, TextInput, Alert,
+import { StyleSheet, View, } from 'react-native';
 
-} from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from '../../../blockly_reduxstore/store';
-
 import {
     isConnected,
     addConnectedChangeListener,
     addDeviceNameChangeListener,
     getDeviceName,
-    setDeviceName,
-    setConnected,
 
 } from '../../../stores/SettingsStore';
-import BlockAlbum from './BlockAlbum';
-
-//import CalibrationInput from './CalibrationInput';
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 import i18n from '../../../../resources/locales/i18n';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import BlockAlbum from './BlockAlbum';
 
 export default class SavedBlocks extends Component {
     static navigationOptions = {
@@ -36,7 +28,6 @@ export default class SavedBlocks extends Component {
         device_name: getDeviceName(),
         sub_title: i18n.t('Settings.device'),
         connected: isConnected(),
-        dataSource: {}
     };
 
     constructor() {
@@ -46,6 +37,18 @@ export default class SavedBlocks extends Component {
 
     openBlockly(blockname) {
         //TODO
+    }
+    // gets the current screen from navigation state
+    getActiveRouteName(navigationState) {
+        if (!navigationState) {
+            return null;
+        }
+        const route = navigationState.routes[navigationState.index];
+        // dive into nested navigators
+        if (route.routes) {
+            return this.getActiveRouteName(route);
+        }
+        return route.routeName;
     }
 
 
@@ -58,7 +61,7 @@ export default class SavedBlocks extends Component {
             this.setState({ connected: isConnected() });
         });
 
-        this.setState({ dataSource: items });
+
     }
 
 

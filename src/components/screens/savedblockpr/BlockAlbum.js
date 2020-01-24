@@ -12,7 +12,14 @@ import { connect } from 'react-redux';
 import { blockReducer } from '../../../blockly_reduxstore/reducers';
 import { addBlock, loadBlocks, getBlock, removeBlock, updateBlock } from '../../../blockly_reduxstore/BlockActions';
 
-
+const Item = ({ title }) => {
+  return (
+    <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
+      <Button blockname={title} openBlockly={this.openBlockly} colorHolder={this.getRandomColor()}
+      />
+    </View>
+  );
+}
 class BlockAlbum extends Component {
   state = {
     dataSource: []
@@ -49,12 +56,14 @@ class BlockAlbum extends Component {
   }
 
   onLoad = () => {
-    try {
-      this.setState({ dataSource: this.props.loadBlocks() });
-      console.log("There are " + this.state.dataSource.length + " blocks.");
-    } catch (error) {
-      Alert.alert('Error', 'There was an error while loading the data.');
-    }
+
+    let currentBlocks = [];
+    setTimeout(() => {
+      currentBlocks = this.props.loadBlocks();
+    }, 5000);
+    if (currentBlocks.length > 0) { this.setState({ dataSource: currentBlocks }); }
+    console.log("There are " + this.state.dataSource.length + " blocks.");
+
   }
 
   /*  componentWillUnmount() {
@@ -71,12 +80,8 @@ class BlockAlbum extends Component {
 
       <SafeAreaView style={styles.container}>
         <FlatList data={this.state.dataSource}
-          renderItem={({ item }) => (
-            <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-              <Button blockname={item.block_name} openBlockly={this.openBlockly} colorHolder={this.getRandomColor()}
-              />
-            </View>
-          )}
+          renderItem={({ item }) => <Item title={item.block_name} />}
+
           //Setting the number of column
           numColumns={2}
           keyExtractor={item => item.blockid}
@@ -88,10 +93,7 @@ class BlockAlbum extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 10,
-  },
+
   container: {
     flex: 1,
     padding: 20,
