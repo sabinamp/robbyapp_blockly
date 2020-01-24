@@ -7,6 +7,9 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { Appbar } from 'react-native-paper';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react'
+import { store, persistor } from '../../../blockly_reduxstore/store';
 
 import {
     isConnected,
@@ -17,6 +20,7 @@ import {
     setConnected,
 
 } from '../../../stores/SettingsStore';
+import BlockAlbum from './BlockAlbum';
 
 //import CalibrationInput from './CalibrationInput';
 import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
@@ -97,8 +101,13 @@ export default class SavedBlocks extends Component {
                         size={32}
                     />
                 </Appbar>
+                <Provider store={store}>
+                    <PersistGate loading={true} persistor={persistor}>
+                        <BlockAlbum />
+                    </PersistGate>
+                </Provider>
 
-                <View style={{ flex: 1, padding: 40, justifyContent: 'center' }}>
+                {/*  <View style={{ flex: 1, padding: 40, justifyContent: 'center' }}>
                     <FlatList data={this.state.dataSource}
                         renderItem={({ item }) => (
                             <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
@@ -110,7 +119,7 @@ export default class SavedBlocks extends Component {
                         keyExtractor={(item, index) => index}
                     />
 
-                </View>
+                </View> */}
                 <Appbar style={styles.bottom}>
 
                 </Appbar>
