@@ -20,7 +20,7 @@ const persistConfig = {
   /*  blacklist: [
      'speedReducer',
    ], */
-  /* stateReconciler: autoMergeLevel2 */
+  stateReconciler: autoMergeLevel2,
 }
 // Redux Persist Persisted Reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
