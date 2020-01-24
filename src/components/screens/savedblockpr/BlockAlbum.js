@@ -51,7 +51,7 @@ class BlockAlbum extends Component {
   
     } */
 
-  componentDidMount() {
+  getDerivedStateFromProps() {
     this.onLoad();
   }
 
@@ -80,7 +80,7 @@ class BlockAlbum extends Component {
     return (
 
       <SafeAreaView style={styles.container}>
-        <FlatList data={this.state.dataSource} extraData={selected}
+        <FlatList data={this.state.dataSource}
           renderItem={({ item }) => <Item title={item.block_name} />}
 
           //Setting the number of column
