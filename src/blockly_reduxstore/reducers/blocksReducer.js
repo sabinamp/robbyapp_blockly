@@ -2,8 +2,8 @@ import { LOAD_BLOCKS, ADD_BLOCK, GET_BLOCK, REMOVE_BLOCK, UPDATE_BLOCK } from '.
 
 
 
-const initialState = [{ blockid: 0, block_name: '', block_xml: '', block_steps: [{ left: 0, right: 0 }] }];
-
+//const initialState = [{ blockid: 0, block_name: '', block_xml: '', block_steps: [{ left: 0, right: 0 }] }];
+const initialState = [];
 const blocksReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_BLOCK:
