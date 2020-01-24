@@ -58,18 +58,15 @@ class BlockAlbum extends Component {
   onLoad = () => {
 
     let currentBlocks = [];
-    setTimeout(() => {
-      currentBlocks = this.props.loadBlocks();
-      if (currentBlocks.length > 0) { this.setState({ dataSource: currentBlocks }); }
-      console.log("There are " + this.state.dataSource.length + " blocks.");
-    }, 5000);
+    /*  setTimeout(() => { */
+    currentBlocks = this.props.loadBlocks();
+    if (currentBlocks.length > 0) { this.setState({ dataSource: currentBlocks }); }
+    console.log("There are " + this.state.dataSource.length + " blocks.");
+    /* }, 5000); */
 
 
   }
 
-  /*  componentWillUnmount() {
-     clearInterval(this.interval);
-   } */
 
   removeBlock = (name) => {
     this.props.removeBlock(name);
