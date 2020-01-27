@@ -12,8 +12,7 @@ const blocksReducer = (state = initialState, action) => {
       return state.blocks.filter(block => {
         return block.block_name === action.block.block_name
       });
-    case LOAD_BLOCKS:
-      return Object.assign([], state);
+
     case REMOVE_BLOCK:
       return state.blocks.filter(block => {
         return block.block_name !== action.block.block_name

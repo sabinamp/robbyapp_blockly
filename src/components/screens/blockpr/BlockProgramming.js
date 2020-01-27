@@ -461,7 +461,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loadBlocks: () => dispatch(loadBlocks()),
     addBlock: (block) => dispatch(addBlock(block)),
     removeBlock: (block_name) => dispatch(removeBlock(block_name)),
     updateBlock: (block) => dispatch(updateBlock(block)),

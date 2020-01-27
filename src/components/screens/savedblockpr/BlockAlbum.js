@@ -12,10 +12,18 @@ import { connect } from 'react-redux';
 import { blockReducer } from '../../../blockly_reduxstore/reducers';
 import { addBlock, loadBlocks, getBlock, removeBlock, updateBlock } from '../../../blockly_reduxstore/BlockActions';
 
+const getRandomColor = () => {
+  let ColorCode = '#' + Math.random().toString(16).slice(-6);
+
+  /*   var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')'; */
+  console.log(ColorCode);
+  return ColorCode;
+}
+
 const Item = ({ title }) => {
   return (
     <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-      <Button blockname={title} openBlockly={this.openBlockly} colorHolder={this.getRandomColor()}
+      <Button blockname={title} openBlockly={this.openBlockly} colorHolder={getRandomColor()}
       />
     </View>
   );
@@ -33,38 +41,19 @@ class BlockAlbum extends Component {
     //TODO
   }
 
-  getRandomColor = () => {
-    let ColorCode = '#' + Math.random().toString(16).slice(-6);
-
-    /* var ColorCode = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')'; */
-    console.log(ColorCode);
-    return ColorCode;
-  }
-
-  /*   componentDidMount() {
-      let currentBlocks = [];
-      setTimeout(() => {
-        currentBlocks = this.props.loadBlocks();
-      }, 5000);
-      if (currentBlocks.length > 0)
-        this.setState({ dataSource: currentBlocks });
-  
-    } */
-
   UNSAFE_componentWillMount() {
     this.onLoad();
   }
 
   onLoad = () => {
-
-    let currentBlocks = [];
     /*  setTimeout(() => { */
-    currentBlocks = this.props.loadBlocks();
-    if (currentBlocks.length > 0) { this.setState({ dataSource: currentBlocks }); }
-    console.log("There are " + this.state.dataSource.length + " blocks.");
+
+    this.setState({ dataSource: this.props.blocks });
     /* }, 5000); */
 
-
+  }
+  componentDidMount() {
+    console.log("There are " + this.state.dataSource.length + "blocks.");
   }
 
 
@@ -113,7 +102,6 @@ const mapStateToProps = (state) => {
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = (dispatch) => {
   return {
-    loadBlocks: () => dispatch(loadBlocks()),
     addBlock: (block) => dispatch(addBlock(block)),
     removeBlock: (name) => dispatch(removeBlock(name)),
     updateBlock: (blockname) => dispatch(updateBlock(blockname)),

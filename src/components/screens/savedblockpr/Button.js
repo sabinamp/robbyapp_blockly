@@ -4,7 +4,8 @@ import CustomButton from './CustomButton';
 
 const Button = ({ openBlockly, blockname, colorHolder }) => (
   <View style={styles.buttonContainer}>
-    <CustomButton underlayColor={colorHolder} style={styles.button} onPress={openBlockly}>
+    <CustomButton underlayColor={colorHolder} style={styles.button}
+      onPress={openBlockly}>
       <Text>
         {blockname}
       </Text>
@@ -21,6 +22,7 @@ const styles = StyleSheet.create({
     height: 200,
     marginRight: 10,
     marginTop: 10,
+
   },
 })
 

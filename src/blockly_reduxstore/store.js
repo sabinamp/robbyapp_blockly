@@ -16,11 +16,12 @@ const persistConfig = {
   whitelist: [
     'blockReducer',
   ],
+  stateReconciler: autoMergeLevel2,
   // Blacklist (Don't Save Specific Reducers)
   /*  blacklist: [
      'speedReducer',
    ], */
-  stateReconciler: autoMergeLevel2,
+
 }
 // Redux Persist Persisted Reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 
 import { Appbar } from 'react-native-paper';
 import { Provider } from 'react-redux';
@@ -16,6 +16,14 @@ import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 import i18n from '../../../../resources/locales/i18n';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BlockAlbum from './BlockAlbum';
+
+const LoadingIndicatorView = () => (
+    <ActivityIndicator
+        color="#009b88"
+        size="large"
+        style={styles.ActivityIndicatorStyle}
+    />
+);
 
 export default class SavedBlocks extends Component {
     static navigationOptions = {
@@ -34,6 +42,7 @@ export default class SavedBlocks extends Component {
         super();
         this.openBlockly = this.openBlockly.bind(this);
     }
+
 
     openBlockly(blockname) {
         //TODO
@@ -94,7 +103,7 @@ export default class SavedBlocks extends Component {
                     />
                 </Appbar>
                 <Provider store={store}>
-                    <PersistGate loading={null} persistor={persistor}>
+                    <PersistGate loading={<LoadingIndicatorView />} persistor={persistor}>
                         <BlockAlbum />
                     </PersistGate>
                 </Provider>
@@ -127,6 +136,11 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
+    ActivityIndicatorStyle: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
 
+    },
 
 });

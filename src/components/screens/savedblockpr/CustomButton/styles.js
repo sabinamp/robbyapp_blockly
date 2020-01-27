@@ -8,10 +8,11 @@ const Base = StyleSheet.create({
     borderColor: 'rgba(0,0,0,.1)',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#9C27B0'
 
   },
   label: {
-    color: '#f3f5f3',
+    color: '#333',
     fontWeight: '400'
   },
   rounded: {

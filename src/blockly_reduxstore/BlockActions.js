@@ -19,10 +19,6 @@ export const removeBlock = (block_name) => ({
 });
 
 
-export const loadBlocks = () => ({
-  type: LOAD_BLOCKS,
-});
-
 export const updateBlock = (block) => ({
   type: UPDATE_BLOCK,
   block: block
