@@ -13,7 +13,8 @@ const Base = StyleSheet.create({
   },
   label: {
     color: '#333',
-    fontWeight: '400'
+    fontWeight: '400',
+    fontSize: 18
   },
   rounded: {
     borderRadius: 20,

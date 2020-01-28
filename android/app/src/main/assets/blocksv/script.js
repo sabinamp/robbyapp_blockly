@@ -30,17 +30,20 @@ function myUpdateFunction(event) {
   console.log(code);
 }
 
+function loadWorkspace(block_xml) {
+  let workspace = Blockly.getMainWorkspace();
+  workspace.clear();
+
+  if (block_xml) {
+    //let textToDom = Blockly.Xml.textToDom(block_xml);
+    Blockly.Xml.domToWorkspace(textToDom, workspace);
+  }
+
+}
+
 function sendGeneratedCodetoRN() {
   let res_code = Blockly.JavaScript.workspaceToCode(workspacePlayground);
   console.log(res_code);
-  /*  let steps = [{ left: 0, right: 0 }];
-   const addStep = (step) => steps.push(step); */
-  /*  try {
-     eval(res_code);    
-     console.log(steps);
-   } catch (e) {
-     console.error(e);
-   } */
   window.ReactNativeWebView.postMessage(res_code);
 
 }
@@ -51,12 +54,6 @@ workspacePlayground.addChangeListener(myUpdateFunction);
 function sendWorkspacetoRN() {
   let xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
   let domToPretty = Blockly.Xml.domToPrettyText(xml);
-  //window.localStorage.setItem("myBlock1", domToPretty);
   console.log(domToPretty);
   window.ReactNativeWebView.postMessage(domToPretty);
 }
-//document.getElementById('save').addEventListener('click', sendGeneratedCodetoRN);
-
-
-
-console.log(Blockly.JavaScript)

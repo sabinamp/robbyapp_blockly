@@ -37,7 +37,7 @@ class BlockAlbum extends Component {
     this.openBlockly = this.openBlockly.bind(this);
   }
 
-  openBlockly(blockname) {
+  openBlockly(block) {
     //TODO
   }
 
@@ -69,9 +69,10 @@ class BlockAlbum extends Component {
         <FlatList data={this.state.dataSource}
           renderItem={({ item }) => <Item title={item.block_name} />}
 
-          //Setting the number of column
+          //Setting the number of columns
           numColumns={2}
           keyExtractor={item => item.blockid}
+          onPress={openBlockly(item)}
         />
       </SafeAreaView>
 

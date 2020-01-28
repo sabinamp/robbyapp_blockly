@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 10,
 
+
   },
 })
 

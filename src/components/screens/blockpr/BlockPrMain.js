@@ -20,7 +20,20 @@ import {
 import i18n from '../../../../resources/locales/i18n';
 
 import RobotProxy from '../../../communication/RobotProxy';
-
+const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
+<block type="repeat" x="30" y="50">
+  <field name="Loop">Loop</field>
+  <field name="i">15</field>
+  <statement name="DO">
+    <block type="set_speeds2" id="_$a:2lHW0)Nd{qXA4]b0">
+      <field name="leftSpeed"> left</field>
+      <field name="leftWheelSpeed2">50</field>
+      <field name="rightSpeed">right</field>
+      <field name="rightWheelSpeed2">25</field>
+    </block>
+  </statement>
+</block>
+</xml>`;
 export default class BlockPrMain extends Component {
   state = {
 
@@ -141,7 +154,7 @@ export default class BlockPrMain extends Component {
         </Appbar>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <BlockProgramming />
+            <BlockProgramming block_name="" block_steps={[{ left: 0, right: 0 }]} block_xml="" />
           </PersistGate>
         </Provider>
       </View>

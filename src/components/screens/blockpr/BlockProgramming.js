@@ -118,7 +118,7 @@ class BlockProgramming extends Component {
     const get_speeds = `sendWorkspacetoRN(); `;
     this.blocklycomp.webviewref.webref.injectJavaScript(get_speeds);
     console.log("request workspace injected to the web app");
-    //Alert.alert('Block Collection', "Adding a new block.");
+
   }
 
   updateCurrentSpeeds(steps) {
@@ -291,9 +291,9 @@ class BlockProgramming extends Component {
         />
 
         <View style={styles.container}>
-          <BlockComp block_name="" block_steps={[{ left: 0, right: 0 }]}
+          <BlockComp block_name={this.props.block_name} block_steps={this.props.block_steps}
             ref={r => (this.blocklycomp = r)}
-            block_xml="" updateCurrentSpeeds={this.updateCurrentSpeeds} addBlockToStore={this.addBlockToStore}
+            block_xml={this.props.block_xml} updateCurrentSpeeds={this.updateCurrentSpeeds} addBlockToStore={this.addBlockToStore}
 
           />
         </View>

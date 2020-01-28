@@ -18,22 +18,14 @@ const blocklywebapp = {
 
 export default class BlocklyWebView extends React.Component {
 
-  componentDidMount() {
-
-  }
-
   render() {
     const { block_xml, receiveCodeAsString } = this.props;
-    const runFirst = ({ block_xml }.length === 0) ?
+    const runFirst = (block_xml.length === 0) ?
       `window.isNativeApp = true;
     `
       :
       `window.isNativeApp = true;   
-    window.onload = function(block_xml) {      
-    Blockly.mainWorkspace.clear();
-    let textToDom = Blockly.Xml.textToDom(block_xm});
-    Blockly.Xml.domToWorkspace(textToDom, Blockly.mainWorkspace);
-  }
+      loadWorkspace(block_xml);
   `;
 
 
