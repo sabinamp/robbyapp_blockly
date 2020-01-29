@@ -6,9 +6,10 @@ import { LOAD_BLOCKS, ADD_BLOCK, GET_BLOCK, REMOVE_BLOCK, UPDATE_BLOCK } from '.
 const initialState = [];
 const blocksReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_BLOCK:
+    case ADD_BLOCK: {
       let aState = Object.assign([], state);
       return aState.concat(action.block);
+    }
     case GET_BLOCK:
       return state.blocks.filter(block => {
         return block.block_name === action.block.block_name
@@ -18,8 +19,9 @@ const blocksReducer = (state = initialState, action) => {
       return state.blocks.filter(block => {
         return block.block_name !== action.block.block_name
       });
+
     case LOAD_BLOCKS:
-      return state;
+      return Object.assign([], state);
 
     case UPDATE_BLOCK: {
       let blockToUpdate = state.blocks.filter(block => {

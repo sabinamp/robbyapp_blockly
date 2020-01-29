@@ -27,6 +27,7 @@ export const getBlock = (block_name) => ({
   type: GET_BLOCK,
   block_name: block_name
 });
+
 export const loadBlocks = () => ({
   type: LOAD_BLOCKS,
 
