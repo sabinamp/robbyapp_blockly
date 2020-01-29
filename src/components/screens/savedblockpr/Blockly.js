@@ -16,10 +16,10 @@ const blocklywebapp = {
     : './blocksv/index.html'
 };
 
-export default class BlocklyWebView extends React.Component {
+export default class Blockly extends React.Component {
 
   render() {
-    const { block_xml, receiveCodeAsString } = this.props;
+    const { block_xml, block_name, block_steps } = this.props.block;
     const runFirst = (block_xml.length === 0) ?
       `window.isNativeApp = true; `
       :
@@ -39,7 +39,7 @@ export default class BlocklyWebView extends React.Component {
           injectedJavaScript={runFirst}
           onMessage={event => {
             const { data } = event.nativeEvent;
-            { receiveCodeAsString(data) };
+
             console.log("the code from the web app :" + data);
           }}
         />
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: '#fff',
+    height: 450,
 
   },
   text: {

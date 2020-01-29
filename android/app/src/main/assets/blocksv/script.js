@@ -23,6 +23,7 @@ let workspacePlayground = Blockly.inject('blocklyDiv', {
     snap: true
   },
   trashcan: true,
+  maxTrashcanContents: 0
 });
 
 function myUpdateFunction(event) {
@@ -35,7 +36,7 @@ function loadWorkspace(block_xml) {
   workspace.clear();
 
   if (block_xml) {
-    //let textToDom = Blockly.Xml.textToDom(block_xml);
+    let textToDom = Blockly.Xml.textToDom(block_xml);
     Blockly.Xml.domToWorkspace(textToDom, workspace);
   }
 

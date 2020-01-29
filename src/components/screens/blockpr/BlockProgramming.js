@@ -291,9 +291,9 @@ class BlockProgramming extends Component {
         />
 
         <View style={styles.container}>
-          <BlockComp block_name={this.props.block_name} block_steps={this.props.block_steps}
+          <BlockComp block_name={this.props.block.block_name} block_steps={this.props.block.block_steps}
             ref={r => (this.blocklycomp = r)}
-            block_xml={this.props.block_xml} updateCurrentSpeeds={this.updateCurrentSpeeds} addBlockToStore={this.addBlockToStore}
+            block_xml={this.props.block.block_xml} updateCurrentSpeeds={this.updateCurrentSpeeds} addBlockToStore={this.addBlockToStore}
 
           />
         </View>
@@ -332,7 +332,6 @@ class BlockProgramming extends Component {
               });
               this.handleAddToCollectionClicked();
             }}
-
           />
           <Appbar.Action icon="file-upload"
             size={32}

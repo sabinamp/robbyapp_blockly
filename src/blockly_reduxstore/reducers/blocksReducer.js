@@ -2,12 +2,13 @@ import { LOAD_BLOCKS, ADD_BLOCK, GET_BLOCK, REMOVE_BLOCK, UPDATE_BLOCK } from '.
 
 
 
-//const initialState = [{ blockid: 0, block_name: '', block_xml: '', block_steps: [{ left: 0, right: 0 }] }];
+//const initialState = [{ blockid: 0, block_name: 'Empty Workspace', block_xml: '', block_steps: [{ left: 0, right: 0 }] }];
 const initialState = [];
 const blocksReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_BLOCK:
-      return Object.assign([], state.concat(action.block));
+      let aState = Object.assign([], state);
+      return aState.concat(action.block);
     case GET_BLOCK:
       return state.blocks.filter(block => {
         return block.block_name === action.block.block_name
@@ -17,6 +18,8 @@ const blocksReducer = (state = initialState, action) => {
       return state.blocks.filter(block => {
         return block.block_name !== action.block.block_name
       });
+    case LOAD_BLOCKS:
+      return state;
 
     case UPDATE_BLOCK: {
       let blockToUpdate = state.blocks.filter(block => {
@@ -26,7 +29,8 @@ const blocksReducer = (state = initialState, action) => {
       /*    //delete the previous block with the same name and add a new one with different name
          return Object.assign([], state,[state.slice(0, idToUpdate),
          state.slice(idToUpdate + 1, state.length), block]); */
-      return Object.assign([], state.splice(idToUpdate, 1, action.block));
+      let stateB = Object.assign([], state);
+      return stateB.splice(idToUpdate, 1, action.block);
     }
     default: return state;
   }

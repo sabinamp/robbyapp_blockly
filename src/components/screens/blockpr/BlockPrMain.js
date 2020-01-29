@@ -34,6 +34,23 @@ const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
   </statement>
 </block>
 </xml>`;
+
+const block_steps1 = [{ left: 0, right: 0 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 },
+{ left: 50, right: 25 }];
 export default class BlockPrMain extends Component {
   state = {
 
@@ -57,6 +74,7 @@ export default class BlockPrMain extends Component {
       />
     ),
   };
+
   constructor(props) {
     super(props);
     RobotProxy.testScan(err => {
@@ -97,6 +115,7 @@ export default class BlockPrMain extends Component {
     }
     return route.routeName;
   }
+
   componentDidMount() {
     this.deviceNameChangedListener = addDeviceNameChangeListener((name) => {
       this.setState({ device_name: name });
@@ -154,7 +173,9 @@ export default class BlockPrMain extends Component {
         </Appbar>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <BlockProgramming block_name="" block_steps={[{ left: 0, right: 0 }]} block_xml="" />
+            <BlockProgramming block={{ blockid: 0, block_name: 'Empty Workspace', block_xml: '', block_steps: [{ left: 0, right: 0 }] }}
+            />
+
           </PersistGate>
         </Provider>
       </View>

@@ -17,6 +17,8 @@ import i18n from '../../../../resources/locales/i18n';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BlockAlbum from './BlockAlbum';
 
+
+
 const LoadingIndicatorView = () => (
     <ActivityIndicator
         color="#009b88"
@@ -26,10 +28,11 @@ const LoadingIndicatorView = () => (
 );
 
 export default class SavedBlocks extends Component {
+
     static navigationOptions = {
         drawerLabel: 'My Blockly Blocks',
         drawerIcon: () => (
-            <Icon style={styles.icon} name="view-module" size={25} color="#9C27B0" />
+            <Icon style={{ padding: 0 }} name="view-module" size={25} color="#9C27B0" />
         )
     }
     state = {
@@ -40,13 +43,10 @@ export default class SavedBlocks extends Component {
 
     constructor() {
         super();
-        this.openBlockly = this.openBlockly.bind(this);
+
     }
 
 
-    openBlockly(blockname) {
-        //TODO
-    }
     // gets the current screen from navigation state
     getActiveRouteName(navigationState) {
         if (!navigationState) {
@@ -83,7 +83,7 @@ export default class SavedBlocks extends Component {
 
     render() {
         return (
-            <View style={[styles.container]}>
+            <View style={[styles.container]} nav={this.props.navigation}>
                 <Appbar>
                     <Appbar.Action
                         icon="menu"
@@ -109,6 +109,7 @@ export default class SavedBlocks extends Component {
                 </Provider>
 
                 <Appbar style={styles.bottom}>
+
                 </Appbar>
             </View>
         );

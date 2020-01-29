@@ -5,12 +5,13 @@ import {
   ActivityIndicator,
   TouchableOpacity
 } from 'react-native';
-
+import { createStackNavigator } from 'react-navigation-stack';
 import Button from './Button';
 import { connect } from 'react-redux';
 
 import { blockReducer } from '../../../blockly_reduxstore/reducers';
 import { addBlock, loadBlocks, getBlock, removeBlock, updateBlock } from '../../../blockly_reduxstore/BlockActions';
+import Blockly from './Blockly'
 
 const getRandomColor = () => {
   let ColorCode = '#' + Math.random().toString(16).slice(-6);
@@ -20,25 +21,16 @@ const getRandomColor = () => {
   return ColorCode;
 }
 
-const Item = ({ title }) => {
-  return (
-    <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-      <Button blockname={title} openBlockly={this.openBlockly} colorHolder={getRandomColor()}
-      />
-    </View>
-  );
-}
+
 class BlockAlbum extends Component {
+
   state = {
-    dataSource: []
+    dataSource: [],
+    modalVisible: false,
   }
   constructor() {
     super();
-    this.openBlockly = this.openBlockly.bind(this);
-  }
 
-  openBlockly(block) {
-    //TODO
   }
 
   UNSAFE_componentWillMount() {
@@ -48,14 +40,43 @@ class BlockAlbum extends Component {
   onLoad = () => {
     /*  setTimeout(() => { */
 
-    this.setState({ dataSource: this.props.blocks });
+    this.setState({ dataSource: this.props.loadBlocks() });
     /* }, 5000); */
 
   }
   componentDidMount() {
     console.log("There are " + this.state.dataSource.length + "blocks.");
   }
+  onDeleteItem(item) {
+    this.props.removeBlock(item.name);
+    this.onLoad();
+  }
 
+  renderItem(item) {
+    return (
+      <View style={styles.container}>
+        <Modal visible={this.state.modalVisible}
+          animationType={'slide'}
+          onRequestClose={() => this.closeModal()}
+          block={item}
+        ></Modal>
+        <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
+          <Button blockname={item.block_name} colorHolder={getRandomColor()}
+            onPress={() => this.openModal(item)}
+          />
+        </View>
+      </View>
+    );
+  }
+
+
+  openModal(item) {
+    this.setState({ modalVisible: true });
+  }
+
+  closeModal() {
+    this.setState({ modalVisible: false });
+  }
 
   removeBlock = (name) => {
     this.props.removeBlock(name);
@@ -64,18 +85,30 @@ class BlockAlbum extends Component {
 
   render() {
     return (
-
       <SafeAreaView style={styles.container}>
+
         <FlatList data={this.state.dataSource}
-          renderItem={({ item }) => <Item title={item.block_name} />}
+          renderItem={({ item }) => this.renderItem(item)}
 
           //Setting the number of columns
           numColumns={2}
           keyExtractor={item => item.blockid}
-          onPress={openBlockly(item)}
         />
       </SafeAreaView>
 
+    );
+  }
+}
+class ModalScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Blockly block={this.props.block} />
+        <Button
+          onPress={() => this.props.navigation.goBack()}
+          title="Dismiss"
+        />
+      </View>
     );
   }
 }
@@ -107,6 +140,7 @@ const mapDispatchToProps = (dispatch) => {
     removeBlock: (name) => dispatch(removeBlock(name)),
     updateBlock: (blockname) => dispatch(updateBlock(blockname)),
     getBlock: (blockname) => dispatch(getBlock(blockname)),
+    loadBlocks: () => dispatch(loadBlocks()),
   };
 };
 

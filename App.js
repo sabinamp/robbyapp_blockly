@@ -3,7 +3,7 @@ import { createAppContainer } from 'react-navigation';
 import { DrawerNavigatorItems, createDrawerNavigator } from 'react-navigation-drawer';
 import Programming from './src/components/screens/programming/Programming';
 import Settings from './src/components/screens/settings/Settings';
-import BlockPrMain from './src/components/screens/blockpr/BlockPrMain';
+
 import BleService from './src/communication/BleService';
 import {
     addDeviceNameChangeListener,
@@ -14,9 +14,9 @@ import { getStatusBarHeight, ifIphoneX } from 'react-native-iphone-x-helper';
 // import {version} from './package.json';
 import i18n from './resources/locales/i18n';
 import GLOBAL from './src/utility/Global';
-
-import * as ut from './src/utility/AppSettings';
 import SavedBlocks from './src/components/screens/savedblockpr/SavedBlocks';
+import BlockPrMain from './src/components/screens/blockpr/BlockPrMain';
+import * as ut from './src/utility/AppSettings';
 
 
 export default class App extends Component {
