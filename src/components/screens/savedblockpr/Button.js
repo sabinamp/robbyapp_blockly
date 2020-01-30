@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   button: {
     height: 100,
     marginRight: 10,
-    marginTop: 10,
+    marginTop: 15,
 
 
   },

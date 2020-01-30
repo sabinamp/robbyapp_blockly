@@ -10,20 +10,20 @@ const blocksReducer = (state = initialState, action) => {
       return Object.assign([], state.concat(action.block));
     }
     case GET_BLOCK:
-      return state.blocks.filter(block => {
-        return block.block_name === action.block.block_name
+      return state.filter(block => {
+        return block.block_name === action.block_name
       });
 
     case REMOVE_BLOCK:
-      return state.blocks.filter(block => {
-        return block.block_name !== action.block.block_name
+      return state.filter(block => {
+        return block.block_name !== action.block_name
       });
 
     case LOAD_BLOCKS:
       return Object.assign([], state);
 
     case UPDATE_BLOCK: {
-      let blockToUpdate = state.blocks.filter(block => {
+      let blockToUpdate = state.filter(block => {
         return block.block_name === action.block.block_name
       });
       let idToUpdate = blockToUpdate.id;
