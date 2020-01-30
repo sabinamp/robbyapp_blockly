@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Dimensions, ActivityIndicator, StyleSheet } from 'react-native';
-import { WebView, LOAD_NO_CACHE, LOAD_CACHE_ONLY } from 'react-native-webview';
+import { WebView, LOAD_CACHE_ONLY } from 'react-native-webview';
 
 const isAndroid = Platform.OS === 'android'
 const window = Dimensions.get("window");
@@ -32,8 +32,8 @@ export default class BlocklyWebView extends React.Component {
           ref={r => (this.webref = r)}
           style={{ marginBottom: 30 }} textZoom={100}
           scalesPageToFit={true}
-          renderLoading={LoadingIndicatorView}
           startInLoadingState={true}
+          renderLoading={LoadingIndicatorView}
           cacheMode={LOAD_CACHE_ONLY}
           javaScriptEnabledAndroid={true}
           injectedJavaScript={runFirst}

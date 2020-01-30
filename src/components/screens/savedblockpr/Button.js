@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   button: {
-    height: 200,
+    height: 100,
     marginRight: 10,
     marginTop: 10,
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, View, Text, Modal, Alert,
-  FlatList, SafeAreaView,
+  FlatList, SafeAreaView, RefreshControl,
   TouchableOpacity
 } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -26,56 +26,32 @@ class BlockAlbum extends Component {
   state = {
     dataSource: [],
     modalVisible: false,
-    refresh: false
+    isRefreshing: false,
   }
+
   constructor() {
     super();
 
   }
 
-  /* UNSAFE_componentWillMount() {
-    this.onLoad();
-  } */
-
-  onLoad = () => {
-    /*  setTimeout(() => { */
-
-    this.setState({ dataSource: this.props.blocks });
-    /* }, 5000); */
-
-  }
-  componentDidMount() {
+  UNSAFE_componentWillMount() {
     this.onLoad();
     console.log("There are " + this.state.dataSource.length + "blocks.");
   }
+
+  onLoad = () => {
+    this.setState({ dataSource: this.props.blocks });
+  }
+
+  componentDidMount() {
+    console.log("There are " + this.state.dataSource.length + "blocks.");
+  }
+
+
   onDeleteItem(item) {
     this.props.removeBlock(item.name);
     this.onLoad();
   }
-
-  renderItem(item) {
-    return (
-      <View style={{ flex: 1, flexDirection: 'column', margin: 4 }}>
-        <Button blockname={item.block_name} colorHolder={getRandomColor()}
-          onPress={() => this.openModal()}
-        />
-        <Modal visible={this.state.modalVisible}
-          animationType={'slide'}
-          onRequestClose={() => this.closeModal()}
-        >
-          <Blockly block={item} />
-          <Button
-            onPress={() => this.props.navigation.goBack()}
-            title="Dismiss"
-          />
-        </Modal>
-      </View>
-
-
-
-    );
-  }
-
 
   openModal() {
     this.setState({ modalVisible: true });
@@ -89,20 +65,50 @@ class BlockAlbum extends Component {
     this.props.removeBlock(name);
   }
 
+  onRefresh() {
+    this.setState({ isRefreshing: true }); // true isRefreshing flag for enable pull to refresh indicator    
+    let data = this.props.blocks;
+    this.setState({ dataSource: data });
+    this.setState({ isRefreshing: false });//flag to disable pull to refresh indicator
+  }
+
+  renderItem(item) {
+    return (
+      <View style={{ flex: 1, flexDirection: 'column', margin: 4 }}>
+        <Button blockname={item.block_name} colorHolder={getRandomColor()}
+          onPress={() => this.openModal()}
+        />
+        {/*             <Modal visible={this.state.modalVisible}
+          animationType={'slide'}
+          onRequestClose={() => this.closeModal()} >
+          <Blockly block={item} />
+          <Button
+            onPress={() => this.props.navigation.goBack()}
+            title="Dismiss"
+          />
+        </Modal>  */}
+      </View>
+
+    );
+  }
 
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <FlatList data={this.state.dataSource} extraData={this.props.blocks}
+        <FlatList data={this.state.dataSource} extraData={this.state}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={this.onRefresh.bind(this)}
+            />
+          }
           renderItem={({ item }) => this.renderItem(item)}
-
-          //Setting the number of columns
-          numColumns={2}
           keyExtractor={item => item.blockid}
+          //Setting the number of columns
+          numColumns={1}
         />
 
       </SafeAreaView>
-
     );
   }
 }

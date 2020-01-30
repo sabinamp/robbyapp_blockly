@@ -7,8 +7,7 @@ const initialState = [];
 const blocksReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_BLOCK: {
-      let aState = Object.assign([], state);
-      return aState.concat(action.block);
+      return Object.assign([], state.concat(action.block));
     }
     case GET_BLOCK:
       return state.blocks.filter(block => {
