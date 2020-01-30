@@ -62,28 +62,36 @@ Blockly.JavaScript['insertblock'] = function (block) {
   return code;
 }; */
 
+//speeds related text
+const Blockly_Msg_SETSPEEDS_TOOLTIP = "Set the wheel speeds";
+const Blockly_Msg_SETSPEEDS_LEFT = " left";
+const Blockly_Msg_SETSPEEDS_RIGHT = "right";
+const Blockly_Msg_SETSPEEDS_MAXVALUE_WARNING = '100 is the maximum allowed speed.';
+//Loop blocks related text
+const Blockly_Msg_LOOP = "Loop";
+const Blockly_Msg_LOOP_TOOLTIP = "Repeat";
 //set speeds
 Blockly.Blocks['set_speeds'] = {
   init: function () {
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(new Blockly.FieldLabelSerializable(" left"), "leftSpeed");
+      .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_SETSPEEDS_LEFT), "leftSpeed");
     this.appendDummyInput()
       .appendField(new Blockly.FieldNumber(0, 0, 100), "leftWheelSpeed");
     this.appendDummyInput()
-      .appendField(new Blockly.FieldLabelSerializable("right"), "rightSpeed");
+      .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_SETSPEEDS_RIGHT), "rightSpeed");
     this.appendDummyInput()
       .appendField(new Blockly.FieldNumber(0, 0, 100), "rightWheelSpeed");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(255);
-    this.setTooltip("Move ");
+    this.setTooltip(Blockly_Msg_SETSPEEDS_TOOLTIP);
     this.setHelpUrl("");
   },
   onchange: function () {
     if ((this.getFieldValue('leftWheelSpeed') > '100') || (this.getFieldValue('rightWheelSpeed') > '100')) {
-      this.setWarningText('100 is the maximum allowed speed.');
+      this.setWarningText(Blockly_Msg_SETSPEEDS_MAXVALUE_WARNING);
     } else {
       this.setWarningText(null);
     }
@@ -104,7 +112,7 @@ Blockly.Blocks['repeat'] = {
     this.appendStatementInput("DO")
       .setCheck(null)
       .setAlign(Blockly.ALIGN_LEFT)
-      .appendField(new Blockly.FieldLabelSerializable("Loop"), "Loop")
+      .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_LOOP), "Loop")
       .appendField(new Blockly.FieldNumber(0, 2, 90), "i")
       /* .appendField(new Blockly.FieldLabelSerializable("times"), "times") */;
 
@@ -112,7 +120,7 @@ Blockly.Blocks['repeat'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(125);
-    this.setTooltip("Loop");
+    this.setTooltip(Blockly_Msg_LOOP_TOOLTIP);
     this.setHelpUrl("");
   }
 };
@@ -149,23 +157,23 @@ Blockly.Blocks['set_speeds2'] = {
   init: function () {
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(new Blockly.FieldLabelSerializable(" left"), "leftSpeed");
+      .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_SETSPEEDS_LEFT), "leftSpeed");
     this.appendDummyInput()
       .appendField(new Blockly.FieldNumber(0, 50, 100), "leftWheelSpeed2");
     this.appendDummyInput()
-      .appendField(new Blockly.FieldLabelSerializable("right"), "rightSpeed");
+      .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_SETSPEEDS_RIGHT), "rightSpeed");
     this.appendDummyInput()
       .appendField(new Blockly.FieldNumber(0, 25, 100), "rightWheelSpeed2");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(255);
-    this.setTooltip("Rotate");
+    this.setTooltip(Blockly_Msg_SETSPEEDS_TOOLTIP);
     this.setHelpUrl("");
   },
   onchange: function () {
     if ((this.getFieldValue('leftWheelSpeed2') > '100') || (this.getFieldValue('rightWheelSpeed2') > '100')) {
-      this.setWarningText('100 is the maximum allowed speed.');
+      this.setWarningText(Blockly_Msg_SETSPEEDS_MAXVALUE_WARNING);
     } else {
       this.setWarningText(null);
     }
