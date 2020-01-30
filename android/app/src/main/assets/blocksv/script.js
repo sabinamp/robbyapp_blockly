@@ -31,22 +31,22 @@ function myUpdateFunction(event) {
   console.log(code);
 }
 
-function loadWorkspace(block_xml) {
+
+/* let currentBlock;
+function loadWorkspace(currentBlock) {
   let workspace = Blockly.getMainWorkspace();
   workspace.clear();
-
-  if (block_xml) {
+  if (currentBlock.block_xml) {
     let textToDom = Blockly.Xml.textToDom(block_xml);
-    Blockly.Xml.domToWorkspace(textToDom, workspace);
+    Blockly.Xml.domToWorkspace(workspace,textToDom);
   }
 
-}
+} */
 
 function sendGeneratedCodetoRN() {
   let res_code = Blockly.JavaScript.workspaceToCode(workspacePlayground);
   console.log(res_code);
   window.ReactNativeWebView.postMessage(res_code);
-
 }
 
 workspacePlayground.addChangeListener(myUpdateFunction);

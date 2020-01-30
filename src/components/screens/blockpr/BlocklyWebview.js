@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { View, Dimensions, ActivityIndicator, StyleSheet } from 'react-native';
 import { WebView, LOAD_CACHE_ONLY } from 'react-native-webview';
 
-const isAndroid = Platform.OS === 'android'
+const isAndroid = Platform.OS === 'android';
+const isiOS = Platform.OS === 'ios';
 const window = Dimensions.get("window");
 const LoadingIndicatorView = () => (
   <ActivityIndicator
@@ -17,14 +18,24 @@ const blocklywebapp = {
 };
 
 export default class BlocklyWebView extends React.Component {
+  componentDidMount() {
+
+    const { block_xml } = this.props;
+    const loadWorkspace = `Blockly.Xml.clearWorkspaceAndLoadFromXml( Blockly.getMainWorkspace(),Blockly.Xml.textToDom(block_xml));`;
+    if (block_xml.length) this.webref.injectJavaScript(loadWorkspace);
+    console.log("BlocklyWeview prop block_xml is" + block_xml);
+
+  }
 
   render() {
     const { block_xml, receiveCodeAsString } = this.props;
-    const runFirst = (block_xml.length === 0) ?
-      `window.isNativeApp = true; `
-      :
-      `window.isNativeApp = true;   
-      loadWorkspace(block_xml);  `;
+    /*  const runFirst = (block_xml.length === 0) ?
+       `window.isNativeApp = true; `
+       :
+       `window.isNativeApp = true;   
+       Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(block_xml), Blockly.getMainWorkspace());
+      `; */
+    const runFirst = `window.isNativeApp = true; `
 
     return (
       <View style={styles.container}>

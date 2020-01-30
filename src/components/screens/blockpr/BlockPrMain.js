@@ -35,22 +35,22 @@ const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
 </block>
 </xml>`;
 
-const block_steps1 = [{ left: 0, right: 0 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 },
-{ left: 50, right: 25 }];
+const block_steps1 = [
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 }];
 export default class BlockPrMain extends Component {
   state = {
 
@@ -173,9 +173,10 @@ export default class BlockPrMain extends Component {
         </Appbar>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <BlockProgramming block={{ blockid: 0, block_name: 'Empty Workspace', block_xml: '', block_steps: [{ left: 0, right: 0 }] }}
+            <BlockProgramming block_name='Empty Workspace' block_xml='' block_steps={[{ left: 0, right: 0 }]}
             />
-
+            {/* <BlockProgramming block_name='Block1' block_xml={block1} block_steps={block_steps1} 
+            />*/}
           </PersistGate>
         </Provider>
       </View>

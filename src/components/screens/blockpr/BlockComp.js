@@ -111,7 +111,7 @@ export default class BlockComp extends React.Component {
   render() {
     return (
       <BlocklyWebview ref={r => (this.webviewref = r)}
-        receiveCodeAsString={this.receiveCodeAsString} block_xml={this.state.block_xml} />
+        receiveCodeAsString={this.receiveCodeAsString} block_xml={this.props.block_xml} />
     );
 
   }
