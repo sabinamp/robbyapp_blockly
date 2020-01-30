@@ -29,14 +29,21 @@ class BlockAlbum extends Component {
     isRefreshing: false,
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.onLoad = this.onLoad.bind(this);
 
   }
 
-  UNSAFE_componentWillMount() {
-    this.onLoad();
-    console.log("There are " + this.state.dataSource.length + "blocks.");
+  static getDerivedStateFromProps(props, state) {
+    if (props.blocks !== state.dataSource) {
+      return {
+        dataSource: props.blocks,
+      };
+    }
+
+    // Return null if the state hasn't changed
+    return null;
   }
 
   onLoad = () => {
@@ -66,9 +73,8 @@ class BlockAlbum extends Component {
   }
 
   onRefresh() {
-    this.setState({ isRefreshing: true }); // true isRefreshing flag for enable pull to refresh indicator    
-    let data = this.props.blocks;
-    this.setState({ dataSource: data });
+    this.setState({ isRefreshing: true, dataSource: this.props.blocks }); // true isRefreshing flag for enable pull to refresh indicator    
+
     this.setState({ isRefreshing: false });//flag to disable pull to refresh indicator
   }
 
@@ -78,7 +84,7 @@ class BlockAlbum extends Component {
         <Button blockname={item.block_name} colorHolder={getRandomColor()}
           onPress={() => this.openModal()}
         />
-        {/*             <Modal visible={this.state.modalVisible}
+        <Modal visible={this.state.modalVisible}
           animationType={'slide'}
           onRequestClose={() => this.closeModal()} >
           <Blockly block={item} />
@@ -86,7 +92,7 @@ class BlockAlbum extends Component {
             onPress={() => this.props.navigation.goBack()}
             title="Dismiss"
           />
-        </Modal>  */}
+        </Modal>
       </View>
 
     );
@@ -98,16 +104,16 @@ class BlockAlbum extends Component {
         <FlatList data={this.state.dataSource} extraData={this.state}
           refreshControl={
             <RefreshControl
+              enabled={true}
               refreshing={this.state.isRefreshing}
-              onRefresh={this.onRefresh.bind(this)}
+              onRefresh={this.onRefresh}
             />
           }
           renderItem={({ item }) => this.renderItem(item)}
-          keyExtractor={item => item.blockid}
+          keyExtractor={item => item.blockid.toString()}
           //Setting the number of columns
           numColumns={1}
         />
-
       </SafeAreaView>
     );
   }
