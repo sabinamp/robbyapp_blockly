@@ -173,10 +173,10 @@ export default class BlockPrMain extends Component {
         </Appbar>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <BlockProgramming block_name='Empty Workspace' block_xml='' block_steps={[{ left: 0, right: 0 }]}
+            {/*  <BlockProgramming block_name='Empty Workspace' block_xml='' block_steps={[{ left: 0, right: 0 }]}
+            /> */}
+            <BlockProgramming block_name='Block1' block_xml={block1} block_steps={block_steps1}
             />
-            {/* <BlockProgramming block_name='Block1' block_xml={block1} block_steps={block_steps1} 
-            />*/}
           </PersistGate>
         </Provider>
       </View>
