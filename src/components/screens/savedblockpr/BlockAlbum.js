@@ -39,8 +39,7 @@ class BlockAlbum extends Component {
   constructor(props) {
     super(props);
     this.onRefresh = this.onRefresh.bind(this);
-    this.openBlocklyModal = this.openBlocklyModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
+    this.triggerModal = this.triggerModal.bind(this);
     this.onDeleteItem = this.onDeleteItem.bind(this);
   }
 
@@ -77,11 +76,14 @@ class BlockAlbum extends Component {
     this.setState({ isRefreshing: false });//flag to disable pull to refresh indicator
   }
 
-  openBlocklyModal() {
-    this.setState({ isModalVisible: true });
-  }
-  closeModal() {
-    this.setState({ isModalVisible: false });
+  /*  openBlocklyModal() {
+     this.setState({ isModalVisible: true });
+   }
+   closeModal() {
+     this.setState({ isModalVisible: false });} */
+
+  triggerModal() {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   }
 
   renderItem(item) {
@@ -89,29 +91,29 @@ class BlockAlbum extends Component {
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View style={{ flex: 1, flexDirection: 'column', alignItems: 'stretch', margin: 4 }}>
 
-          <Menu style={{ alignSelf: 'flex-start', fontSize: 18, color: '#9C27B0' }}>
+          <Menu style={{ alignSelf: 'flex-start', fontSize: 24, color: '#9C27B0' }}>
             <MenuTrigger text='Select action:' />
             <MenuOptions>
-              <MenuOption text='Open Blockly' onSelect={() => this.openBlocklyModal()} />
+              <MenuOption text='Open Blockly' /* onSelect={() => this.triggerModal()} */ />
               <MenuOption text='Delete' onSelect={() => this.onDeleteItem(item.block_name)} />
             </MenuOptions>
           </Menu>
           <Button style={{ alignSelf: 'stretch' }} blockname={item.block_name} colorHolder={getRandomColor()} />
-
         </View>
-        <Modal animationIn="slideInUp" animationOut="slideOutDown" onBackdropPress={() => this.closeModal()} onSwipeComplete={() => this.closeModal()} swipeDirection="right" isVisible={this.state.isModalVisible} style={{ backgroundColor: 'white', maxHeight: Dimensions.get('window').height * 2 / 3 }} >
+        {/*  <Modal isVisible={this.state.isModalVisible} animationIn="slideInUp" animationOut="slideOutDown"
+          onBackdropPress={() => this.triggerModal()} onSwipeComplete={() => this.triggerModal()} swipeDirection="right" style={{ backgroundColor: 'white', maxHeight: Dimensions.get('window').height * 2 / 3 }} >
           <Blockly block_xml={item.block_xml} />
           <View style={{ flex: 1, justifyContent: 'center', position: 'absolute', bottom: 0 }}>
             <View style={{ flexDirection: 'row', }}>
-              <TouchableOpacity style={{ backgroundColor: 'green', width: '50%' }} onPress={() => this.closeModal()}>
+              <TouchableOpacity style={{ backgroundColor: 'green', width: '50%' }} onPress={() => this.triggerModal()}>
                 <Text style={{ color: 'white', textAlign: 'center', padding: 10 }}>OK</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ backgroundColor: 'green', width: '50%' }} onPress={() => this.closeModal()}>
+              <TouchableOpacity style={{ backgroundColor: 'green', width: '50%' }} onPress={() => this.triggerModal()}>
                 <Text style={{ color: 'white', textAlign: 'center', padding: 10 }}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>
 
     );
