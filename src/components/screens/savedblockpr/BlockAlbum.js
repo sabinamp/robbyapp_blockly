@@ -40,6 +40,8 @@ class BlockAlbum extends Component {
     super(props);
     this.onRefresh = this.onRefresh.bind(this);
     this.openBlocklyModal = this.openBlocklyModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.onDeleteItem = this.onDeleteItem.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -87,7 +89,7 @@ class BlockAlbum extends Component {
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View style={{ flex: 1, flexDirection: 'column', alignItems: 'stretch', margin: 4 }}>
 
-          <Menu style={{ alignSelf: 'flex-start', fontsize: '20', color: '#9C27B0' }}>
+          <Menu style={{ alignSelf: 'flex-start', fontSize: 18, color: '#9C27B0' }}>
             <MenuTrigger text='Select action:' />
             <MenuOptions>
               <MenuOption text='Open Blockly' onSelect={() => this.openBlocklyModal()} />
@@ -97,14 +99,14 @@ class BlockAlbum extends Component {
           <Button style={{ alignSelf: 'stretch' }} blockname={item.block_name} colorHolder={getRandomColor()} />
 
         </View>
-        <Modal animationIn="slideInUp" animationOut="slideOutDown" onBackdropPress={() => this.closeModal()} onSwipeComplete={() => this.closeModal()} swipeDirection="right" isVisible={this.state.isModalVisible} style={{ backgroundColor: 'white', maxHeight: Dimensions.get('window').height / 2 }} >
-          <Blockly block={item.block_xml} />
+        <Modal animationIn="slideInUp" animationOut="slideOutDown" onBackdropPress={() => this.closeModal()} onSwipeComplete={() => this.closeModal()} swipeDirection="right" isVisible={this.state.isModalVisible} style={{ backgroundColor: 'white', maxHeight: Dimensions.get('window').height * 2 / 3 }} >
+          <Blockly block_xml={item.block_xml} />
           <View style={{ flex: 1, justifyContent: 'center', position: 'absolute', bottom: 0 }}>
             <View style={{ flexDirection: 'row', }}>
-              <TouchableOpacity style={{ backgroundColor: 'green', width: '50%' }}>
-                <Text style={{ color: 'white', textAlign: 'center', padding: 10 }}>Ok</Text>
+              <TouchableOpacity style={{ backgroundColor: 'green', width: '50%' }} onPress={() => this.closeModal()}>
+                <Text style={{ color: 'white', textAlign: 'center', padding: 10 }}>OK</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ backgroundColor: 'red', width: '50%' }} onPress={() => this.closeModal()}>
+              <TouchableOpacity style={{ backgroundColor: 'green', width: '50%' }} onPress={() => this.closeModal()}>
                 <Text style={{ color: 'white', textAlign: 'center', padding: 10 }}>Cancel</Text>
               </TouchableOpacity>
             </View>
