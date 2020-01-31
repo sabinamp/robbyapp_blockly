@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Text, Modal, Alert,
+  StyleSheet, View, Text, Alert,
   FlatList, SafeAreaView, RefreshControl,
-  TouchableOpacity
+  TouchableOpacity, Dimensions
 } from 'react-native';
+import Modal from 'react-native-modal';
 import Button from './Button';
 import { connect } from 'react-redux';
 
@@ -32,11 +33,13 @@ class BlockAlbum extends Component {
   state = {
     dataSource: [],
     isRefreshing: false,
+    isModalVisible: false
   }
 
   constructor(props) {
     super(props);
     this.onRefresh = this.onRefresh.bind(this);
+    this.openBlocklyModal = this.openBlocklyModal.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -72,24 +75,41 @@ class BlockAlbum extends Component {
     this.setState({ isRefreshing: false });//flag to disable pull to refresh indicator
   }
 
-  openBlockly(item) {
-    //TODO
-
+  openBlocklyModal() {
+    this.setState({ isModalVisible: true });
+  }
+  closeModal() {
+    this.setState({ isModalVisible: false });
   }
 
   renderItem(item) {
     return (
-      <View style={{ flex: 1, flexDirection: 'column', alignItems: 'stretch', margin: 4 }}>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'stretch', margin: 4 }}>
 
-        <Menu style={{ alignSelf: 'flex-start', fontsize: '20', color: '#9C27B0' }}>
-          <MenuTrigger text='Select action:' />
-          <MenuOptions>
-            <MenuOption text='Open' onSelect={() => this.openBlockly(item)} />
-            <MenuOption text='Delete' onSelect={() => this.onDeleteItem(item.block_name)} />
-          </MenuOptions>
-        </Menu>
-        <Button style={{ alignSelf: 'stretch' }} blockname={item.block_name} colorHolder={getRandomColor()} />
+          <Menu style={{ alignSelf: 'flex-start', fontsize: '20', color: '#9C27B0' }}>
+            <MenuTrigger text='Select action:' />
+            <MenuOptions>
+              <MenuOption text='Open Blockly' onSelect={() => this.openBlocklyModal()} />
+              <MenuOption text='Delete' onSelect={() => this.onDeleteItem(item.block_name)} />
+            </MenuOptions>
+          </Menu>
+          <Button style={{ alignSelf: 'stretch' }} blockname={item.block_name} colorHolder={getRandomColor()} />
 
+        </View>
+        <Modal animationIn="slideInUp" animationOut="slideOutDown" onBackdropPress={() => this.closeModal()} onSwipeComplete={() => this.closeModal()} swipeDirection="right" isVisible={this.state.isModalVisible} style={{ backgroundColor: 'white', maxHeight: Dimensions.get('window').height / 2 }} >
+          <Blockly block={item.block_xml} />
+          <View style={{ flex: 1, justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+            <View style={{ flexDirection: 'row', }}>
+              <TouchableOpacity style={{ backgroundColor: 'green', width: '50%' }}>
+                <Text style={{ color: 'white', textAlign: 'center', padding: 10 }}>Ok</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ backgroundColor: 'red', width: '50%' }} onPress={() => this.closeModal()}>
+                <Text style={{ color: 'white', textAlign: 'center', padding: 10 }}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
 
     );

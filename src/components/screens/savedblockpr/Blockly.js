@@ -1,7 +1,37 @@
 import React, { Component } from 'react'
 import { View, Dimensions, ActivityIndicator, StyleSheet } from 'react-native';
-import { WebView, LOAD_NO_CACHE, LOAD_CACHE_ONLY } from 'react-native-webview';
+import { WebView, LOAD_CACHE_ONLY } from 'react-native-webview';
+const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
+<block type="repeat" x="30" y="50">
+  <field name="Loop">Loop</field>
+  <field name="i">15</field>
+  <statement name="DO">
+    <block type="set_speeds2" id="_$a:2lHW0)Nd{qXA4]b0">
+      <field name="leftSpeed"> left</field>
+      <field name="leftWheelSpeed2">50</field>
+      <field name="rightSpeed">right</field>
+      <field name="rightWheelSpeed2">25</field>
+    </block>
+  </statement>
+</block>
+</xml>`;
 
+const block_steps1 = [
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 },
+  { left: 50, right: 25 }];
 const isAndroid = Platform.OS === 'android'
 const window = Dimensions.get("window");
 const LoadingIndicatorView = () => (
@@ -17,14 +47,15 @@ const blocklywebapp = {
 };
 
 export default class Blockly extends React.Component {
+  componentDidMount() {
+
+    const { block_xml } = this.props;
+    const loadWorkspace = `window.onload=loadWorkspace(block_xml);  true;`;
+    if (block_xml) this.webref.injectJavaScript(loadWorkspace);
+    console.log("BlocklyWebview prop block_xml is" + block_xml);
+  }
 
   render() {
-    const { block_xml, block_name, block_steps } = this.props.block;
-    const runFirst = (block_xml.length === 0) ?
-      `window.isNativeApp = true; `
-      :
-      `window.isNativeApp = true;   
-      loadWorkspace(block_xml);  `;
 
     return (
       <View style={styles.container}>
@@ -36,10 +67,9 @@ export default class Blockly extends React.Component {
           startInLoadingState={true}
           cacheMode={LOAD_CACHE_ONLY}
           javaScriptEnabledAndroid={true}
-          injectedJavaScript={runFirst}
+          //injectedJavaScript={runFirst}
           onMessage={event => {
             const { data } = event.nativeEvent;
-
             console.log("the code from the web app :" + data);
           }}
         />

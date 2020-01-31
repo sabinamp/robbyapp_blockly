@@ -20,37 +20,7 @@ import {
 import i18n from '../../../../resources/locales/i18n';
 
 import RobotProxy from '../../../communication/RobotProxy';
-const block1 = `<xml xmlns="https://developers.google.com/blockly/xml">
-<block type="repeat" x="30" y="50">
-  <field name="Loop">Loop</field>
-  <field name="i">15</field>
-  <statement name="DO">
-    <block type="set_speeds2" id="_$a:2lHW0)Nd{qXA4]b0">
-      <field name="leftSpeed"> left</field>
-      <field name="leftWheelSpeed2">50</field>
-      <field name="rightSpeed">right</field>
-      <field name="rightWheelSpeed2">25</field>
-    </block>
-  </statement>
-</block>
-</xml>`;
 
-const block_steps1 = [
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 },
-  { left: 50, right: 25 }];
 export default class BlockPrMain extends Component {
   state = {
 
@@ -173,10 +143,7 @@ export default class BlockPrMain extends Component {
         </Appbar>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            {/*  <BlockProgramming block_name='Empty Workspace' block_xml='' block_steps={[{ left: 0, right: 0 }]}
-            /> */}
-            <BlockProgramming block_name='Block1' block_xml={block1} block_steps={block_steps1}
-            />
+            <BlockProgramming />
           </PersistGate>
         </Provider>
       </View>

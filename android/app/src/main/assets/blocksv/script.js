@@ -171,6 +171,7 @@ function loadWorkspace(block_xml) {
       Blockly.Xml.domToWorkspace(workspace,textToDom);
     } */
   Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(block_xml), Blockly.getMainWorkspace());
+  console.log("loadWorkspace called the web app: block_xml is" + block_xml);
 }
 workspacePlayground.addChangeListener(myUpdateFunction);
 

@@ -291,10 +291,9 @@ class BlockProgramming extends Component {
         />
 
         <View style={styles.container}>
-          <BlockComp block_name={this.props.block_name} block_steps={this.props.block_steps}
+          <BlockComp block_name='Empty Workspace' block_xml='' block_steps={[{ left: 0, right: 0 }]}
             ref={r => (this.blocklycomp = r)}
-            block_xml={this.props.block_xml} updateCurrentSpeeds={this.updateCurrentSpeeds} addBlockToStore={this.addBlockToStore}
-
+            block_xml='' updateCurrentSpeeds={this.updateCurrentSpeeds} addBlockToStore={this.addBlockToStore}
           />
         </View>
 

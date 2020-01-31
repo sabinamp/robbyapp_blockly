@@ -21,18 +21,19 @@ export default class BlocklyWebView extends React.Component {
   componentDidMount() {
 
     const { block_xml } = this.props;
-    /*     const loadWorkspace = `window.onload=loadWorkspace(block_xml);   true;`;
-        if (block_xml.length > 1) this.webref.injectJavaScript(loadWorkspace); */
+    let selectedblock = { block_xml };
+    const loadWorkspace = `window.onload=loadWorkspace(selectedblock);  true;`;
+    if (block_xml) this.webref.injectJavaScript(loadWorkspace);
     console.log("BlocklyWebview prop block_xml is" + block_xml);
   }
 
   render() {
     const { block_xml, receiveCodeAsString } = this.props;
-    const runFirst = (block_xml.length === 0) ?
+    /* const runFirst = (block_xml.length === 0) ?
       `true;`
       :
-      `window.onload=loadWorkspace(block_xml);  true;`;
-
+      `loadWorkspace(block_xml);  true;`;
+ */
 
     return (
       <View style={styles.container}>
@@ -44,7 +45,7 @@ export default class BlocklyWebView extends React.Component {
           renderLoading={LoadingIndicatorView}
           cacheMode={LOAD_CACHE_ONLY}
           javaScriptEnabledAndroid={true}
-          injectedJavaScript={runFirst}
+          //injectedJavaScript={runFirst}
           onMessage={event => {
             const { data } = event.nativeEvent;
             { receiveCodeAsString(data) };
