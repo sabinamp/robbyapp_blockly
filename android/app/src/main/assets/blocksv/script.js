@@ -43,6 +43,12 @@ const Blockly_Msg_SETSPEEDS_MAXVALUE_WARNING = '100 is the maximum allowed speed
 //Loop blocks related text
 const Blockly_Msg_LOOP = "Loop";
 const Blockly_Msg_LOOP_TOOLTIP = "Repeat";
+
+//optional initial values, minimum values, maximum speed values
+const MAXVALUE_SPEED = 100;
+const INITIAL_VALUE_SPEED = 0;
+const MINVALUE_SPEED = 0;
+
 //set speeds
 Blockly.Blocks['set_speeds'] = {
   init: function () {
@@ -50,11 +56,11 @@ Blockly.Blocks['set_speeds'] = {
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_SETSPEEDS_LEFT), "leftSpeed");
     this.appendDummyInput()
-      .appendField(new Blockly.FieldNumber(0, 0, 100), "leftWheelSpeed");
+      .appendField(new Blockly.FieldNumber(INITIAL_VALUE_SPEED, MINVALUE_SPEED, MAXVALUE_SPEED), "leftWheelSpeed");
     this.appendDummyInput()
       .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_SETSPEEDS_RIGHT), "rightSpeed");
     this.appendDummyInput()
-      .appendField(new Blockly.FieldNumber(0, 0, 100), "rightWheelSpeed");
+      .appendField(new Blockly.FieldNumber(INITIAL_VALUE_SPEED, MINVALUE_SPEED, MAXVALUE_SPEED), "rightWheelSpeed");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -80,13 +86,17 @@ Blockly.JavaScript['set_speeds'] = function (block) {
   return code;
 };
 
+const MAXVALUE_LOOP = 90;
+const INITIALVAL_LOOP = 2;
+const MINIMUMVAL_LOOP = 2;
+
 Blockly.Blocks['repeat'] = {
   init: function () {
     this.appendStatementInput("DO")
       .setCheck(null)
       .setAlign(Blockly.ALIGN_LEFT)
       .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_LOOP), "Loop")
-      .appendField(new Blockly.FieldNumber(0, 2, 90), "i")
+      .appendField(new Blockly.FieldNumber(MINIMUMVAL_LOOP, MINIMUMVAL_LOOP, MAXVALUE_LOOP), "i")
       /* .appendField(new Blockly.FieldLabelSerializable("times"), "times") */;
 
     this.setInputsInline(true);
@@ -126,17 +136,23 @@ Blockly.JavaScript['repeat'] = function (block) {
   return code;
 }
 
+
+const MINVALUE_LEFTSPEED = 50;
+const INITIALVAL_LEFTSPEED = 50;
+const MINVALUE_RIGHTSPEED = 25;
+const INITIALVAL_RIGHTSPEED = 25;
+
 Blockly.Blocks['set_speeds2'] = {
   init: function () {
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_SETSPEEDS_LEFT), "leftSpeed");
     this.appendDummyInput()
-      .appendField(new Blockly.FieldNumber(0, 50, 100), "leftWheelSpeed2");
+      .appendField(new Blockly.FieldNumber(INITIALVAL_LEFTSPEED, MINVALUE_LEFTSPEED, MAXVALUE_SPEED), "leftWheelSpeed2");
     this.appendDummyInput()
       .appendField(new Blockly.FieldLabelSerializable(Blockly_Msg_SETSPEEDS_RIGHT), "rightSpeed");
     this.appendDummyInput()
-      .appendField(new Blockly.FieldNumber(0, 25, 100), "rightWheelSpeed2");
+      .appendField(new Blockly.FieldNumber(INITIALVAL_RIGHTSPEED, MINVALUE_RIGHTSPEED, MAXVALUE_SPEED), "rightWheelSpeed2");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
