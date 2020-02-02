@@ -32,7 +32,7 @@ export default class BlocklyWebView extends React.Component {
     /* const runFirst = (block_xml.length === 0) ?
       `true;`
       :
-      `loadWorkspace(block_xml);  true;`;
+      `window.onload=loadWorkspace(block_xml);  true;`;
  */
 
     return (
